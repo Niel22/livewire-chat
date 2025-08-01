@@ -47,6 +47,6 @@ class User extends Authenticatable
     }
 
     public function conversations(){
-        return $this->hasMany(Conversation::class, 'sender_id')->orWhere('receiver_id', $this->id)->latest();
+        return $this->hasMany(Conversation::class, 'sender_id')->orWhere('receiver_id', $this->id)->latest('updated_at');
     }
 }
