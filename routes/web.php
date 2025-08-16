@@ -4,11 +4,17 @@ use App\Http\Controllers\ProfileController;
 use App\Livewire\Chat\Chat;
 use App\Livewire\Chat\Index;
 use App\Livewire\Users;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::post('/broadcasting/auth', function () {
+    return Auth::user();
+ });
 
 Route::get('/dashboard', function () {
     return view('dashboard');

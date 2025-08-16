@@ -1,5 +1,16 @@
 <div 
-    x-data="{type: 'all'}"
+    x-data="{type: 'all', query: @entangle('query')}"
+    x-init="
+        setTimeout(() => {
+            if(query){
+                conversationElement = document.getElementById('conversation-'+ query);
+                
+                if(conversationElement){
+                    conversationElement.scrollIntoView({'behavior': 'smooth'});
+                }
+            }
+        }, 200)
+    "
     class="flex flex-col transition-all h-full overflow-hiiden">
     
     <header class="px-3 z-10 bg-white dark:bg-gray-800 sticky top-0 w-full py-2">
@@ -29,42 +40,50 @@
     <main class="overflow-y-scroll hide-scrollbar overflow-hidden grow h-full relative " style="contain:content">
         <ul class="p-2 grid w-full space-y-2 ">
 
+
             @forelse($conversations as $convo)
-                <li class="py-3 hover:bg-gray-50 rounded-2xl dark:hover:bg-gray-700 transition-colors duration-150 flex gap-4 relative w-full cursor-pointer px-2">
+                <li id="conversation-{{ $convo->id }}" wire:key="{{ $convo->id }}" class="py-3 hover:bg-gray-50 rounded-2xl dark:hover:bg-gray-700 transition-colors duration-150 flex gap-4 relative w-full cursor-pointer px-2 {{ $convo->id === $selectedConvo?->id ? 'bg-gray-100/70 dark:bg-gray-700' : '' }}">
                     <a href="" class="shrink-0">
-                        <x-avatar />
+                        <x-avatar src='https://i.pravatar.cc/100?u={{$convo->getReceiver()->name}}'/>
                     </a>
 
                     <aside class="grid grid-cols-12 w-full">
                         
-                        <a href="{{ route('chat', 4) }}" class="col-span-11 border-b pb-2 border-gray-200 dark:border-black relative overflow-hidden truncate leading-5 w-full flex-nowrap p-1">
+                        <a href="{{ route('chat', $convo->id) }}" class="col-span-11 border-b pb-2 border-gray-200 dark:border-black relative overflow-hidden truncate leading-5 min-w-full flex-nowrap p-1">
                             <div class="flex justify-between w-full items-center ">
-                                <h6 class="truncate font-medium tracking-wider text-gray-800 dark:text-gray-200">
-                                    {{ $convo->user->name }}
+                                <h6 class="truncate font-medium tracking-wider text-gray-900 dark:text-gray-200">
+                                    {{ $convo->getReceiver()->name }}
                                 </h6>
-                                <small class="text-gray-800 dark:text-gray-200">5d</small>
+                                <small class="text-gray-800 dark:text-gray-200">{{ $convo->messages?->last()?->created_at?->shortAbsoluteDiffForHumans() }}</small>
                             </div>
                             <div class="flex gap-x-2 items-center">
-                                <span class="">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2-all text-blue-400" viewBox="0 0 16 16">
-                                        <path d="M12.354 4.354a.5.5 0 0 0-.708-.708L5 10.293 1.854 7.146a.5.5 0 1 0-.708.708l3.5 3.5a.5.5 0 0 0 .708 0zm-4.208 7-.896-.897.707-.707.543.543 6.646-6.647a.5.5 0 0 1 .708.708l-7 7a.5.5 0 0 1-.708 0"/>
-                                        <path d="m5.354 7.146.896.897-.707.707-.897-.896a.5.5 0 1 1 .708-.708"/>
-                                    </svg>
-                                </span>
 
-                                {{-- <span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
-                                        <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
-                                    </svg>
-                                </span> --}}
+                                @if($convo->isLastMessageRead())
+                                    @if($convo->messages->last()->read_at)
+                                        <span class="">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2-all text-blue-400" viewBox="0 0 16 16">
+                                                <path d="M12.354 4.354a.5.5 0 0 0-.708-.708L5 10.293 1.854 7.146a.5.5 0 1 0-.708.708l3.5 3.5a.5.5 0 0 0 .708 0zm-4.208 7-.896-.897.707-.707.543.543 6.646-6.647a.5.5 0 0 1 .708.708l-7 7a.5.5 0 0 1-.708 0"/>
+                                                <path d="m5.354 7.146.896.897-.707.707-.897-.896a.5.5 0 1 1 .708-.708"/>
+                                            </svg>
+                                        </span>
+                                    @else
+                                        <span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                                                <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+                                            </svg>
+                                        </span>
+                                    @endif
+                                @endif
 
                                 <p class="text-gray-800 dark:text-gray-200 grow truncate text-sm font-[100]">
-                                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ad, itaque. Tempora, delectus architecto! Possimus sapiente ducimus accusamus rem, dolore neque repellendus soluta dolor consequatur non, reprehenderit fugit mollitia! Esse, fuga.
+                                    {{ $convo->messages->last()->body ?? '' }}
                                 </p>
 
-                                <span class="font-bold p-px px-2 text-xs shrink-0 rounded-full bg-blue-500 text-white">
-                                    5
-                                </span>
+                                @if($convo->unreadMessagesCount() > 0)
+                                    <span class="font-bold p-px px-2 text-xs shrink-0 rounded-full bg-blue-500 text-white">
+                                        {{ $convo->unreadMessagesCount() }}
+                                    </span>
+                                @endif
                             </div>
                         </a>
 
