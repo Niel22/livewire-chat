@@ -42,12 +42,12 @@ jobs:
 
             cd church.womarkbuy.com
             composer install --no-dev --prefer-dist --optimize-autoloader
+            npm run build
             if [ ! -f ".env" ]; then
                 cp .env.example .env
                 php artisan key:generate
             fi
-            npm run build
             php artisan migrate --force --seed
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
+            php artisan config:clear
+            php artisan route:clear
+            php artisan view:clear
