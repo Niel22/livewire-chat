@@ -4,6 +4,7 @@ namespace App\Livewire\Chat;
 
 use App\Models\Conversation;
 use App\Models\Message;
+use App\Notifications\MessageRead;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -21,6 +22,11 @@ class Chat extends Component
                 ->update([
                     'read_at' => now()
                 ]);
+        
+        $this->selectedConvo->getReceiver()
+                    ->notify(new MessageRead($this->selectedConvo->id));
+                    
+
     }
 
     #[Layout('layouts.app')]

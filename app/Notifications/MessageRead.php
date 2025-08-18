@@ -2,7 +2,6 @@
 
 namespace App\Notifications;
 
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -10,24 +9,17 @@ use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class MessageSent extends Notification implements ShouldBroadcast, ShouldQueue
+class MessageRead extends Notification implements ShouldBroadcast
 {
     use Queueable;
-
-    public $user, $message, $conversation, $recieverId;
-
-    public $tries = 5;
-    public $backoff = [5, 15, 30];
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($user, $message, $conversation, $recieverId)
+    public $conversation_id;
+    public function __construct($conversation_id)
     {
-        $this->user = $user;
-        $this->message = $message;
-        $this->conversation = $conversation;
-        $this->recieverId = $recieverId;
+        $this->conversation_id = $conversation_id;
     }
 
     /**
@@ -51,22 +43,11 @@ class MessageSent extends Notification implements ShouldBroadcast, ShouldQueue
             ->line('Thank you for using our application!');
     }
 
-    /**
-     * Get the broadcastable representation of the notification.
-     */
     public function toBroadcast(object $notifiable): BroadcastMessage
     {
         return new BroadcastMessage([
-            'user_id' => $this->user->id,
-            'conversation_id' => $this->conversation->id,
-            'message_id' => $this->message->id,
-            'reciever_id' => $this->recieverId
+            'conversation_id' => $this->conversation_id,
         ]);
-    }
-
-    public function broadcastOn()
-    {
-        return new PrivateChannel('users.' . $this->recieverId);
     }
 
     /**

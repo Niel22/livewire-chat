@@ -3,6 +3,13 @@ x-data="{height:0, conversationElement: document.getElementById('conversation')}
 x-init="
     height= conversationElement.scrollHeight;
     $nextTick(() => conversationElement.scrollTop = height)
+
+    Echo.private('user.{{ Auth::user()->id }}')
+    .notification((notification)=>{
+        if(notification['type'] === 'App\\Notifications\\MessageRead'){
+            alert('message read');
+        }
+    });
 "
 @scroll-bottom.window="
     $nextTick(() => conversationElement.scrollTop = height)
@@ -62,7 +69,7 @@ class="w-full overflow-hidden ">
                     @endif
 
                     <div
-                    wire:key="message-{{ $message->id }}"
+                    wire:key="{{time().$key }}"
                     @class([
                         'max-w-[85%] md:max-w-[78%] flex w-auto gap-2 relative mt-3',
                         'ml-auto' => $message->sender_id === Auth::id()
@@ -144,10 +151,10 @@ class="w-full overflow-hidden ">
                     <div class="grid grid-cols-12 gap-3">
                         <input x-model="body" type="text" autocomplete="off" autofocus placeholder="Write your message here"
                             maxlength="1700"
-                            class="col-span-11 bg-gray-100 border-0 outline-none focus:border-0 focus:ring-0 rounded-lg hover:ring-0 focus:outline-none"
+                            class="col-span-9 md:col-span-11 bg-gray-100 border-0 outline-none focus:border-0 focus:ring-0 rounded-lg hover:ring-0 focus:outline-none"
                         >
 
-                        <button x-bind:disabled="!body?.trim()" type="submit" class="col-span-1 text-gray-800 dark:text-gray-200 cursor-pointer border rounded-md hover:bg-gray-700">Send</button>
+                        <button x-bind:disabled="!body?.trim()" type="submit" class="col-span-3 md:col-span-1 text-gray-800 dark:text-gray-200 cursor-pointer border rounded-md hover:bg-gray-700">Send</button>
                     </div>
                 </form>
 

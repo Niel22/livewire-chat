@@ -3,6 +3,7 @@
 namespace App\Livewire\Chat;
 
 use App\Models\Message;
+use App\Notifications\MessageRead;
 use App\Notifications\MessageSent;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
@@ -34,7 +35,7 @@ class ChatBox extends Component
     }
 
     public function broadcastedNotifications($event){
-        
+
         if($event['type'] == MessageSent::class){
 
             if($event['conversation_id'] === $this->selectedConvo->id){
@@ -44,9 +45,16 @@ class ChatBox extends Component
                 $newMessage = Message::find($event['message_id']);
 
                 $this->loadedMessages->push($newMessage);
+
+                $newMessage->read_at = now();
+                $newMessage->save();
+
+                $this->selectedConvo->getReceiver()
+                    ->notify(new MessageRead($this->selectedConvo->id));
+
             }
 
-            $this->dispatch('refresh');
+            $this->dispatch('refresh')->to('chat.chat-list'); 
         }
     }
 
@@ -84,19 +92,22 @@ class ChatBox extends Component
         $this->selectedConvo->save();
 
         $this->dispatch('refresh');
-
+        
         // Broadcast
         $this->selectedConvo->getReceiver()
             ->notify(new MessageSent(Auth::user(), $createdMessage, $this->selectedConvo, $this->selectedConvo->getReceiver()->id));
-
+        
     }
 
     public function mount(){
+
         $this->loadMessages();
     }
 
     public function render()
     {
+        $this->dispatch('refresh');
+
         return view('livewire.chat.chat-box');
     }
 }
