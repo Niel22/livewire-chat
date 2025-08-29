@@ -1,0 +1,53 @@
+name: Laravel CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  deploy:
+    name: Deploy Laravel App to Server
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          extensions: mbstring, bcmath, pdo, mysql, tokenizer, xml
+          ini-values: post_max_size=256M, upload_max_filesize=256M
+          coverage: none
+
+      - name: Deploy via SSH and Run Laravel Commands
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.CPANEL_HOST }}
+          username: ${{ secrets.CPANEL_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 21098
+          script: |
+            cd ~
+            if [ ! -d "church.womarkbuy.com/.git" ]; then
+              git clone git@github.com:Niel22/livewire-chat.git church.womarkbuy.com
+            else
+              cd church.womarkbuy.com
+              git pull origin main
+            fi
+
+            cd church.womarkbuy.com
+            composer install --no-dev --prefer-dist --optimize-autoloader
+            if [ ! -f ".env" ]; then
+                cp .env.example .env
+                php artisan key:generate
+            fi
+            npm run build
+            php artisan migrate --force
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
