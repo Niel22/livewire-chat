@@ -1,4 +1,4 @@
-import{j as n}from"./app-CORmLGK8.js";function i({className:r="",disabled:e,children:t,...o}){return n.jsx("button",{...o,className:`inline-flex items-center rounded-md border border-transparent 
+import{j as n}from"./app-p-vbwJGz.js";function i({className:r="",disabled:e,children:t,...o}){return n.jsx("button",{...o,className:`inline-flex items-center rounded-md border border-transparent 
                 bg-blue-600 dark:bg-white 
                 text-white dark:text-gray-800 
                 px-4 py-2 text-xs font-semibold uppercase tracking-widest 

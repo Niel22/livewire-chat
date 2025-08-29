@@ -6,6 +6,8 @@ import { formatMessageDateLong } from '@/helpers';
 
 const MessageItem = ({message, attachmentClick}) => {
     const currentUser = usePage().props.auth.user;
+    console.log(message);
+    console.log(currentUser);
   return (
     <div className={"chat " + 
         (parseInt(message.sender_id) === parseInt(currentUser.id) ? "chat-end" : "chat-start")
