@@ -28,6 +28,7 @@ class MessageController extends Controller
             ->take($perPage)
             ->get();
         
+            // dd($messages);
 
         return inertia('Home', [
             'selectedConversation' => $conversation->toConversationArray(),
@@ -97,6 +98,7 @@ class MessageController extends Controller
         $files = $data['attachments'] ?? null;
 
         $message = Message::create($data);
+        $attachments = [];
 
         if($files){
             foreach($files as $file){
@@ -110,7 +112,7 @@ class MessageController extends Controller
                     'size' => $file->getSize(),
                     'path' => $file->store($directory, 'public')
                 ];
-
+                
                 $attachment = MessageAttachment::create($model);
                 $attachments[] = $attachment;
             }

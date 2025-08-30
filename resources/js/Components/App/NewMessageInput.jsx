@@ -39,6 +39,8 @@ const NewMessageInput = ({value, onChange, onSend}) => {
         autoCorrect='off'
         autoComplete='off'
         autoSave='off'
+        data-gramm="false"
+        data-gramm_editor="false"
         autoFocus
         className='hide-scrollbar input border-none border-transparent bg-transparent outline-none shadow-none w-full focus:outline-none resize-none overflow-y-auto max-h-40'
     >

@@ -22,6 +22,7 @@ export default function AuthenticatedLayout({ header, children }) {
         useState(false);
     const {emit} = useEventBus();
 
+
     useEffect(() => {
         conversations.forEach((conversation) => {
             let channel = `message.group.${conversation.id}`;
@@ -77,7 +78,7 @@ export default function AuthenticatedLayout({ header, children }) {
     return (
         <div className="min-h-100vh sm:min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col h-screen">
             <nav className="border-b border-gray-100 bg-white dark:border-gray-700 dark:bg-gray-800 shadow-lg">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div className="mx-auto max-w-[90%] px-4 sm:px-6 lg:px-8">
                     <div className="flex h-16 justify-between">
                         <div className="flex">
                             <div className="flex shrink-0 items-center">
@@ -128,6 +129,8 @@ export default function AuthenticatedLayout({ header, children }) {
                                     <Dropdown.Content className="dark:bg-gray-700 dark:text-gray-200">
                                         <Dropdown.Link
                                             href={route('profile.edit')}
+                                            
+                                            
                                         >
                                             Profile
                                         </Dropdown.Link>
@@ -187,50 +190,61 @@ export default function AuthenticatedLayout({ header, children }) {
                     </div>
                 </div>
 
+               {showingNavigationDropdown && (
+                <div 
+                    className="fixed inset-0 bg-black bg-opacity-50 z-40"
+                    onClick={() => setShowingNavigationDropdown(false)}
+                />
+                )}
+
                 <div
                     className={
-                        (showingNavigationDropdown ? 'block' : 'hidden') +
-                        ' sm:hidden'
+                        "fixed top-0 right-0 h-full w-[75%] sm:w-[30%] bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out z-50 " +
+                        (showingNavigationDropdown ? "translate-x-0" : "translate-x-full")
                     }
                 >
-                    <div className="space-y-1 pb-3 pt-2">
+                    
+                <div className="space-y-1 pb-3 pt-4 px-4">
+                    <div className="text-base font-medium text-gray-800 dark:text-gray-200">
+                        {user.name}
+                    </div>
+                    <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                        {user.email}
+                    </div>
+                </div>
+
+                {/* Divider with user info */}
+                <div className="border-t border-gray-200 dark:border-gray-700 pb-4 pt-4">
+                    
+
+                    <div className="mt-3 space-y-1 px-4">
                         <ResponsiveNavLink
                             href={route('dashboard')}
                             active={route().current('dashboard')}
-                            className="text-gray-700 dark:text-gray-200"
-                        >
+                            className="block text-gray-700 dark:text-gray-200"
+                            >
                             Dashboard
                         </ResponsiveNavLink>
-                    </div>
-
-                    <div className="border-t border-gray-200 dark:border-gray-700 pb-1 pt-4">
-                        <div className="px-4">
-                            <div className="text-base font-medium text-gray-800 dark:text-gray-200">
-                                {user.name}
-                            </div>
-                            <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                                {user.email}
-                            </div>
-                        </div>
-
-                        <div className="mt-3 space-y-1 dark:bg-gray-800">
-                            <ResponsiveNavLink
-                                href={route('profile.edit')}
-                                className=" text-gray-700 dark:text-gray-200"
-                            >
-                                Profile
-                            </ResponsiveNavLink>
-                            <ResponsiveNavLink
-                                method="post"
-                                href={route('logout')}
-                                as="button"
-                                className="text-gray-700 dark:text-gray-200"
-                            >
-                                Log Out
-                            </ResponsiveNavLink>
-                        </div>
+                        <ResponsiveNavLink
+                            href={route('profile.edit')}
+                            active={route().current('profile.edit')}
+                            className="block text-gray-700 dark:text-gray-200"
+                        >
+                            Profile
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            method="post"
+                            href={route('logout')}
+                            as="button"
+                            className="block text-gray-700 hover:bg-red-300 dark:hover:bg-red-500 dark:text-gray-200"
+                        >
+                            Log Out
+                        </ResponsiveNavLink>
                     </div>
                 </div>
+                </div>
+
+
             </nav>
 
             {header && (

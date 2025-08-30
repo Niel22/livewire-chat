@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Group;
+use App\Models\Message;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('message_attachments', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Group::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Message::class)->constrained()->cascadeOnDelete();
             $table->string('name', 255);
             $table->string('path', 1024);
             $table->string('mime', 255);

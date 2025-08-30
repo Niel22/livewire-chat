@@ -5,9 +5,9 @@ import UserAvatar from './UserAvatar';
 import GroupAvatar from './GroupAvatar';
 import UserOptionsDropdown from './UserOptionsDropdown';
 import { formatMessageDateShort } from '@/helpers';
+import { PaperClipIcon } from '@heroicons/react/24/solid';
 
 const ConversationItem = ({conversation, selectedConversation = null, online = null}) => {
-  console.log(selectedConversation);
   const page = usePage();
   const currentUser = page.props.auth.user;
   let classes = " border-transparent";
@@ -52,9 +52,13 @@ const ConversationItem = ({conversation, selectedConversation = null, online = n
             </span>
           )}
         </div>
-        {conversation.last_message && (
+        {conversation.last_message ? (
           <p className="text-xs text-gray-600 dark:text-gray-400 text-nowrap truncate">
             {conversation.last_message}
+          </p>
+        ) : (
+          <p className="text-xs text-gray-600 flex items-center justify-start gap-1 dark:text-gray-400 text-nowrap truncate">
+            <PaperClipIcon className='w-3' /> Sent an attachment
           </p>
         )}
       </div>

@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 const ChatLayout = ({ children }) => {
     const page = usePage();
 
+    const auth = page.props.auth;
     const conversations = page.props.conversations;
     const selectedConversation = page.props.selectedConversation;
     const [localConversations, setLocalConversations] = useState([]);
@@ -29,6 +30,15 @@ const ChatLayout = ({ children }) => {
                 if (message.conversation_id && !u.is_group &&
                      u.id === parseInt(message.conversation_id)
                 ) {
+                    if ("Notification" in window && Notification.permission === "granted" && message.sender_id !== auth.user.id) {
+                        new Notification("New Message", {
+                            body: message.message ?? "Sent an Attachment",
+                        });
+                        const audio = new Audio("/notify.wav");
+                        audio.play().catch((err) => {
+                            console.warn("Unable to play notification sound automatically:", err);
+                        });
+                    }
                     return {
                         ...u,
                         last_message: message.message,
@@ -36,6 +46,15 @@ const ChatLayout = ({ children }) => {
                     };
                 }
                 if (message.group_id && u.is_group && u.id === parseInt(message.group_id)) {
+                    if ("Notification" in window && Notification.permission === "granted" && message.sender_id !== auth.user.id) {
+                        new Notification("New Message", {
+                            body: message.message ?? "Sent an Attachment",
+                        });
+                        const audio = new Audio("/notify.wav");
+                        audio.play().catch((err) => {
+                            console.warn("Unable to play notification sound automatically:", err);
+                        });
+                    }
                     return {
                         ...u,
                         last_message: message.message,
@@ -150,7 +169,7 @@ const ChatLayout = ({ children }) => {
                     </div>
 
                     {/* Search */}
-                    <div className="p-3">
+                    <div className="p-3 border-b border-gray-200 dark:border-slate-700">
                         <TextInput
                             onKeyUp={onSearch}
                             placeholder="Filter users and groups"
@@ -158,7 +177,7 @@ const ChatLayout = ({ children }) => {
                                 text-gray-800 dark:text-gray-100 
                                 placeholder-gray-400 dark:placeholder-gray-300 
                                 border border-gray-300 dark:border-slate-600 
-                                focus:ring focus:ring-blue-400 focus:border-blue-400 rounded-lg"
+                                focus:ring focus:ring-blue-400 focus:border-blue-400 rounded-lg "
                         />
                     </div>
 

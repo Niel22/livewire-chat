@@ -8,12 +8,15 @@ import MessageInput from "@/Components/App/MessageInput";
 import { useEventBus } from "@/EventBus";
 import axios from "axios";
 import { usePage } from "@inertiajs/react";
+import AttachmentPreviewModal from "@/Components/App/AttachmentPreviewModal";
 
 function Home({ selectedConversation = null, messages = null, online = null }) {
     const [localMessages, setLocalMessages] = useState([]);
     const [noMoreMessages, setNoMoreMessages] = useState(false);
     const [scrollFromBottom, setScrollFromBottom] = useState(null);
     const messageCtrRef = useRef(null);
+    const [showAttachmentPreview, setShowAttachmentPreview] = useState(false);
+    const [previewAttachment, setPreviewAttachment] = useState({});
     const loadMoreIntersect = useRef(null);
     const {on} = useEventBus();
     const { auth } = usePage().props;
@@ -25,7 +28,11 @@ function Home({ selectedConversation = null, messages = null, online = null }) {
                 if (exists) return prevMessages;
                  if ("Notification" in window && Notification.permission === "granted" && message.sender_id !== auth.user.id) {
                         new Notification("New Message", {
-                            body: message.message,
+                            body: message.message ?? "Sent an Attachment",
+                        });
+                        const audio = new Audio("/notify.wav");
+                        audio.play().catch((err) => {
+                            console.warn("Unable to play notification sound automatically:", err);
                         });
                     }
                 return [...prevMessages, message];
@@ -36,12 +43,24 @@ function Home({ selectedConversation = null, messages = null, online = null }) {
                 if (exists) return prevMessages;
                  if ("Notification" in window && Notification.permission === "granted" && message.sender_id !== auth.user.id) {
                     new Notification("New Message", {
-                        body: message.message,
+                        body: message.message ?? "Sent an attachment",
+                    });
+                    const audio = new Audio("/notify.wav");
+                    audio.play().catch((err) => {
+                        console.warn("Unable to play notification sound automatically:", err);
                     });
                 }
                 return [...prevMessages, message];
             });
         }
+    }
+
+    const onAttchmentClick = (attachments, index) => {
+        setPreviewAttachment({
+            attachments, index
+        });
+
+        setShowAttachmentPreview(true);
     }
 
     const loadMoreMessages = useCallback(() => {
@@ -174,6 +193,7 @@ function Home({ selectedConversation = null, messages = null, online = null }) {
                                     <MessageItem
                                         key={`${message.id}-${index}`}
                                         message={message}
+                                        attachmentClick={onAttchmentClick}
                                     />
                                 ))}
                             </div>
@@ -181,11 +201,13 @@ function Home({ selectedConversation = null, messages = null, online = null }) {
                     </div>
 
                     {/* Input bar with soft top border */}
-                    <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm 
-                                    border-t border-gray-200 dark:border-slate-700 shadow-inner">
-                        <MessageInput conversation={selectedConversation} />
-                    </div>
+                    
+                    <MessageInput conversation={selectedConversation} />
                 </>
+            )}
+
+            {previewAttachment.attachments && (
+                <AttachmentPreviewModal attachments={previewAttachment.attachments} index={previewAttachment.index} show={showAttachmentPreview} onClose={() => setShowAttachmentPreview(false)} />
             )}
 
         </>

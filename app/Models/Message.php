@@ -30,6 +30,6 @@ class Message extends Model
     }
 
     public function attachments(){
-        return $this->belongsTo(User::class, 'message_id');
+        return $this->hasMany(MessageAttachment::class, 'message_id');
     }
 }
