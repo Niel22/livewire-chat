@@ -11,11 +11,12 @@ const ConversationItem = ({conversation, selectedConversation = null, online = n
   const page = usePage();
   const currentUser = page.props.auth.user;
   let classes = " border-transparent";
-  if (selectedConversation){
-    if(selectedConversation.id === conversation.id){
+  if (selectedConversation) {
+    if (
+      selectedConversation.id === conversation.id &&
+      selectedConversation.is_group === conversation.is_group
+    ) {
       classes = "border-blue-500 bg-blue-50 dark:bg-gray-700/50 shadow-sm";
-    }else{
-      
     }
   }
 
@@ -52,14 +53,16 @@ const ConversationItem = ({conversation, selectedConversation = null, online = n
             </span>
           )}
         </div>
-        {conversation.last_message ? (
-          <p className="text-xs text-gray-600 dark:text-gray-400 text-nowrap truncate">
-            {conversation.last_message}
-          </p>
-        ) : (
-          <p className="text-xs text-gray-600 flex items-center justify-start gap-1 dark:text-gray-400 text-nowrap truncate">
-            <PaperClipIcon className='w-3' /> Sent an attachment
-          </p>
+        {conversation.last_message_date && (
+          conversation.last_message ? (
+            <p className="text-xs text-gray-600 dark:text-gray-400 text-nowrap truncate">
+              {conversation.last_message}
+            </p>
+          ) : (
+            <p className="text-xs text-gray-600 flex items-center justify-start gap-1 dark:text-gray-400 text-nowrap truncate">
+              <PaperClipIcon className='w-3' /> Sent an attachment
+            </p>
+          )
         )}
       </div>
 

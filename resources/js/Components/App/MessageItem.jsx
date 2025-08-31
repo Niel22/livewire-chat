@@ -4,6 +4,7 @@ import UserAvatar from './UserAvatar';
 import ReactMarkdown from 'react-markdown';
 import { formatMessageDateLong } from '@/helpers';
 import MessageAttachments from './MessageAttachments';
+import MessageOptionsDropdown from './MessageOptionsDropdown';
 
 const MessageItem = ({message, attachmentClick}) => {
     const currentUser = usePage().props.auth.user;
@@ -24,6 +25,7 @@ const MessageItem = ({message, attachmentClick}) => {
                 parseInt(message.sender_id) === parseInt(currentUser.id) ? " chat-bubble-info" : "bg-gray-700"
             )
         }>
+            <MessageOptionsDropdown message={message} currentUser={currentUser} />
             <div className='chat-message'>
                 {message.attachments.length > 0 && (<MessageAttachments attachments={message.attachments} attachmentClick={attachmentClick} />)}
                 <div className='chat-message-content'>

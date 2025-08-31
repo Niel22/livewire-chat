@@ -35,7 +35,7 @@ const UserOptionsDropdown = () => {
               </MenuItem>
             </div>
         </MenuItems>
-        </Menu>
+      </Menu>
 
     </div>
   )

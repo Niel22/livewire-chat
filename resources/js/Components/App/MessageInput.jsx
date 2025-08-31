@@ -7,6 +7,7 @@ import EmojiPicker, { Emoji } from 'emoji-picker-react';
 import { isAudio, isImage } from '@/helpers';
 import CustomAudioPlayer from './CustomAudioPlayer';
 import AttachmentPreview from './AttachmentPreview';
+import { useEventBus } from '@/EventBus';
 
 const MessageInput = ({conversation = null}) => {
 
@@ -15,6 +16,7 @@ const MessageInput = ({conversation = null}) => {
   const [messageSending, setMessageSending] = useState("");
   const [uploadProgress, setUploadProgress] = useState(0);
   const [chosenFiles, setChosenFiles] = useState([]);
+  const {emit} = useEventBus();
 
   const onFileChange = (e) => {
     const files = e.target.files;
@@ -66,6 +68,7 @@ const MessageInput = ({conversation = null}) => {
   }
 
   const onLikeClick = () => {
+    emit('toast.show', 'Message sent successfully');
     if(messageSending){
       return;
     }

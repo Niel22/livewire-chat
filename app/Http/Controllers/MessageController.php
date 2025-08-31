@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\SocketDeleteMessage;
 use App\Events\SocketMessage;
 use App\Models\User;
 use App\Models\Group;
@@ -145,7 +146,30 @@ class MessageController extends Controller
             ], 403);
         }
 
+        $group = null;
+        $conversation = null;
+
+        if($message->group_id){
+            $group = Group::where('id', $message->group_id)->first();
+        }else{
+            $conversation = Conversation::where('id', $message->conversation_id)->first();
+        }
+
+        $deletedMessage = $message;
+
         $message->delete();
-        return response()->json([], 200);
+
+        $lastMessage = null;
+        if($group){
+            $lastMessage = $group->last_message;
+        }else{
+            $lastMessage = $conversation->last_message;
+        }
+
+        SocketDeleteMessage::dispatch($deletedMessage, $lastMessage);
+
+        return response()->json([
+            'message' => new MessageResource($lastMessage)
+        ], 200);
     }
 }

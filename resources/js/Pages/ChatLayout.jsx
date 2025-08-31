@@ -66,12 +66,38 @@ const ChatLayout = ({ children }) => {
         });
     };
 
+    const messageDeleted = ({prevMessage}) => {
+        setLocalConversations((oldUsers) => {
+            return oldUsers.map((u) => {
+                if (prevMessage.conversation_id && !u.is_group &&
+                     u.id === parseInt(prevMessage.conversation_id)
+                ) {
+                    return {
+                        ...u,
+                        last_message: prevMessage.message,
+                        last_message_date: prevMessage.created_at,
+                    };
+                }
+                if (prevMessage.group_id && u.is_group && u.id === parseInt(prevMessage.group_id)) {
+                    return {
+                        ...u,
+                        last_message: prevMessage.message,
+                        last_message_date: prevMessage.created_at,
+                    };
+                }
+                return u;
+            });
+        });
+    }
+
 
     useEffect(() => {
         const offCreated = on('message.created', messageCreated);
+        const offDeleted = on('message.deleted', messageDeleted);
 
         return () => {
             offCreated();
+            offDeleted();
         }
     }, [on])
 
@@ -186,11 +212,7 @@ const ChatLayout = ({ children }) => {
                         {sortedConversations &&
                             sortedConversations.map((conversation) => (
                                 <ConversationItem
-                                    key={`${
-                                        conversation.is_group
-                                            ? "group_"
-                                            : "chat_"
-                                    }${conversation.id}`}
+                                    key={`${conversation.is_group ? "group_" : "chat_"}${conversation.id}`}
                                     conversation={conversation}
                                     selectedConversation={selectedConversation}
                                     online={!!isUserOnline(conversation.id)}

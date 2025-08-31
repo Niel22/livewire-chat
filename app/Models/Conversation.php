@@ -48,9 +48,11 @@ class Conversation extends Model
         $conversations = $user->conversations;
         $conversations->load('last_message');
 
-        $groups = $user->groups;
+        $groups = $user->visibleGroups()->get();
         $groups->load('last_message');
         $groups->load('admin');
+        $groups->load('members');
+
 
         return $conversations->map->toConversationArray()->merge($groups->map->toConversationArray());
     }

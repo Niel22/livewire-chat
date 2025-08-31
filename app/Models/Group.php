@@ -39,6 +39,7 @@ class Group extends Model
             'id' => $this->id,
             'name' => $this->name,
             'members' => $this->members->count(),
+            'membersList' => $this->members,
             'is_group' => true,
             'name' => $this->name,
             'description' => $this->description,

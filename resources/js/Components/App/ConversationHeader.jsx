@@ -1,10 +1,17 @@
-import { ArrowLeftIcon } from '@heroicons/react/24/solid'
+import { ArrowLeftIcon, InformationCircleIcon, UserGroupIcon, XMarkIcon } from '@heroicons/react/24/solid'
 import { Link } from '@inertiajs/react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import UserAvatar from './UserAvatar'
 import GroupAvatar from './GroupAvatar'
+import GroupInfoSidebar from './GroupInfoSidebar'
 
 const ConversationHeader = ({selectedConversation, online}) => {
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+
+    useEffect(() => {
+        setSidebarOpen(false);
+    }, [])
+
   return (
     <>
         {selectedConversation && (
@@ -41,7 +48,7 @@ const ConversationHeader = ({selectedConversation, online}) => {
                         </h3>
                         {selectedConversation.is_group && (
                             <p className="text-xs text-gray-500 dark:text-gray-400">
-                                {selectedConversation.members} members
+                                {selectedConversation.members + 1} members
                             </p>
                         )}
                         {!selectedConversation.is_group && online && (
@@ -49,16 +56,19 @@ const ConversationHeader = ({selectedConversation, online}) => {
                         )}
                     </div>
                 </div>
-
-                {/* Optional right side (future actions) */}
-                <div className="hidden sm:flex items-center gap-2 text-gray-500 dark:text-gray-400">
-                    <button className="hover:text-blue-500 transition">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405M19.595 12H15M15 7h5l-1.405 1.405M15 12h5"/>
-                        </svg>
+                
+                {selectedConversation.is_group && (
+                    <button 
+                        onClick={() => setSidebarOpen(true)}
+                        className="text-gray-600 dark:text-gray-300 hover:text-blue-500"
+                    >
+                        <InformationCircleIcon className="w-6 h-6" />
                     </button>
-                </div>
+                )}
             </div>
+        )}
+        {selectedConversation.is_group && sidebarOpen && (
+            <GroupInfoSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} group={selectedConversation} />
         )}
 
     </>
