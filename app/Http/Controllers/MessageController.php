@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\SocketDeleteMessage;
 use App\Events\SocketMessage;
+use App\Events\SocketMessagePinned;
 use App\Models\User;
 use App\Models\Group;
 use App\Models\Message;
@@ -23,17 +24,20 @@ class MessageController extends Controller
         $total = Message::where('conversation_id', $conversation->id)->count();
         $perPage = 10;
 
-        $messages = Message::with('attachments')
+        $messages = Message::with('attachments', 'replyTo')
             ->where('conversation_id', $conversation->id)
             ->skip(max(0, $total - $perPage))
             ->take($perPage)
             ->get();
         
-            // dd($messages);
+        $pinned = Message::where('conversation_id', $conversation->id)->where('is_pinned', true)->first();
+        
+        // dd($pinned);
 
         return inertia('Home', [
             'selectedConversation' => $conversation->toConversationArray(),
-            'messages' => MessageResource::collection($messages)
+            'messages' => MessageResource::collection($messages),
+            'pinned' => $pinned ? new MessageResource($pinned) : null
         ]);
     }
 
@@ -43,17 +47,20 @@ class MessageController extends Controller
         $total = Message::where('group_id', $group->id)->count();
         $perPage = 10;
 
-        $messages = Message::with('attachments')
+        $messages = Message::with('attachments', 'replyTo')
             ->where('group_id', $group->id)
             ->skip(max(0, $total - $perPage))
             ->take($perPage)
             ->get();
+        
+        $pinned = Message::where('group_id', $group->id)->where('is_pinned', true)->first();
 
         // dd($messages);
 
         return inertia('Home', [
             'selectedConversation' => $group->toConversationArray(),
-            'messages' => MessageResource::collection($messages)
+            'messages' => MessageResource::collection($messages),
+            'pinned' => $pinned ? new MessageResource($pinned) : null
         ]);
     }
 
@@ -172,4 +179,47 @@ class MessageController extends Controller
             'message' => new MessageResource($lastMessage)
         ], 200);
     }
+
+    public function pin(Message $message)
+    {
+        $user = Auth::user();
+
+        if ($message->group_id) {
+            $group = $message->group; 
+            if (!in_array($user->role, ['admin', 'staff']) && $group->admin_id !== $user->id) {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
+            
+            Message::where('group_id', $message->group_id)
+                ->where('is_pinned', true)
+                ->update(['is_pinned' => false]);
+
+        } elseif ($message->conversation_id) {
+            $conversation = $message->conversation; 
+            if ($conversation->user_id1 !== $user->id && $conversation->user_id2 !== $user->id) {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
+
+            Message::where('conversation_id', $message->conversation_id)
+                ->where('is_pinned', true)
+                ->update(['is_pinned' => false]);
+
+        } else {
+            return response()->json(['error' => 'Message not in a valid context'], 400);
+        }
+
+        $message->is_pinned = true;
+        $message->save();
+
+        SocketMessagePinned::dispatch($message);
+
+        return response()->json(['status' => 'pinned']);
+    }
+
+    public function show(Message $message){
+        $message->load('attachments', 'replyTo');
+
+        return new MessageResource($message);
+    }
 }
+

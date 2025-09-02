@@ -13,6 +13,8 @@ Route::middleware(['auth', 'verified'])->group(function(){
 
     Route::post('/messages', [MessageController::class, 'store'])->name('message.store');
     Route::delete('/messages/{message}', [MessageController::class, 'destroy'])->name('message.destroy');
+    Route::get('/messages/{message}', [MessageController::class, 'show'])->name('message.show');
+    Route::patch('/messages/{message}/pin', [MessageController::class, 'pin'])->name('message.pin');
     Route::get('/messages/older/{message}', [MessageController::class, 'loadOlder'])->name('message.loadOlder');
 });
 

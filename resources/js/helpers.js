@@ -117,3 +117,13 @@ export const formatBytes = (bytes, decimals = 2) => {
 
     return parseFloat(size.toFixed(dm)) + " " + sizes[i];
 }
+
+export async function fetchMessageById(message) {
+    try {
+        const res = await axios.get(`/messages/${message}`);
+        return res.data;
+    } catch (err) {
+        console.error("Failed to fetch message", err);
+        return null;
+    }
+}

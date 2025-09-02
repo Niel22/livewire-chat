@@ -62,7 +62,11 @@ export default function AuthenticatedLayout({ header, children }) {
                     const { message, prevMessage } = e;
                     console.log(prevMessage)
                     emit("message.deleted", { message, prevMessage });
-                });;
+                })
+                .listen('SocketMessagePinned', (e) => {
+                    console.log(e)
+                    emit('message.pinned', e.message);
+                });
         });
 
         return () => {

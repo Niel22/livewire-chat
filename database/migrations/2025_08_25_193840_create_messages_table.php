@@ -2,6 +2,7 @@
 
 use App\Models\Conversation;
 use App\Models\Group;
+use App\Models\Message;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -21,6 +22,9 @@ return new class extends Migration
             $table->foreignIdFor(User::class, 'receiver_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Group::class, 'group_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Conversation::class, 'conversation_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->boolean('is_pinned')->default(false); 
+            $table->foreignIdFor(Message::class, 'reply_to_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->boolean('is_forwarded')->default(false); 
             $table->timestamps();
         });
     }

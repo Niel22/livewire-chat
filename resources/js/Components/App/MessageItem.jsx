@@ -5,12 +5,18 @@ import ReactMarkdown from 'react-markdown';
 import { formatMessageDateLong } from '@/helpers';
 import MessageAttachments from './MessageAttachments';
 import MessageOptionsDropdown from './MessageOptionsDropdown';
+import MessageReply from './MessageReply';
 
-const MessageItem = ({message, attachmentClick}) => {
+const MessageItem = ({message, attachmentClick, setReplyingTo, setPinnedMessage, handleViewOriginal, isAdmin}) => {
     const currentUser = usePage().props.auth.user;
+
+    const isSender = () => {
+        return parseInt(message.sender_id) === parseInt(currentUser.id);
+    }
+    
   return (
-    <div className={"chat " + 
-        (parseInt(message.sender_id) === parseInt(currentUser.id) ? "chat-end" : "chat-start")
+    <div  className={"chat " + 
+        (isSender() ? "chat-end" : "chat-start")
     }>
         {parseInt(message.sender_id) !== parseInt(currentUser.id) && (<UserAvatar user={message.sender} />)}
         <div className='chat-header'>
@@ -20,19 +26,19 @@ const MessageItem = ({message, attachmentClick}) => {
             </time>
         </div>
 
-        <div className={
+        <div id={`message-${message.id}`} className={
             "chat-bubble relative rounded-xl break-all whitespace-pre-wrap " + (
-                parseInt(message.sender_id) === parseInt(currentUser.id) ? " chat-bubble-info" : "bg-gray-700"
+                isSender() ? " chat-bubble-info" : "bg-gray-700"
             )
         }>
-            <MessageOptionsDropdown message={message} currentUser={currentUser} />
+            <MessageOptionsDropdown isAdmin={isAdmin} isSender={isSender} setPinnedMessage={setPinnedMessage} setReplyingTo={setReplyingTo} message={message} currentUser={currentUser} />
+            {message.replyTo && (<MessageReply handleViewOriginal={handleViewOriginal} message={message.replyTo} />)}
+            {message.attachments.length > 0 && (<MessageAttachments attachments={message.attachments} attachmentClick={attachmentClick} />)}
             <div className='chat-message'>
-                {message.attachments.length > 0 && (<MessageAttachments attachments={message.attachments} attachmentClick={attachmentClick} />)}
                 <div className='chat-message-content'>
                     <ReactMarkdown>{message.message}</ReactMarkdown>
                 </div>
             </div>
-
         </div>
     </div>
   )

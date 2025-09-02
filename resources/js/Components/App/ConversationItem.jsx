@@ -66,9 +66,9 @@ const ConversationItem = ({conversation, selectedConversation = null, online = n
         )}
       </div>
 
-      {currentUser.role === "admin" && (
+      {/* {currentUser.role === "admin" && (
         <UserOptionsDropdown conversation={conversation} />
-      )}
+      )} */}
     </Link>
 
 

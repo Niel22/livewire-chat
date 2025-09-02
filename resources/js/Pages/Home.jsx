@@ -9,64 +9,36 @@ import { useEventBus } from "@/EventBus";
 import axios from "axios";
 import { usePage } from "@inertiajs/react";
 import AttachmentPreviewModal from "@/Components/App/AttachmentPreviewModal";
+import { fetchMessageById } from "@/helpers";
+import useMessageEvents from "@/hooks/useMessageEvents";
 
-function Home({ selectedConversation = null, messages = null, online = null }) {
+function Home({ selectedConversation = null, messages = null, online = null, pinned }) {
+    const [pinnedMessage, setPinnedMessage] = useState(null);
     const [localMessages, setLocalMessages] = useState([]);
     const [noMoreMessages, setNoMoreMessages] = useState(false);
     const [scrollFromBottom, setScrollFromBottom] = useState(null);
+    const [replyingTo, setReplyingTo] = useState(null);
     const messageCtrRef = useRef(null);
     const [showAttachmentPreview, setShowAttachmentPreview] = useState(false);
     const [previewAttachment, setPreviewAttachment] = useState({});
     const loadMoreIntersect = useRef(null);
-    const {on} = useEventBus();
+    const highlightTimerRef = useRef(null);
+    const {on, emit} = useEventBus();
     const { auth } = usePage().props;
 
-    const messageCreated = (message) => {
-        if(selectedConversation?.is_group && selectedConversation?.id == message.group_id){
-            setLocalMessages(prevMessages => {
-                const exists = prevMessages.some(m => m.id === message.id);
-                if (exists) return prevMessages;
-                 if ("Notification" in window && Notification.permission === "granted" && message.sender_id !== auth.user.id) {
-                        new Notification("New Message", {
-                            body: message.message ?? "Sent an Attachment",
-                        });
-                        const audio = new Audio("/notify.wav");
-                        audio.play().catch((err) => {
-                            console.warn("Unable to play notification sound automatically:", err);
-                        });
-                    }
-                return [...prevMessages, message];
-            });
-        }else if(!selectedConversation?.is_group && selectedConversation?.id == message.conversation_id){
-            setLocalMessages(prevMessages => {
-                const exists = prevMessages.some(m => m.id === message.id);
-                if (exists) return prevMessages;
-                 if ("Notification" in window && Notification.permission === "granted" && message.sender_id !== auth.user.id) {
-                    new Notification("New Message", {
-                        body: message.message ?? "Sent an attachment",
-                    });
-                    const audio = new Audio("/notify.wav");
-                    audio.play().catch((err) => {
-                        console.warn("Unable to play notification sound automatically:", err);
-                    });
-                }
-                return [...prevMessages, message];
-            });
-        }
-    }
+    const isAdmin = () => {
+        if(selectedConversation.is_group){
 
-    const messageDeleted = ({message}) => {
-        console.log(message);
-        if(selectedConversation?.is_group && selectedConversation?.id == message.group_id){
-            setLocalMessages(prevMessages => {
-                return prevMessages.filter((m) => m.id !== message.id)
-            });
-        }else if(!selectedConversation?.is_group && selectedConversation?.id == message.conversation_id){
-            setLocalMessages(prevMessages => {
-                return prevMessages.filter((m) => m.id !== message.id)
-            });
+            if(selectedConversation.admin.id === auth.user.id || auth.user.role === 'admin'){
+                return true;
+            }
         }
+
+        return false;
     }
+    
+
+    useMessageEvents({selectedConversation, auth, setLocalMessages, setPinnedMessage});
 
     const onAttchmentClick = (attachments, index) => {
         setPreviewAttachment({
@@ -75,6 +47,10 @@ function Home({ selectedConversation = null, messages = null, online = null }) {
 
         setShowAttachmentPreview(true);
     }
+
+    useEffect(() => {
+        setPinnedMessage(pinned);
+    }, [pinned])
 
     const loadMoreMessages = useCallback(() => {
         if(noMoreMessages){
@@ -111,16 +87,9 @@ function Home({ selectedConversation = null, messages = null, online = null }) {
             }
         }, 10);
 
-        const offCreated = on('message.created', messageCreated);
-        const offDeleted = on('message.deleted', messageDeleted);
-
         setScrollFromBottom(0);
         setNoMoreMessages(false);
 
-        return () => {
-            offCreated();
-            offDeleted();
-        }
     }, [selectedConversation]);
 
     useEffect(() => {
@@ -157,6 +126,56 @@ function Home({ selectedConversation = null, messages = null, online = null }) {
         }
     }, [localMessages])
 
+    function scrollAndHighlight(messageId) {
+        const el = document.getElementById(`message-${messageId}`);
+        if (!el) return;
+
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+
+         el.classList.add("shadow-[0_0_10px_3px_rgba(16,185,129,0.7)]");
+
+        if (highlightTimerRef.current) clearTimeout(highlightTimerRef.current);
+
+        highlightTimerRef.current = setTimeout(() => {
+            el.classList.remove("shadow-[0_0_10px_3px_rgba(16,185,129,0.7)]");
+            highlightTimerRef.current = null;
+        }, 3000);
+    }
+
+    async function handleViewOriginal(messageId) {
+        
+        const el = document.getElementById(`message-${messageId}`);
+        if (el) {
+            scrollAndHighlight(messageId);
+            return;
+        }
+        emit('toast.show', 'Retrieving message...');
+
+        const msg = await fetchMessageById(messageId);
+        if (msg) {
+            
+            setLocalMessages(prev => {
+                
+                if (prev.find(m => m.id === msg.id)) return prev;
+                return [msg, ...prev];
+            });
+
+            setTimeout(() => scrollAndHighlight(messageId), 100);
+        } else {
+            emit('toast.show', 'Unable to retrieve message');
+        }
+    }
+
+    useEffect(() => {
+        return () => {
+            if (highlightTimerRef.current) {
+                clearTimeout(highlightTimerRef.current);
+                highlightTimerRef.current = null;
+            }
+        };
+    }, []);
+
+
 
     return (
         <>
@@ -178,7 +197,9 @@ function Home({ selectedConversation = null, messages = null, online = null }) {
                 <>
                     {/* Header with subtle border */}
                     <ConversationHeader
-                        selectedConversation={selectedConversation} 
+                        handleViewOriginal={handleViewOriginal}
+                        selectedConversation={selectedConversation}
+                        pinnedMessage={pinnedMessage}
                         online={online}
                         className="bg-white/80 dark:bg-slate-800/80 
                                 backdrop-blur-md border-b border-gray-200 dark:border-slate-700 
@@ -203,12 +224,31 @@ function Home({ selectedConversation = null, messages = null, online = null }) {
 
                         {localMessages?.length > 0 && (
                             <div className="flex-1 flex flex-col space-y-3">
+                                <div className="
+                                    w-max mx-auto 
+                                    px-4 py-1.5 
+                                    text-sm font-medium 
+                                    text-blue-700 dark:text-blue-300 
+                                    bg-blue-50 dark:bg-blue-900/30 
+                                    border border-blue-200 dark:border-blue-800 
+                                    rounded-full shadow-sm 
+                                     select-none 
+                                    hover:bg-blue-100 dark:hover:bg-blue-800/40 
+                                    transition
+                                ">
+                                    Load older messages
+                                </div>
+
                                 <div ref={loadMoreIntersect}></div>
                                 {localMessages.map((message, index) => (
                                     <MessageItem
+                                        handleViewOriginal={handleViewOriginal}
                                         key={`${message.id}-${index}`}
                                         message={message}
                                         attachmentClick={onAttchmentClick}
+                                        setReplyingTo={setReplyingTo}
+                                        setPinnedMessage={setPinnedMessage}
+                                        isAdmin={isAdmin}
                                     />
                                 ))}
                             </div>
@@ -217,7 +257,7 @@ function Home({ selectedConversation = null, messages = null, online = null }) {
 
                     {/* Input bar with soft top border */}
                     
-                    <MessageInput conversation={selectedConversation} />
+                    <MessageInput conversation={selectedConversation} setReplyingTo={setReplyingTo} replyingTo={replyingTo} />
                 </>
             )}
 

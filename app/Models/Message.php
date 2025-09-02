@@ -17,7 +17,10 @@ class Message extends Model
         'sender_id',
         'group_id',
         'receiver_id',
-        'conversation_id'
+        'conversation_id',
+        'is_pinned',
+        'reply_to_id',
+        'is_forwarded'
     ];
 
     public function sender(){
@@ -34,5 +37,13 @@ class Message extends Model
 
     public function attachments(){
         return $this->hasMany(MessageAttachment::class, 'message_id');
+    }
+
+    public function replyTo(){
+        return $this->belongsTo(Message::class, 'reply_to_id');
+    }
+
+    public function conversation(){
+        return $this->belongsTo(Conversation::class);
     }
 }

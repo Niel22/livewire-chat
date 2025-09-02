@@ -8,8 +8,9 @@ import { isAudio, isImage } from '@/helpers';
 import CustomAudioPlayer from './CustomAudioPlayer';
 import AttachmentPreview from './AttachmentPreview';
 import { useEventBus } from '@/EventBus';
+import ReplyToMessage from './ReplyToMessage';
 
-const MessageInput = ({conversation = null}) => {
+const MessageInput = ({conversation = null, setReplyingTo, replyingTo}) => {
 
   const [newMessage, setNewMessage] = useState("");
   const [inputErrorMessage, setInputErrorMessage] = useState  ("");
@@ -51,6 +52,8 @@ const MessageInput = ({conversation = null}) => {
     setMessageSending(true);
 
     const formData = new FormData();
+    if(replyingTo) formData.append('reply_to_id', replyingTo.id);
+
     chosenFiles.forEach((file) => {
       formData.append('attachments[]', file.file);
     });
@@ -76,6 +79,7 @@ const MessageInput = ({conversation = null}) => {
     setMessageSending(true);
     
     const formData = new FormData();
+    if(replyingTo) formData.append('reply_to_id', replyingTo.id);
     formData.append("message", "👍");
 
 
@@ -101,12 +105,12 @@ const MessageInput = ({conversation = null}) => {
       }
     }).then((response) => {
       setNewMessage('');
+      setReplyingTo(null);
       setMessageSending(false);
       setUploadProgress(0);
       setChosenFiles([]);
     }).catch((error) => {
       setMessageSending(false);
-      setChosenFiles([]);
       const message = error.response?.data?.message;
       setInputErrorMessage(
         message || "An error occured while sending message"
@@ -120,6 +124,10 @@ const MessageInput = ({conversation = null}) => {
 
         {chosenFiles?.length > 0 && !!uploadProgress && (
           <progress className='progress progress-info w-full' value={uploadProgress} max="100" />
+        )}
+
+        {replyingTo && (
+          <ReplyToMessage setReplyingTo={setReplyingTo} replyingTo={replyingTo} />
         )}
 
         <div className='flex flex-nowrap gap-1 px-2 py-2'>
@@ -139,11 +147,7 @@ const MessageInput = ({conversation = null}) => {
               )}
 
               <button onClick={ () => 
-                setChosenFiles(
-                  chosenFiles.filter(
-                    (f) => f.file.name !== file.file.name
-                  )
-                )
+                setChosenFiles(prev => prev.filter(f => f.file.name !== file.file.name))
               } className='absolute w-6 h-6 rounded-full bg-gray-800 -right-2 -top-2 text-gray-300 hover:text-gray-100 z-10'>
                 <XCircleIcon className='w-6' />
               </button>

@@ -1,3 +1,4 @@
+import UserAvatar from '@/Components/App/UserAvatar';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
@@ -12,16 +13,20 @@ export default function UpdateProfileInformation({
 }) {
     const user = usePage().props.auth.user;
 
-    const { data, setData, patch, errors, processing, recentlySuccessful } =
+    const { data, setData, post, errors, processing, recentlySuccessful } =
         useForm({
             name: user.name,
+            avatar: null,
             email: user.email,
+            _method: "PATCH"
         });
 
     const submit = (e) => {
         e.preventDefault();
 
-        patch(route('profile.update'));
+        post(route('profile.update'));
+
+        e.target.files = [];
     };
 
     return (
@@ -37,6 +42,38 @@ export default function UpdateProfileInformation({
             </header>
 
             <form onSubmit={submit} className="mt-6 space-y-6">
+                <div className="flex flex-col md:flex-row items-center gap-6 p-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm">
+                    <div className="relative">
+                        <div className="w-32 h-32 rounded-full overflow-hidden ring-4 ring-gray-200 dark:ring-slate-700 shadow-md">
+                            <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" />
+                        </div>
+                    </div>
+
+                    <div className="flex-1">
+                        <InputLabel htmlFor="avatar" value="Profile Picture" className="text-gray-700 dark:text-gray-200 font-medium" />
+
+                        <label
+                            htmlFor="avatar"
+                            className="mt-2 inline-flex items-center px-4 py-2 bg-blue-600 dark:bg-white text-white dark:text-slate-900 text-sm font-medium rounded-lg shadow cursor-pointer transition hover:bg-blue-700 dark:hover:bg-gray-200"
+                        >
+                            Upload New Picture
+                        </label>
+
+                        <input
+                            id="avatar"
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => setData('avatar', e.target.files[0])}
+                        />
+
+                        <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                            Please upload a square picture (1:1 ratio works best)
+                        </p>
+
+                        <InputError className="mt-2 dark:text-red-400" message={errors.avatar} />
+                    </div>
+                </div>
                 <div>
                     <InputLabel htmlFor="name" value="Name" />
 

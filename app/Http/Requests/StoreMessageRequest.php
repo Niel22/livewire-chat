@@ -25,9 +25,10 @@ class StoreMessageRequest extends FormRequest
             'message' => 'nullable|string',
             'group_id' => 'required_without:receiver_id|nullable|exists:groups,id',
             'receiver_id' => 'required_without:group_id|nullable|exists:users,id',
+            'reply_to_id' => 'nullable|exists:messages,id',
             'conversation_id' => 'required_with:receiver_id|nullable|exists:conversations,id',
             'attachments' => 'nullable|array|max:10',
-            'attachments.*' => 'file|max:1024000'
+            'attachments.*' => 'file|max:1024000',
         ];
     }
 }

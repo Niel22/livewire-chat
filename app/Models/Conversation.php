@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class Conversation extends Model
 {
@@ -62,7 +63,7 @@ class Conversation extends Model
             'id' => $this->id,
             'name' => $this->getReceiver()->name,
             'receiver_id' => $this->getReceiver()->id,
-            'avatar' => $this->getReceiver()->avatar,
+            'avatar' => $this->getReceiver()->avatar ? Storage::url($this->getReceiver()->avatar) : null,
             'is_group' => false,
             'last_message' => $this->last_message?->message,
             'last_message_date' => $this->last_message?->updated_at,

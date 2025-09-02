@@ -21,10 +21,12 @@ class MessageResource extends JsonResource
             'sender_id' => $this->sender_id,
             'receiver_id' => $this->receiver_id,
             'conversation_id' => $this->conversation_id,
+            'is_pinned' => $this->is_pinned,
             'sender' => new UserResource($this->sender),
             'receiver' => new UserResource($this->receiver),
             'group_id' => $this->group_id,
             'attachments' => count($this->attachments ?? []) > 0 ? MessageAttachmentResource::collection($this->attachments) : [],
+            'replyTo' => new MessageResource($this->replyTo),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
