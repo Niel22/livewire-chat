@@ -54,8 +54,11 @@ class Conversation extends Model
         $groups->load('admin');
         $groups->load('members');
 
+        $conversations = collect($conversations);
+        $groups = collect($groups);
 
-        return $conversations->map->toConversationArray()->merge($groups->map->toConversationArray());
+
+        return $conversations?->map->toConversationArray()->merge($groups?->map->toConversationArray());
     }
 
     public function toConversationArray(){

@@ -3,7 +3,7 @@ import ConversationItem from "@/Components/App/ConversationItem";
 import TextInput from "@/Components/TextInput";
 import { useEventBus } from "@/EventBus";
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
-import { usePage } from "@inertiajs/react";
+import { Head, Link, usePage } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 
 const ChatLayout = ({ children }) => {
@@ -164,6 +164,8 @@ const ChatLayout = ({ children }) => {
 
     return (
         <>
+            <Head title="All Chats" />
+
             <div className="flex-1 w-full flex overflow-hidden">
                 {/* Sidebar */}
                 <div
@@ -188,9 +190,9 @@ const ChatLayout = ({ children }) => {
                             className="tooltip tooltip-left"
                             data-tip="Create New Group"
                         >
-                            <button className="text-blue-500 hover:text-blue-700 dark:text-indigo-400 dark:hover:text-indigo-300">
+                            <Link href={route('group.create')} className="text-blue-500 hover:text-blue-700 dark:text-indigo-400 dark:hover:text-indigo-300">
                                 <PlusCircleIcon className="w-7 h-7 inline-block ml-2" />
-                            </button>
+                            </Link>
                         </div>
                     </div>
 

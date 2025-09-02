@@ -58,13 +58,10 @@ export default function AuthenticatedLayout({ header, children }) {
                     });
                 })
                 .listen("SocketDeleteMessage", (e) => {
-                    console.log(e)
                     const { message, prevMessage } = e;
-                    console.log(prevMessage)
                     emit("message.deleted", { message, prevMessage });
                 })
                 .listen('SocketMessagePinned', (e) => {
-                    console.log(e)
                     emit('message.pinned', e.message);
                 });
         });
@@ -107,6 +104,20 @@ export default function AuthenticatedLayout({ header, children }) {
                                         className="text-gray-700 dark:text-gray-200"
                                     >
                                         Dashboard
+                                    </NavLink>
+                                    <NavLink
+                                        href={route('group.list')}
+                                        active={route().current('group.list')}
+                                        className="text-gray-700 dark:text-gray-200"
+                                    >
+                                        Groups
+                                    </NavLink>
+                                    <NavLink
+                                        href={route('user.list')}
+                                        active={route().current('user.list')}
+                                        className="text-gray-700 dark:text-gray-200"
+                                    >
+                                        Users
                                     </NavLink>
                                 </div>
                             </div>
@@ -237,6 +248,13 @@ export default function AuthenticatedLayout({ header, children }) {
                                 className="block text-gray-700 dark:text-gray-200"
                                 >
                                 Dashboard
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink
+                                href={route('group.list')}
+                                active={route().current('group.list')}
+                                className="block text-gray-700 dark:text-gray-200"
+                                >
+                                Group
                             </ResponsiveNavLink>
                             <ResponsiveNavLink
                                 href={route('profile.edit')}

@@ -221,5 +221,29 @@ class MessageController extends Controller
 
         return new MessageResource($message);
     }
+
+    public function startConversation(User $user){
+
+        $authId = Auth::id();
+
+        $existingConvo = Conversation::where(function($query) use ($authId, $user){
+                $query->where('user_id1', $authId)
+                    ->where('user_id2', $user->id);
+        })->orWhere(function($query) use ($authId, $user){
+            $query->where('user_id1', $user->id)
+                ->where('user_id2', $authId);
+        })->first();
+
+        if($existingConvo){
+            return redirect()->route('chat.user', $existingConvo->id);
+        }
+
+        $createdConvo = Conversation::create([
+            'user_id1' => $authId,
+            'user_id2' => $user->id
+        ]);
+
+        return redirect()->route('chat.user', $createdConvo->id);
+    }
 }
 

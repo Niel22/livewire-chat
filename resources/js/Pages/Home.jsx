@@ -7,12 +7,13 @@ import MessageItem from "@/Components/App/MessageItem";
 import MessageInput from "@/Components/App/MessageInput";
 import { useEventBus } from "@/EventBus";
 import axios from "axios";
-import { usePage } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
 import AttachmentPreviewModal from "@/Components/App/AttachmentPreviewModal";
 import { fetchMessageById } from "@/helpers";
 import useMessageEvents from "@/hooks/useMessageEvents";
 
 function Home({ selectedConversation = null, messages = null, online = null, pinned }) {
+    
     const [pinnedMessage, setPinnedMessage] = useState(null);
     const [localMessages, setLocalMessages] = useState([]);
     const [noMoreMessages, setNoMoreMessages] = useState(false);
@@ -32,9 +33,11 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
             if(selectedConversation.admin.id === auth.user.id || auth.user.role === 'admin'){
                 return true;
             }
+
+            return false
         }
 
-        return false;
+        return true;
     }
     
 
@@ -179,6 +182,8 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
 
     return (
         <>
+            <Head title={selectedConversation?.is_group ? selectedConversation?.name : selectedConversation?.name} />
+
             {!messages && (
                 <div
                     className="flex flex-col gap-8 justify-center items-center text-center h-full opacity-70 

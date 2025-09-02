@@ -22,7 +22,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role'
+        'role',
+        'staff_id'
     ];
 
     /**
@@ -53,7 +54,7 @@ class User extends Authenticatable
     }
 
     public function visibleGroups()
-{
+    {
         if ($this->role === 'admin' || $this->role === 'staff') {
             return Group::latest('updated_at');
         }
@@ -65,5 +66,9 @@ class User extends Authenticatable
 
     public function conversations(){
         return $this->hasMany(Conversation::class, 'user_id1')->orWhere('user_id2', $this->id)->latest('updated_at');
+    }
+
+    public function details(){
+        return $this->hasOne(UserDetails::class);
     }
 }
