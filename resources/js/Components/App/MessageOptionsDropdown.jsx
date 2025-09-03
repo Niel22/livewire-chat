@@ -20,14 +20,13 @@ const MessageOptionsDropdown = ({message, currentUser, setReplyingTo, setPinnedM
     }
 
     const onMessagePin = () => {
-        if(message.group_id && currentUser.role !== 'admin') return;
+        if(!isAdmin) return;
 
         axios.patch(route('message.pin', message.id))
             .then((res) => {
                 emit('message.pin', message);
                 emit('toast.show', 'Message Pinned');
                 setPinnedMessage(message);
-                console.log(res.data);
             })
             .catch((err) => {
                 console.log(err);

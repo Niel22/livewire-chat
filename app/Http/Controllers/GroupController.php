@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\SocketGroupLocked;
 use App\Http\Requests\StoreGroupRequest;
 use App\Http\Requests\UpdateGroupRequest;
 use App\Models\Group;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class GroupController extends Controller
 {
@@ -56,6 +58,22 @@ class GroupController extends Controller
         $group->messages()->delete();
         if($group->delete()){
             return redirect()->route('group.list')->with('success', 'Group Deleted successfully!');
+        }
+
+        return response()->json(['error' => 'Problem Occured'], 400);
+    }
+
+    public function lockGroup(Group $group){
+
+        if(Auth::user()->role === 'member') return;
+        
+        if(
+            $group->update([
+                'is_locked' => !$group->is_locked
+            ])
+        ){
+            SocketGroupLocked::dispatch($group);
+            return response()->json(['success' => 'Group updated', 'data' => $group], 200);
         }
 
         return response()->json(['error' => 'Problem Occured'], 400);

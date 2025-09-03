@@ -16,6 +16,7 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::get('/groups/{group}', [MessageController::class, 'byGroup'])->name('chat.group');
     Route::get('/groups/{group}/edit', [GroupController::class, 'edit'])->name('group.edit');
     Route::delete('/groups/{group}', [GroupController::class, 'destroy'])->name('group.destroy');
+    Route::patch('/groups/{group}/lock', [GroupController::class, 'lockGroup'])->name('group.lock');
 
     Route::get('/conversation/{conversation}', [MessageController::class, 'byUser'])->name('chat.user');
 

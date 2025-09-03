@@ -64,6 +64,11 @@ export default function AuthenticatedLayout({ header, children }) {
                 .listen('SocketMessagePinned', (e) => {
                     emit('message.pinned', e.message);
                 });
+            
+            Echo.private(`group.${conversation.id}`)
+                .listen('SocketGroupLocked', (e) => {
+                    emit('group.locked', e.group);
+                });
         });
 
         return () => {

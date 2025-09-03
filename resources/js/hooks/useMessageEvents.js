@@ -1,7 +1,7 @@
 import { useEventBus } from "@/EventBus";
 import { useEffect } from "react";
 
-export default function useMessageEvents({selectedConversation, auth, setLocalMessages, setPinnedMessage}){
+export default function useMessageEvents({selectedConversation, auth, setLocalMessages, setPinnedMessage, setIsLocked}){
     const { on } = useEventBus();
 
     const messageCreated = (message) => {
@@ -59,15 +59,21 @@ export default function useMessageEvents({selectedConversation, auth, setLocalMe
         }
     }
 
+    const groupLocked = (group) => {
+        setIsLocked(group.is_locked);
+    }
+
     useEffect(() => {
         const offCreated = on('message.created', messageCreated);
         const offDeleted = on('message.deleted', messageDeleted);
         const offPinned = on('message.pinned', messagePinned);
+        const offGroupLocked = on('group.locked', groupLocked);
 
         return () => {
             offCreated();
             offDeleted();
             offPinned();
+            offGroupLocked();
         };
     }, [selectedConversation, auth]);
 }

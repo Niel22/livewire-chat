@@ -1,11 +1,12 @@
-import { ArrowLeftIcon, BookmarkIcon, InformationCircleIcon, UserGroupIcon, XMarkIcon } from '@heroicons/react/24/solid'
+import { ArrowLeftIcon, BookmarkIcon, InformationCircleIcon, MagnifyingGlassIcon, UserGroupIcon, XMarkIcon } from '@heroicons/react/24/solid'
 import { Link } from '@inertiajs/react'
 import React, { useEffect, useState } from 'react'
 import UserAvatar from './UserAvatar'
 import GroupAvatar from './GroupAvatar'
 import GroupInfoSidebar from './GroupInfoSidebar'
+import GroupOptionsDropdown from './GroupOptionsDropdown'
 
-const ConversationHeader = ({selectedConversation, online, pinnedMessage, handleViewOriginal}) => {
+const ConversationHeader = ({selectedConversation, online, pinnedMessage, handleViewOriginal, isLocked}) => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     useEffect(() => {
@@ -59,12 +60,21 @@ const ConversationHeader = ({selectedConversation, online, pinnedMessage, handle
                     </div>
                     
                     {selectedConversation.is_group && (
-                        <button 
-                            onClick={() => setSidebarOpen(true)}
-                            className="text-gray-600 dark:text-gray-300 hover:text-blue-500"
-                        >
-                            <InformationCircleIcon className="w-6 h-6" />
-                        </button>
+                        <div className='flex items-center gap-1'>
+                            <button 
+                                // onClick={() => setSidebarOpen(true)}
+                                className="text-gray-600 mr-2 dark:text-gray-300 hover:text-blue-500"
+                            >
+                                <MagnifyingGlassIcon className="w-6 h-6" />
+                            </button>
+                            <button 
+                                onClick={() => setSidebarOpen(true)}
+                                className="text-gray-600 dark:text-gray-300 hover:text-blue-500"
+                            >
+                                <InformationCircleIcon className="w-6 h-6" />
+                            </button>
+                            <GroupOptionsDropdown selectedConversation={selectedConversation} isLocked={isLocked} />
+                        </div>
                     )}
                 </div>
                 {pinnedMessage && (

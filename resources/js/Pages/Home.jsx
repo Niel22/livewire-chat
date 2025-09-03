@@ -19,6 +19,7 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
     const [noMoreMessages, setNoMoreMessages] = useState(false);
     const [scrollFromBottom, setScrollFromBottom] = useState(null);
     const [replyingTo, setReplyingTo] = useState(null);
+    const [isLocked, setIsLocked] = useState(selectedConversation?.is_locked || false);
     const messageCtrRef = useRef(null);
     const [showAttachmentPreview, setShowAttachmentPreview] = useState(false);
     const [previewAttachment, setPreviewAttachment] = useState({});
@@ -26,6 +27,7 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
     const highlightTimerRef = useRef(null);
     const {on, emit} = useEventBus();
     const { auth } = usePage().props;
+
 
     const isAdmin = () => {
         if(selectedConversation.is_group){
@@ -41,7 +43,7 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
     }
     
 
-    useMessageEvents({selectedConversation, auth, setLocalMessages, setPinnedMessage});
+    useMessageEvents({selectedConversation, auth, setLocalMessages, setPinnedMessage, setIsLocked});
 
     const onAttchmentClick = (attachments, index) => {
         setPreviewAttachment({
@@ -50,6 +52,10 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
 
         setShowAttachmentPreview(true);
     }
+
+    useEffect(() => {
+        setIsLocked(selectedConversation?.is_locked || false);
+    }, [selectedConversation]);
 
     useEffect(() => {
         setPinnedMessage(pinned);
@@ -205,6 +211,7 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
                         handleViewOriginal={handleViewOriginal}
                         selectedConversation={selectedConversation}
                         pinnedMessage={pinnedMessage}
+                        isLocked={isLocked}
                         online={online}
                         className="bg-white/80 dark:bg-slate-800/80 
                                 backdrop-blur-md border-b border-gray-200 dark:border-slate-700 
@@ -254,6 +261,7 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
                                         setReplyingTo={setReplyingTo}
                                         setPinnedMessage={setPinnedMessage}
                                         isAdmin={isAdmin}
+                                        
                                     />
                                 ))}
                             </div>
@@ -262,7 +270,7 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
 
                     {/* Input bar with soft top border */}
                     
-                    <MessageInput conversation={selectedConversation} setReplyingTo={setReplyingTo} replyingTo={replyingTo} />
+                    <MessageInput isLocked={isLocked} conversation={selectedConversation} setReplyingTo={setReplyingTo} replyingTo={replyingTo} user={auth.user} />
                 </>
             )}
 

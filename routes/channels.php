@@ -19,3 +19,11 @@ Broadcast::channel('message.group.{group_id}', function(User $user, int $group_i
 
     return $user->groups->contains('id', $group_id) ? $user : null;
 });
+
+Broadcast::channel('group.{group_id}', function(User $user, int $group_id){
+    if ($user->role === 'admin' || $user->role === 'staff') {
+        return $user;
+    }
+
+    return $user->groups->contains('id', $group_id) ? $user : null;
+});

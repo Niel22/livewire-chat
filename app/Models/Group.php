@@ -41,6 +41,7 @@ class Group extends Model
             'members' => $this->members->count(),
             'membersList' => $this->members,
             'is_group' => true,
+            'is_locked' => $this->is_locked,
             'name' => $this->name,
             'description' => $this->description,
             'updated_at' => $this->updated_at,

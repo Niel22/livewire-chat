@@ -1,4 +1,4 @@
-import { FaceSmileIcon, HandThumbUpIcon, PaperAirplaneIcon, PaperClipIcon, PhotoIcon, XCircleIcon } from '@heroicons/react/24/solid';
+import { FaceSmileIcon, HandThumbUpIcon, LockClosedIcon, PaperAirplaneIcon, PaperClipIcon, PhotoIcon, XCircleIcon } from '@heroicons/react/24/solid';
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
 import React, { useEffect, useState } from 'react'
 import NewMessageInput from './NewMessageInput';
@@ -10,7 +10,15 @@ import AttachmentPreview from './AttachmentPreview';
 import { useEventBus } from '@/EventBus';
 import ReplyToMessage from './ReplyToMessage';
 
-const MessageInput = ({conversation = null, setReplyingTo, replyingTo}) => {
+const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isLocked = false}) => {
+  const isGroupLocked = () => {
+    if(conversation?.is_group && isLocked){
+      if (user.role !== "admin" && user.id !== conversation.admin.id) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   const [newMessage, setNewMessage] = useState("");
   const [inputErrorMessage, setInputErrorMessage] = useState  ("");
@@ -18,6 +26,34 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo}) => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [chosenFiles, setChosenFiles] = useState([]);
   const {emit} = useEventBus();
+
+    const handlePaste = (e) => {
+      const clipboard = e.clipboardData || e.nativeEvent.clipboardData;
+      if (!clipboard) return;
+
+      const items = clipboard.items;
+      const imageFiles = [];
+
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (item.type.indexOf("image") === 0) {
+          const file = item.getAsFile();
+          if (file) {
+            imageFiles.push({
+              file: file,
+              url: URL.createObjectURL(file),
+            });
+          }
+        }
+      }
+
+      if (imageFiles.length > 0) {
+        setChosenFiles((prev) => [...prev, ...imageFiles]);
+        e.preventDefault();
+      }
+
+    };
+
 
   const onFileChange = (e) => {
     const files = e.target.files;
@@ -155,9 +191,8 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo}) => {
           ))}
         </div>
 
-        {/* <EmojiPicker /> */}
-        <div className="border dark:border-slate-700 border-slate-300 shadow-md mx-2 rounded-full flex gap-1 items-end px-4 py-2">
-
+        
+        {!isGroupLocked() && (<div className="border dark:border-slate-700 border-slate-300 shadow-md mx-2 rounded-full flex gap-1 items-end px-4 py-2">
           <Popover className="relative">
             <PopoverButton className="p-1 focus:outline-none focus:border-none text-gray-400 hover:text-gray-300">
               <FaceSmileIcon className='w-6 h-6' />
@@ -171,6 +206,7 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo}) => {
             value={newMessage}
             onSend={onSendClick}
             onChange={(e) => setNewMessage(e.target.value)}
+            onPaste={handlePaste}
           />
 
           <button className="p-1 text-gray-400 hover:text-gray-300 relative">
@@ -194,8 +230,16 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo}) => {
               <HandThumbUpIcon onClick={onLikeClick} className='w-6 h-6' />
             </button>
           )}
+        </div>)}
 
-        </div>
+        {isGroupLocked() && (
+          <div className="border dark:border-slate-700 border-slate-300 shadow-md mx-2 rounded-lg flex items-center gap-2 px-4 py-3 bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-300">
+            <LockClosedIcon className="w-6 h-6 text-gray-500 dark:text-gray-400" />
+            <span className="text-sm">
+              This group is locked. You cannot send messages at the moment.
+            </span>
+          </div>
+        )}
         
         {inputErrorMessage && (
           <p className='text-xs text-center text-red-400'>{inputErrorMessage}</p>
