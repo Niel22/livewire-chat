@@ -24,6 +24,8 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::delete('/groups/{group}/schedule-message/{schedule_message}', [GroupController::class, 'deleteSchedule'])->name('group.schedule.delete');
     Route::get('/groups/{group}/add-members', [GroupController::class, 'member'])->name('group.member.add');
     Route::post('/groups/{group}/add-members', [GroupController::class, 'addMember'])->name('group.member.store');
+    Route::patch('/groups/{group}/remove/{user}', [GroupController::class, 'removeMember'])->name('group.member.remove');
+    Route::patch('/groups/{group}/exit', [GroupController::class, 'exitGroup'])->name('group.member.exit');
 
     Route::get('/conversation/{conversation}', [MessageController::class, 'byUser'])->name('chat.user');
 

@@ -28,8 +28,6 @@ export default function AuthenticatedLayout({ header, children }) {
 
         return false;
     };
-    console.log(parseInt(user.id))
-    console.log((sub_account))
 
     const isStaff = () => {
         if(user.role === "staff" || user.staff_id !== null){
@@ -95,13 +93,15 @@ export default function AuthenticatedLayout({ header, children }) {
                 .listen("SocketMessagePinned", (e) => {
                     emit("message.pinned", e.message);
                 });
-
-            Echo.private(`group.${conversation.id}`).listen(
-                "SocketGroupLocked",
-                (e) => {
-                    emit("group.locked", e.group);
-                }
-            );
+            
+            if(conversation.is_group){
+                Echo.private(`group.${conversation.id}`).listen(
+                    "SocketGroupLocked",
+                    (e) => {
+                        emit("group.locked", e.group);
+                    }
+                );
+            }
         });
 
         return () => {

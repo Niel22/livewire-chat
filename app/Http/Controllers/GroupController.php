@@ -14,6 +14,7 @@ use App\Http\Requests\StoreGroupRequest;
 use App\Http\Requests\UpdateGroupRequest;
 use App\Http\Requests\ScheduleMessageRequest;
 use App\Jobs\SendScheduledMessage;
+use App\Models\GroupMember;
 use App\Models\ScheduleMessageAttachment;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -173,4 +174,39 @@ class GroupController extends Controller
             ->with('success', 'Members added successfully!');
 
     }
+
+    public function removeMember(Group $group, User $user){
+        if(Auth::user()->role !== 'admin' && $group->admin_id !== Auth::id()){
+            return;
+        }
+
+        $member = GroupMember::where('group_id', $group->id)
+            ->where('member_id', $user->id)
+            ->first();
+        
+
+        if ($member && $member->delete()) {
+            return redirect()->back();
+        }
+
+        return response()->json(['error' => 'Problem Occurred'], 400);
+    }
+
+    public function exitGroup(Group $group){
+        $user = Auth::user();
+        if($user->staff_id !== null || $user->role !== "member"){
+            return;
+        }
+
+        $member = GroupMember::where('group_id', $group->id)->where('member_id', $user->id);
+
+        if($member?->delete()){
+            return redirect()->route('dashboard');
+        }
+
+        return response()->json(['error' => 'Problem Occured'], 400);
+
+    }
+
+
 }

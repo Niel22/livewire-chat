@@ -21,6 +21,10 @@ use Illuminate\Support\Facades\Storage;
 class MessageController extends Controller
 {
     public function byUser(Conversation $conversation){
+        if(!Auth::user()->conversations->contains('id', $conversation->id)){
+            return Abort(401);
+        }
+
         $total = Message::where('conversation_id', $conversation->id)->count();
         $perPage = 10;
 
@@ -32,7 +36,6 @@ class MessageController extends Controller
         
         $pinned = Message::where('conversation_id', $conversation->id)->where('is_pinned', true)->first();
         
-        // dd($pinned);
 
         return inertia('Home', [
             'selectedConversation' => $conversation->toConversationArray(),
@@ -42,6 +45,14 @@ class MessageController extends Controller
     }
 
     public function byGroup(Group $group){
+        $user = Auth::user();
+
+        if ($user->role === 'member' && is_null($user->staff_id)) {
+            if (! $user->groups->contains('id', $group->id)) {
+                abort(401);
+            }
+        }
+
         $group->load('members');
 
         $total = Message::where('group_id', $group->id)->count();
@@ -55,7 +66,6 @@ class MessageController extends Controller
         
         $pinned = Message::where('group_id', $group->id)->where('is_pinned', true)->first();
 
-        // dd($messages);
 
         return inertia('Home', [
             'selectedConversation' => $group->toConversationArray(),

@@ -1,8 +1,19 @@
-import { UserGroupIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import { TrashIcon, UserGroupIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import React from "react";
 import UserAvatar from "./UserAvatar";
+import { router } from "@inertiajs/react";
 
 const GroupInfoSidebar = ({ sidebarOpen, setSidebarOpen, group }) => {
+    
+    const handleRemoveMember = (member) => {
+        router.patch(route('group.member.remove', {group: group, user: member}));
+    }
+    
+    const handleExitGroup = () => {
+        console.log("in")
+        router.patch(route('group.member.exit', group));
+    }
+
     return (
         <div
             className="fixed inset-0 z-40 flex transition-opacity duration-300"
@@ -62,11 +73,12 @@ const GroupInfoSidebar = ({ sidebarOpen, setSidebarOpen, group }) => {
                                 {group.members + 1} Participants
                             </h3>
                             <div className="space-y-3">
-                                <div
+                                <button
+                                    onClick={() => router.post(route('chat.create', group.admin))}
                                     key={
                                         group.admin.id + group.admin.updated_at
                                     }
-                                    className="flex items-center justify-between bg-gray-50 dark:bg-slate-800 p-3 rounded-lg shadow-sm"
+                                    className="flex w-full items-center justify-between bg-gray-50 dark:bg-slate-800 p-3 rounded-lg shadow-sm"
                                 >
                                     <div className="flex items-center gap-3 overflow-hidden">
                                         <UserAvatar user={group.admin} />
@@ -79,7 +91,7 @@ const GroupInfoSidebar = ({ sidebarOpen, setSidebarOpen, group }) => {
                                     <span className="text-xs px-2 py-1 rounded bg-blue-100 text-blue-600 dark:bg-blue-800 dark:text-blue-100">
                                         Admin
                                     </span>
-                                </div>
+                                </button>
                                 {group.membersList?.map((member) => (
                                     <div
                                         key={member.id + member.updated_at}
@@ -93,6 +105,9 @@ const GroupInfoSidebar = ({ sidebarOpen, setSidebarOpen, group }) => {
                                                 </h6>
                                             </div>
                                         </div>
+                                        <button onClick={() => handleRemoveMember(member)} className="p-3 hover:bg-red-50/20 rounded-full">
+                                            <TrashIcon className="w-4 text-red-500" />
+                                        </button>
                                     </div>
                                 ))}
                             </div>
@@ -100,7 +115,7 @@ const GroupInfoSidebar = ({ sidebarOpen, setSidebarOpen, group }) => {
                     </div>
 
                     <div className="p-6 border-t border-slate-600">
-                        <button className="w-full py-2 px-3 rounded-md bg-red-500 hover:bg-red-600 text-white text-sm font-medium cursor-pointer">
+                        <button onClick={() => handleExitGroup()} className="w-full py-2 px-3 rounded-md bg-red-500 hover:bg-red-600 text-white text-sm font-medium cursor-pointer">
                             Exit Group
                         </button>
                     </div>
