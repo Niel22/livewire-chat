@@ -20,7 +20,7 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
     const [noMoreMessages, setNoMoreMessages] = useState(false);
     const [scrollFromBottom, setScrollFromBottom] = useState(null);
     const [replyingTo, setReplyingTo] = useState(null);
-    const [isLocked, setIsLocked] = useState(selectedConversation?.is_locked || false);
+    const [isLocked, setIsLocked] = useState(parseInt(selectedConversation?.is_locked) || false);
     const messageCtrRef = useRef(null);
     const [showAttachmentPreview, setShowAttachmentPreview] = useState(false);
     const [previewAttachment, setPreviewAttachment] = useState({});
@@ -55,7 +55,7 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
     }
 
     useEffect(() => {
-        setIsLocked(selectedConversation?.is_locked || false);
+        setIsLocked(parseInt(selectedConversation?.is_locked) || false);
     }, [selectedConversation]);
 
     useEffect(() => {
