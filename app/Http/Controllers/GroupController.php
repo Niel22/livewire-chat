@@ -2,13 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Models\Group;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Models\ScheduleMessage;
 use App\Events\SocketGroupLocked;
+use App\Http\Requests\AddGroupMemberRequest;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreGroupRequest;
 use App\Http\Requests\UpdateGroupRequest;
-use App\Models\Group;
-use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\ScheduleMessageRequest;
+use App\Jobs\SendScheduledMessage;
+use App\Models\ScheduleMessageAttachment;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class GroupController extends Controller
 {
@@ -77,5 +85,92 @@ class GroupController extends Controller
         }
 
         return response()->json(['error' => 'Problem Occured'], 400);
+    }
+
+    public function scheduleMessage(Group $group){
+
+        return inertia('Group/ScheduleMessage', [
+            'group' => $group,
+            'scheduled_messages' => ScheduleMessage::where('group_id', $group->id)->latest()->get()
+        ]);
+    }
+
+    public function schedule(Group $group, ScheduleMessageRequest $request){
+
+        $data = $request->validated();
+        $data['sender_id'] = Auth::id();
+        $data['group_id'] = $group->id;
+
+        
+
+        $files = $data['attachments'] ?? null;
+
+        $message = ScheduleMessage::create($data);
+        $attachments = [];
+
+        if($files){
+            foreach($files as $file){
+                $directory = 'attachments/'. Str::random(32);
+                Storage::makeDirectory($directory);
+
+                $model = [
+                    'schedule_message_id' => $message->id,
+                    'name' => $file->getClientOriginalName(),
+                    'mime' => $file->getClientMimeType(),
+                    'size' => $file->getSize(),
+                    'path' => $file->store($directory, 'public')
+                ];
+                
+                $attachment = ScheduleMessageAttachment::create($model);
+                $attachments[] = $attachment;
+            }
+
+            $message->attachments = $attachments;
+        }
+
+        
+
+        SendScheduledMessage::dispatch($message)->delay(
+            Carbon::parse($data['scheduled_at'])
+        );
+
+        if($message){
+            return redirect()->route('group.message.schedule', $group->id)->with('success', 'Message Scheduled Successfully!');
+        }
+
+        return response()->json(['error' => 'Problem Occured'], 400);
+    }
+
+    public function deleteSchedule(Group $group, ScheduleMessage $schedule_message){
+        if($schedule_message->delete()){
+            return redirect()->route('group.message.schedule', $group->id)->with('success', 'Scheduled Message Deleted successfully!');
+        }
+
+        return response()->json(['error' => 'Problem Occured'], 400);
+    }
+
+    public function member(Group $group){
+        $members = User::where('role', 'member')
+            ->whereNull('staff_id')
+            ->whereDoesntHave('groups', function ($q) use ($group) {
+                $q->where('group_id', $group->id);
+            })
+            ->get();
+        return inertia("Group/AddMember", [
+            'group' => $group,
+            'members' => $members
+        ]);
+    }
+
+    public function addMember(Group $group, AddGroupMemberRequest $request){
+        
+        $memberIds = $request->input('members');
+
+        $group->members()->syncWithoutDetaching($memberIds);
+
+        return redirect()
+            ->route('chat.group', $group->id)
+            ->with('success', 'Members added successfully!');
+
     }
 }

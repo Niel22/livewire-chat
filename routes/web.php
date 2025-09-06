@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])->group(function(){
     Route::get('/', [HomeController::class, 'home'])->name('dashboard');
+
+    Route::get('/switch-account/{account}', [HomeController::class, 'switch'])->name('switch');
     
     Route::get('/groups', [GroupController::class, 'index'])->name('group.list');
     Route::get('/groups/create', [GroupController::class, 'create'])->name('group.create');
@@ -17,6 +19,11 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::get('/groups/{group}/edit', [GroupController::class, 'edit'])->name('group.edit');
     Route::delete('/groups/{group}', [GroupController::class, 'destroy'])->name('group.destroy');
     Route::patch('/groups/{group}/lock', [GroupController::class, 'lockGroup'])->name('group.lock');
+    Route::get('/groups/{group}/schedule-message', [GroupController::class, 'scheduleMessage'])->name('group.message.schedule');
+    Route::post('/groups/{group}/schedule-message', [GroupController::class, 'schedule'])->name('group.schedule');
+    Route::delete('/groups/{group}/schedule-message/{schedule_message}', [GroupController::class, 'deleteSchedule'])->name('group.schedule.delete');
+    Route::get('/groups/{group}/add-members', [GroupController::class, 'member'])->name('group.member.add');
+    Route::post('/groups/{group}/add-members', [GroupController::class, 'addMember'])->name('group.member.store');
 
     Route::get('/conversation/{conversation}', [MessageController::class, 'byUser'])->name('chat.user');
 
@@ -26,6 +33,7 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::get('/messages/{message}', [MessageController::class, 'show'])->name('message.show');
     Route::patch('/messages/{message}/pin', [MessageController::class, 'pin'])->name('message.pin');
     Route::get('/messages/older/{message}', [MessageController::class, 'loadOlder'])->name('message.loadOlder');
+    Route::get('/messsages/search', [MessageController::class, 'search'])->name('message.search');
 
     Route::get('/users', [UserController::class, 'index'])->name('user.list');
     Route::get('/users/create', [UserController::class, 'create'])->name('user.create');

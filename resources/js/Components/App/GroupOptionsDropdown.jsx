@@ -58,14 +58,15 @@ const GroupOptionsDropdown = ({selectedConversation, isLocked}) => {
           <div className="p-1">
             <MenuItem>
               {({ active }) => (
-                <button
+                <Link
+                  href={route('group.message.schedule', selectedConversation)}
                   className={`group flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm 
                               ${active ? "bg-gray-100 dark:bg-gray-700" : ""} 
                               text-gray-800 dark:text-gray-200`}
                 >
                   <CalendarIcon className="h-4 w-4 text-gray-500 dark:text-gray-300" />
                   Schedule Message
-                </button>
+                </Link>
               )}
             </MenuItem>
           </div>
@@ -74,6 +75,7 @@ const GroupOptionsDropdown = ({selectedConversation, isLocked}) => {
             <MenuItem>
               {({ active }) => (
                 <Link
+                  href={route('group.member.add', selectedConversation)}
                   className={`group flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm 
                               ${active ? "bg-gray-100 dark:bg-gray-700" : ""} 
                               text-gray-800 dark:text-gray-200`}

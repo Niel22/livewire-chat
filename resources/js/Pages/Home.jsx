@@ -11,6 +11,7 @@ import { Head, usePage } from "@inertiajs/react";
 import AttachmentPreviewModal from "@/Components/App/AttachmentPreviewModal";
 import { fetchMessageById } from "@/helpers";
 import useMessageEvents from "@/hooks/useMessageEvents";
+import MessageSearchModal from "@/Components/App/MessageSearchModal";
 
 function Home({ selectedConversation = null, messages = null, online = null, pinned }) {
     
@@ -23,6 +24,7 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
     const messageCtrRef = useRef(null);
     const [showAttachmentPreview, setShowAttachmentPreview] = useState(false);
     const [previewAttachment, setPreviewAttachment] = useState({});
+    const [searchOpen, setSearchOpen] = useState(false);
     const loadMoreIntersect = useRef(null);
     const highlightTimerRef = useRef(null);
     const {on, emit} = useEventBus();
@@ -32,7 +34,7 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
     const isAdmin = () => {
         if(selectedConversation.is_group){
 
-            if(selectedConversation.admin.id === auth.user.id || auth.user.role === 'admin'){
+            if(parseInt(selectedConversation.admin.id) === parseInt(auth.user.id) || auth.user.role === 'admin'){
                 return true;
             }
 
@@ -41,7 +43,6 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
 
         return true;
     }
-    
 
     useMessageEvents({selectedConversation, auth, setLocalMessages, setPinnedMessage, setIsLocked});
 
@@ -212,7 +213,10 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
                         selectedConversation={selectedConversation}
                         pinnedMessage={pinnedMessage}
                         isLocked={isLocked}
+                        isAdmin={isAdmin}
                         online={online}
+                        setSearchOpen={setSearchOpen}
+
                         className="bg-white/80 dark:bg-slate-800/80 
                                 backdrop-blur-md border-b border-gray-200 dark:border-slate-700 
                                 shadow-sm transition-colors"
@@ -268,7 +272,6 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
                         )}
                     </div>
 
-                    {/* Input bar with soft top border */}
                     
                     <MessageInput isLocked={isLocked} conversation={selectedConversation} setReplyingTo={setReplyingTo} replyingTo={replyingTo} user={auth.user} />
                 </>
@@ -277,6 +280,8 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
             {previewAttachment.attachments && (
                 <AttachmentPreviewModal attachments={previewAttachment.attachments} index={previewAttachment.index} show={showAttachmentPreview} onClose={() => setShowAttachmentPreview(false)} />
             )}
+
+            <MessageSearchModal handleViewOriginal={handleViewOriginal} conversation={selectedConversation} searchOpen={searchOpen} setSearchOpen={setSearchOpen} />
 
         </>
     );

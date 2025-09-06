@@ -16,12 +16,15 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $this->load('sub_account');
         return [
             'id' => $this->id,
             'avatar' => $this->avatar ? Storage::url($this->avatar) : null,
             'name' => $this->name,
             'email' => $this->email,
             'role' => $this->role,
+            'staff_id' => $this->staff_id,
+            'sub_account' => $this->sub_account ? $this->sub_account : null
         ];
     }
 }

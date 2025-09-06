@@ -55,7 +55,7 @@ class User extends Authenticatable
 
     public function visibleGroups()
     {
-        if ($this->role === 'admin' || $this->role === 'staff') {
+        if ($this->role === 'admin' || $this->role === 'staff' || $this->staff_id !== null) {
             return Group::latest('updated_at');
         }
 
@@ -70,5 +70,14 @@ class User extends Authenticatable
 
     public function details(){
         return $this->hasOne(UserDetails::class);
+    }
+
+    public function sub_account(){
+        return $this->hasMany(User::class, 'staff_id');
+    }
+
+    public function staff()
+    {
+        return $this->belongsTo(User::class, 'staff_id');
     }
 }

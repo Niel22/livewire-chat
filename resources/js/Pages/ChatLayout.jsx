@@ -2,7 +2,7 @@
 import ConversationItem from "@/Components/App/ConversationItem";
 import TextInput from "@/Components/TextInput";
 import { useEventBus } from "@/EventBus";
-import { PlusCircleIcon } from "@heroicons/react/24/solid";
+import { ChatBubbleLeftRightIcon, PlusCircleIcon } from "@heroicons/react/24/solid";
 import { Head, Link, usePage } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 
@@ -220,6 +220,20 @@ const ChatLayout = ({ children }) => {
                                     online={!!isUserOnline(conversation.id)}
                                 />
                             ))}
+                        {sortedConversations.length === 0 && (
+                            <div className="flex flex-col items-center justify-center h-full text-center p-6">
+                                <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-full mb-4">
+                                <ChatBubbleLeftRightIcon className="h-12 w-12 text-gray-400" />
+                                </div>
+                                <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-200">
+                                No Conversations
+                                </h2>
+                                <p className="text-gray-500 dark:text-gray-400 mt-2 max-w-sm">
+                                You are not in any group yet or haven’t started a chat. Join a group or
+                                create a new one to begin chatting.
+                                </p>
+                            </div>
+                        )}
                     </div>
                 </div>
 

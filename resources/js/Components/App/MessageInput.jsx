@@ -140,8 +140,8 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
 
       }
     }).then((response) => {
-      setNewMessage('');
       setReplyingTo(null);
+      setNewMessage('');
       setMessageSending(false);
       setUploadProgress(0);
       setChosenFiles([]);

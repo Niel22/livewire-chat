@@ -245,5 +245,19 @@ class MessageController extends Controller
 
         return redirect()->route('chat.user', $createdConvo->id);
     }
+
+    public function search(Request $request){
+        $query = $request->q;
+        $conversationId = $request->conversation_id;
+
+        $messages = Message::with('sender')
+            ->where('conversation_id', $conversationId)
+            ->where('message', 'like', '%' . $query . '%')
+            ->latest()
+            ->limit(20)
+            ->get();
+
+        return response()->json(['data' => $messages]);
+    }
 }
 

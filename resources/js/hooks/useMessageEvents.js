@@ -5,8 +5,23 @@ export default function useMessageEvents({selectedConversation, auth, setLocalMe
     const { on } = useEventBus();
 
     const messageCreated = (message) => {
+        if (!selectedConversation){
+            if ("Notification" in window && Notification.permission === "granted" && message.sender_id !== auth.user.id) {
+                new Notification("New Message", {
+                    body: message.message ?? "Sent an Attachment",
+                });
+                const audio = new Audio("/notify.wav");
+                audio.play().catch((err) => {
+                    console.warn("Unable to play notification sound automatically:", err);
+                });
+            }
+
+            return;
+        }
+
         if(selectedConversation?.is_group && selectedConversation?.id == message.group_id){
             setLocalMessages(prevMessages => {
+                
                 const exists = prevMessages.some(m => m.id === message.id);
                 if (exists) return prevMessages;
                  if ("Notification" in window && Notification.permission === "granted" && message.sender_id !== auth.user.id) {

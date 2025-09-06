@@ -5,9 +5,11 @@ import UserAvatar from './UserAvatar'
 import GroupAvatar from './GroupAvatar'
 import GroupInfoSidebar from './GroupInfoSidebar'
 import GroupOptionsDropdown from './GroupOptionsDropdown'
+import MessageSearchModal from './MessageSearchModal'
 
-const ConversationHeader = ({selectedConversation, online, pinnedMessage, handleViewOriginal, isLocked}) => {
+const ConversationHeader = ({selectedConversation, online, pinnedMessage, handleViewOriginal, isLocked, setSearchOpen, isAdmin}) => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    
 
     useEffect(() => {
         setSidebarOpen(false);
@@ -62,7 +64,7 @@ const ConversationHeader = ({selectedConversation, online, pinnedMessage, handle
                     {selectedConversation.is_group && (
                         <div className='flex items-center gap-1'>
                             <button 
-                                // onClick={() => setSidebarOpen(true)}
+                                onClick={() => setSearchOpen(true)}
                                 className="text-gray-600 mr-2 dark:text-gray-300 hover:text-blue-500"
                             >
                                 <MagnifyingGlassIcon className="w-6 h-6" />
@@ -73,7 +75,7 @@ const ConversationHeader = ({selectedConversation, online, pinnedMessage, handle
                             >
                                 <InformationCircleIcon className="w-6 h-6" />
                             </button>
-                            <GroupOptionsDropdown selectedConversation={selectedConversation} isLocked={isLocked} />
+                            {isAdmin() && (<GroupOptionsDropdown selectedConversation={selectedConversation} isLocked={isLocked} />)}
                         </div>
                     )}
                 </div>
@@ -103,6 +105,8 @@ const ConversationHeader = ({selectedConversation, online, pinnedMessage, handle
                         </button>
                     </div>
                 )}
+
+                
 
             </>
         )}
