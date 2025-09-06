@@ -15,6 +15,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\MessageResource;
 use App\Http\Requests\StoreMessageRequest;
+use App\Http\Requests\UpdateMessageRequest;
 use App\Models\MessageAttachment;
 use Illuminate\Support\Facades\Storage;
 
@@ -22,7 +23,7 @@ class MessageController extends Controller
 {
     public function byUser(Conversation $conversation){
         if(!Auth::user()->conversations->contains('id', $conversation->id)){
-            return Abort(401);
+            return redirect()->route('dashboard');
         }
 
         $total = Message::where('conversation_id', $conversation->id)->count();
@@ -268,6 +269,15 @@ class MessageController extends Controller
             ->get();
 
         return response()->json(['data' => $messages]);
+    }
+
+    public function update(Message $message, UpdateMessageRequest $request){
+        $validated = $request->validated();
+        $message->update([
+            'message' => $validated['message']
+        ]);
+
+        return new MessageResource($message);
     }
 }
 

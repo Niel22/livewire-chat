@@ -19,69 +19,69 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'John Doe',
-            'email' => 'john@gmail.com',
-            'password' => 'password',
+        User::create([
+            'name' => 'System Administrator',
+            'email' => 'sysadmin@gmail.com',
+            'password' => 'password$123',
             'role' => 'admin'
         ]);
         
-        User::factory()->create([
-            'name' => 'Jane Doe',
-            'email' => 'jane@gmail.com',
-            'password' => 'password',
-            'role' => 'staff'
-        ]);
+        // User::factory()->create([
+        //     'name' => 'Jane Doe',
+        //     'email' => 'jane@gmail.com',
+        //     'password' => 'password',
+        //     'role' => 'staff'
+        // ]);
         
-        User::factory()->create([
-            'name' => 'Paul Doe',
-            'email' => 'paul@gmail.com',
-            'password' => 'password',
-            'role' => 'member'
-        ]);
+        // User::factory()->create([
+        //     'name' => 'Paul Doe',
+        //     'email' => 'paul@gmail.com',
+        //     'password' => 'password',
+        //     'role' => 'member'
+        // ]);
 
-        User::factory(10)->create();
-        for($i = 0; $i < 5; $i++){
-            $group = Group::factory()->create([
-                'admin_id' => 2
-            ]);
-        }
+        // User::factory(10)->create();
+        // for($i = 0; $i < 5; $i++){
+        //     $group = Group::factory()->create([
+        //         'admin_id' => 2
+        //     ]);
+        // }
 
-        $users = User::inRandomOrder()->limit(rand(3, 5))->pluck('id');
-        $group->members()->attach(array_unique([1, ...$users]));
+        // $users = User::inRandomOrder()->limit(rand(3, 5))->pluck('id');
+        // $group->members()->attach(array_unique([1, ...$users]));
 
-        Message::factory(1000)->create();
-        $messages = Message::whereNull('group_id')->orderBy('created_at')->get();
+        // Message::factory(1000)->create();
+        // $messages = Message::whereNull('group_id')->orderBy('created_at')->get();
 
-        $conversations = $messages->groupBy(function ($message){
-            return collect([
-                $message->sender_id, $message->receiver_id
-            ])->sort()->implode('_');
-        })->map(function ($groupMessages){
-            return [
-                'user_id1' => $groupMessages->first()->sender_id,
-                'user_id2' => $groupMessages->first()->receiver_id,
-                'created_at' => new Carbon(),
-                'updated_at' => new Carbon(),
-            ];
-        })->values();
+        // $conversations = $messages->groupBy(function ($message){
+        //     return collect([
+        //         $message->sender_id, $message->receiver_id
+        //     ])->sort()->implode('_');
+        // })->map(function ($groupMessages){
+        //     return [
+        //         'user_id1' => $groupMessages->first()->sender_id,
+        //         'user_id2' => $groupMessages->first()->receiver_id,
+        //         'created_at' => new Carbon(),
+        //         'updated_at' => new Carbon(),
+        //     ];
+        // })->values();
 
-        Conversation::insertOrIgnore($conversations->toArray());
+        // Conversation::insertOrIgnore($conversations->toArray());
 
-        foreach ($messages->groupBy(function ($m) {
-            return collect([$m->sender_id, $m->receiver_id])->sort()->implode('_');
-        }) as $pairKey => $groupMessages) {
-            [$id1, $id2] = explode('_', $pairKey);
+        // foreach ($messages->groupBy(function ($m) {
+        //     return collect([$m->sender_id, $m->receiver_id])->sort()->implode('_');
+        // }) as $pairKey => $groupMessages) {
+        //     [$id1, $id2] = explode('_', $pairKey);
 
-            $conversation = Conversation::where('user_id1', $id1)
-                ->where('user_id2', $id2)
-                ->first();
+        //     $conversation = Conversation::where('user_id1', $id1)
+        //         ->where('user_id2', $id2)
+        //         ->first();
 
-            if ($conversation) {
-                Message::whereIn('id', $groupMessages->pluck('id'))
-                    ->update(['conversation_id' => $conversation->id]);
-            }
-        }
+        //     if ($conversation) {
+        //         Message::whereIn('id', $groupMessages->pluck('id'))
+        //             ->update(['conversation_id' => $conversation->id]);
+        //     }
+        // }
 
     }
 }

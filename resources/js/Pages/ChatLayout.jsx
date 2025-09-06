@@ -186,14 +186,14 @@ const ChatLayout = ({ children }) => {
                                     text-gray-700 dark:text-gray-100 border-b border-gray-200 dark:border-slate-700"
                     >
                         My Conversations
-                        <div
+                        {auth.user.role === "admin" && (<div
                             className="tooltip tooltip-left"
                             data-tip="Create New Group"
                         >
                             <Link href={route('group.create')} className="text-blue-500 hover:text-blue-700 dark:text-indigo-400 dark:hover:text-indigo-300">
                                 <PlusCircleIcon className="w-7 h-7 inline-block ml-2" />
                             </Link>
-                        </div>
+                        </div>)}
                     </div>
 
                     {/* Search */}
