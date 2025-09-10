@@ -20,6 +20,11 @@ const Edit = ({ user }) => {
         payment_method: user.details?.payment_method ?? '',
         email: user.details?.email ?? '',
     });
+    
+    const userPasswordForm = useForm({
+        password: "",
+        password_confirmation: ""
+    });
 
     const submitUser = (e) => {
         e.preventDefault()
@@ -29,6 +34,11 @@ const Edit = ({ user }) => {
     const submitUserDetails = (e) => {
         e.preventDefault()
         userDetailsForm.patch(route('user.user-details', user))
+    }
+    
+    const submitPasswordDetails = (e) => {
+        e.preventDefault();
+        userPasswordForm.patch(route('user.password', user))
     }
 
     return (
@@ -179,6 +189,58 @@ const Edit = ({ user }) => {
                                     </div>
                                 </form>
                             </section>
+                        </div>
+                    )}
+
+                    {user.role === 'member' && (
+                        <div className="dark:bg-gray-800 bg-white p-4 shadow sm:rounded-lg sm:p-8">
+                        <section>
+                            <header>
+                                <h2 className="text-lg font-medium text-gray-900 dark:text-gray-200">
+                                    Client Password
+                                </h2>
+                                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                                    Change Cients Password.
+                                </p>
+                            </header>
+
+                            <form onSubmit={submitPasswordDetails} className="mt-6 space-y-6">
+                                <div>
+                                    <InputLabel htmlFor="Password" value="Password" />
+                                    <TextInput
+                                        id="name"
+                                        className="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
+                                        value={userPasswordForm.password}
+                                        onChange={(e) => userPasswordForm.setData('password', e.target.value)}
+                                    />
+                                    <InputError className="mt-2 dark:text-red-400" message={userPasswordForm.errors.password} />
+                                </div>
+
+                                <div>
+                                    <InputLabel htmlFor="Comfirm Password" value="Comfirm Password" />
+                                    <TextInput
+                                        id="payment_method"
+                                        className="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
+                                        value={userPasswordForm.password_confirmation}
+                                        onChange={(e) => userPasswordForm.setData('password_confirmation', e.target.value)}
+                                    />
+                                    <InputError className="mt-2 dark:text-red-400" message={userPasswordForm.errors.password_confirmation} />
+                                </div>
+
+                                <div className="flex items-center gap-4">
+                                    <PrimaryButton disabled={userPasswordForm.processing}>Save Details</PrimaryButton>
+                                    <Transition
+                                        show={userPasswordForm.recentlySuccessful}
+                                        enter="transition ease-in-out"
+                                        enterFrom="opacity-0"
+                                        leave="transition ease-in-out"
+                                        leaveTo="opacity-0"
+                                    >
+                                        <p className="text-sm text-gray-600 dark:text-gray-400">Saved.</p>
+                                    </Transition>
+                                </div>
+                            </form>
+                        </section>
                         </div>
                     )}
 

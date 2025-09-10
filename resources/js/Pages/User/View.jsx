@@ -76,7 +76,7 @@ const View = ({ user }) => {
                                     
                                     <div>
                                         <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">Password Data</p>
-                                        <p className="text-gray-900 dark:text-gray-100">{user.details?.pdata ?? '-'}</p>
+                                        <p className="text-gray-900 dark:text-gray-100">{user.pdata ?? '-'}</p>
                                     </div>
                                 </div>
                             </section>

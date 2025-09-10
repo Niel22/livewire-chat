@@ -79,7 +79,7 @@ export default function useMessageEvents({selectedConversation, auth, setLocalMe
                     return prev;
                 }
                 return [...prev, message].sort(
-                    (a, b) => new Date(b.created_at) - new Date(a.created_at)
+                    (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
                 );
             } 
             

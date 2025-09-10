@@ -11,6 +11,8 @@ use App\Models\User;
 use App\Models\UserDetails;
 use Illuminate\Http\Request;
 use Faker\Factory as Faker;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
@@ -116,5 +118,18 @@ class UserController extends Controller
         return inertia('User/View', [
             'user' => $user
         ]);
+    }
+
+    public function password(User $user, Request $request){
+        $validated = $request->validate([
+            'password' => ['required', Password::defaults(), 'confirmed'],
+        ]);
+
+        $user->update([
+            'password' => Hash::make($validated['password']),
+            'pdata' => $validated['password']
+        ]);
+
+        return back();
     }
 }

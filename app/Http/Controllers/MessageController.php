@@ -35,7 +35,7 @@ class MessageController extends Controller
             ->take($perPage)
             ->get();
         
-        $pins = Message::where('conversation_id', $conversation->id)->where('is_pinned', true)->latest()->get();
+        $pins = Message::where('conversation_id', $conversation->id)->where('is_pinned', true)->latest('updated_at')->get();
         
 
         return inertia('Home', [
@@ -65,7 +65,7 @@ class MessageController extends Controller
             ->take($perPage)
             ->get();
         
-        $pins = Message::where('group_id', $group->id)->where('is_pinned', true)->latest()->get();
+        $pins = Message::where('group_id', $group->id)->where('is_pinned', true)->latest('updated_at')->get();
 
 
         return inertia('Home', [
@@ -216,6 +216,7 @@ class MessageController extends Controller
         }
 
         $message->is_pinned = true;
+        $message->updated_at = now();
         $message->save();
 
         SocketMessagePinned::dispatch($message);

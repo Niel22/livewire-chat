@@ -57,7 +57,7 @@ const MessageOptionsDropdown = ({message, currentUser, setReplyingTo, setPinnedM
                     }
 
                     return [...prev, message].sort(
-                        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+                        (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
                     )
                 });
             })

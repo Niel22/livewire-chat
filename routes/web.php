@@ -48,6 +48,7 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('user.edit');
     Route::get('/users/{user}', [UserController::class, 'show'])->name('user.show');
     Route::patch('/users/{user}', [UserController::class, 'update'])->name('user.update');
+    Route::patch('/users/{user}/change-password', [UserController::class, 'password'])->name('user.password');
     Route::patch('/users/{user}/user-details', [UserController::class, 'storeUserDetails'])->name('user.user-details');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('user.destroy');
 
