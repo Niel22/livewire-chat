@@ -47,47 +47,49 @@ const GroupOptionsDropdown = ({selectedConversation, isLocked, isAdmin}) => {
             </MenuItem>
           </div>
 
-          {isAdmin() && (<>
-            <div className="p-1">
-              <MenuItem>
-                {({ active }) => (
-                  <button
-                      onClick={handleLock}
-                    className={`group flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm 
-                                ${active ? "bg-gray-100 dark:bg-gray-700" : ""} 
-                                text-gray-800 dark:text-gray-200`}
-                  >
-                    {isLocked ? (
-                      <div className="flex items-center gap-1">
-                          <LockOpenIcon className="h-4 w-4 text-gray-500 dark:text-gray-300" />
-                          <span>Unlock Group</span>
-                      </div>
-                      ) : (
-                      <div className="flex items-center gap-1">
-                          <LockClosedIcon className="h-4 w-4 text-gray-500 dark:text-gray-300" />
-                          <span>Lock Group</span>
-                      </div>
-                      )}
-                  </button>
-                )}
-              </MenuItem>
-            </div>
-            <div className="p-1">
-              <MenuItem>
-                {({ active }) => (
-                  <Link
-                    href={route('group.member.add', selectedConversation)}
-                    className={`group flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm 
-                                ${active ? "bg-gray-100 dark:bg-gray-700" : ""} 
-                                text-gray-800 dark:text-gray-200`}
-                  >
-                    <UserPlusIcon className="h-4 w-4 text-gray-500 dark:text-gray-300" />
-                    Add Member
-                  </Link>
-                )}
-              </MenuItem>
-            </div>
-          </>)}
+          {isAdmin() && 
+            <>
+              <div className="p-1">
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                        onClick={handleLock}
+                      className={`group flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm 
+                                  ${active ? "bg-gray-100 dark:bg-gray-700" : ""} 
+                                  text-gray-800 dark:text-gray-200`}
+                    >
+                      {isLocked ? (
+                        <div className="flex items-center gap-1">
+                            <LockOpenIcon className="h-4 w-4 text-gray-500 dark:text-gray-300" />
+                            <span>Unlock Group</span>
+                        </div>
+                        ) : (
+                        <div className="flex items-center gap-1">
+                            <LockClosedIcon className="h-4 w-4 text-gray-500 dark:text-gray-300" />
+                            <span>Lock Group</span>
+                        </div>
+                        )}
+                    </button>
+                  )}
+                </MenuItem>
+              </div>
+              <div className="p-1">
+                <MenuItem>
+                  {({ active }) => (
+                    <Link
+                      href={route('group.member.add', selectedConversation)}
+                      className={`group flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm 
+                                  ${active ? "bg-gray-100 dark:bg-gray-700" : ""} 
+                                  text-gray-800 dark:text-gray-200`}
+                    >
+                      <UserPlusIcon className="h-4 w-4 text-gray-500 dark:text-gray-300" />
+                      Add Member
+                    </Link>
+                  )}
+                </MenuItem>
+              </div>
+            </>
+          }
         </MenuItems>
       </Menu>
     </div>
