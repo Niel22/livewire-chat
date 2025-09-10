@@ -158,7 +158,7 @@ class MessageController extends Controller
     }
 
     public function destroy(Message $message){
-        if($message->sender_id !== Auth::id()){
+        if((int)$message->sender_id !== (int)Auth::id()){
             return response()->json([
                 'message' => 'Forbidden'
             ], 403);
@@ -207,7 +207,7 @@ class MessageController extends Controller
 
         } elseif ($message->conversation_id) {
             $conversation = $message->conversation; 
-            if ($conversation->user_id1 !== $user->id && $conversation->user_id2 !== $user->id) {
+            if ((int)$conversation->user_id1 !== (int)$user->id && (int)$conversation->user_id2 !== (int)$user->id) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
@@ -237,7 +237,7 @@ class MessageController extends Controller
 
         } elseif ($message->conversation_id) {
             $conversation = $message->conversation; 
-            if ($conversation->user_id1 !== $user->id && $conversation->user_id2 !== $user->id) {
+            if ((int)$conversation->user_id1 !== (int)$user->id && (int)$conversation->user_id2 !== (int)$user->id) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
