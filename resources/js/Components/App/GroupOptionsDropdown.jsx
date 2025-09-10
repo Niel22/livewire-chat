@@ -3,7 +3,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { CalendarIcon, EllipsisVerticalIcon, LockClosedIcon, LockOpenIcon, UserPlusIcon } from '@heroicons/react/24/solid'
 import { Link } from '@inertiajs/react'
 
-const GroupOptionsDropdown = ({selectedConversation, isLocked}) => {
+const GroupOptionsDropdown = ({selectedConversation, isLocked, isAdmin}) => {
     const {emit} = useEventBus();
 
     const handleLock = () => {
