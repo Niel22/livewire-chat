@@ -6,8 +6,10 @@ import GroupAvatar from './GroupAvatar'
 import GroupInfoSidebar from './GroupInfoSidebar'
 import GroupOptionsDropdown from './GroupOptionsDropdown'
 import MessageSearchModal from './MessageSearchModal'
+import PinnedMessagesModal from './PinnedMessagesModal'
 
-const ConversationHeader = ({selectedConversation, online, pinnedMessage, handleViewOriginal, isLocked, setSearchOpen, isAdmin}) => {
+const ConversationHeader = ({selectedConversation, online, pinnedMessages, handleViewOriginal, isLocked, setSearchOpen, isAdmin}) => {
+    const [pinsOpen, setPinsOpen] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     
 
@@ -42,7 +44,7 @@ const ConversationHeader = ({selectedConversation, online, pinnedMessage, handle
                             />
                         )}
                         {selectedConversation.is_group && (
-                            <GroupAvatar className="ring-1 ring-blue-400/40 rounded-full" />
+                            <GroupAvatar avatar={selectedConversation.avatar} className="ring-1 ring-blue-400/40 rounded-full" />
                         )}
 
                         {/* Conversation details */}
@@ -79,9 +81,9 @@ const ConversationHeader = ({selectedConversation, online, pinnedMessage, handle
                         </div>
                     )}
                 </div>
-                {pinnedMessage && (
+                {pinnedMessages.length > 0 && (
                     <div 
-                        onClick={() => handleViewOriginal(pinnedMessage.id)}
+                        onClick={() => setPinsOpen(true)}
                         className="
                             w-full px-3 py-2 flex items-center justify-between gap-3 
                             bg-emerald-50 dark:bg-emerald-900/30 
@@ -94,20 +96,13 @@ const ConversationHeader = ({selectedConversation, online, pinnedMessage, handle
                                 <BookmarkIcon className='w-4 h-4' />
                             </span>
                             <p className="truncate text-gray-800 dark:text-gray-200 max-w-[200px] sm:max-w-[400px]">
-                                {pinnedMessage.message}
+                                {pinnedMessages[0].message}
                             </p>
                         </div>
-                        <button 
-                            className="text-emerald-700 dark:text-emerald-300 hover:text-emerald-900 dark:hover:text-emerald-100"
-                            title="Unpin message"
-                        >
-                            ✕
-                        </button>
                     </div>
                 )}
 
-                
-
+                <PinnedMessagesModal isAdmin={isAdmin} open={pinsOpen} onClose={() => setPinsOpen(false)} pinnedMessages={pinnedMessages} handleViewOriginal={handleViewOriginal} />
             </>
         )}
 

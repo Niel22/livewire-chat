@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreGroupRequest;
 use App\Http\Requests\UpdateGroupRequest;
 use App\Http\Requests\ScheduleMessageRequest;
+use App\Http\Resources\GroupResource;
 use App\Jobs\SendScheduledMessage;
 use App\Models\GroupMember;
 use App\Models\ScheduleMessageAttachment;
@@ -34,7 +35,16 @@ class GroupController extends Controller
     }
 
     public function store(StoreGroupRequest $request){
+        $avatar = $request->file('avatar');
+        
         $validated = $request->validated();
+
+        if($avatar){
+            $avatarName = uniqid('avatar_') . '.' . $avatar->getClientOriginalExtension();
+
+            $validated['avatar'] = $avatar->storeAs('group_avatars', $avatarName, 'public');
+        }
+        
 
         $group = Group::create($validated);
 
@@ -53,7 +63,19 @@ class GroupController extends Controller
     }
 
     public function update(Group $group, UpdateGroupRequest $request){
+        
+        $avatar = $request->file('avatar');
+        
         $validated = $request->validated();
+
+        if($avatar){
+
+            if($group->avatar) Storage::disk('public')->delete($group->avatar);
+
+            $avatarName = uniqid('avatar_') . '.' . $avatar->getClientOriginalExtension();
+
+            $validated['avatar'] = $avatar->storeAs('group_avatars', $avatarName, 'public');
+        }
 
         if($group->update($validated)){
             return redirect()->route('group.list')->with('success', 'Group Updated successfully!');

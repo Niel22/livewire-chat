@@ -23,9 +23,10 @@ class UpdateGroupRequest extends FormRequest
     {
         $id = request()->route('group')->id;
         return [
-            'name' => 'required|string|unique:groups,name,'. $id,
-            'description' => 'required|string',
-            'admin_id' => 'required|integer|exists:users,id'
+            'name' => 'nullable|string|unique:groups,name,'. $id,
+            'description' => 'nullable|string',
+            'admin_id' => 'nullable|integer|exists:users,id',
+            'avatar' => 'nullable|image|max:1024',
         ];
     }
 }

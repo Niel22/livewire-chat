@@ -48,9 +48,12 @@ const GroupInfoSidebar = ({ sidebarOpen, setSidebarOpen, group }) => {
 
                     <div className="flex-1 overflow-y-auto space-y-6 p-6">
                         <div className="flex flex-col items-center text-center gap-2">
-                            <div className="bg-gray-400 dark:bg-gray-700 rounded-full w-24 h-24 flex items-center justify-center text-gray-800 dark:text-gray-100">
+                            {group.avatar && (<div className="bg-gray-400 dark:bg-gray-700 rounded-full overflow-hidden w-24 h-24 flex items-center justify-center text-gray-800 dark:text-gray-100">
+                                <img src={group.avatar} className="w-full" />
+                            </div>)}
+                            {!group.avatar && (<div className="bg-gray-400 dark:bg-gray-700 rounded-full w-24 h-24 flex items-center justify-center text-gray-800 dark:text-gray-100">
                                 <UserGroupIcon className="w-12 h-12" />
-                            </div>
+                            </div>)}
                             <h3 className="font-semibold text-gray-800 dark:text-gray-100 text-lg">
                                 {group.name}
                             </h3>

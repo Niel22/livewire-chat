@@ -9,18 +9,20 @@ import { Head, Link, useForm } from '@inertiajs/react'
 import React from 'react'
 
 const Edit = ({group, staffs}) => {
+    
 
-    const { data, setData, patch, errors, processing, recentlySuccessful } =
+    const { data, setData, post, errors, processing, recentlySuccessful } =
         useForm({
             name: group.name,
             description: group.description,
             admin_id: group.admin_id,
+            avatar: null,
+            _method: "PATCH"
         });
 
     const submit = (e) => {
         e.preventDefault();
-
-        patch(route('group.update', group));
+        post(route('group.update', group));
 
     };
   return (
@@ -42,6 +44,37 @@ const Edit = ({group, staffs}) => {
                         </header>
 
                         <form onSubmit={submit} className="mt-6 space-y-6">
+
+                            <div className="relative">
+                                <div className="w-32 h-32 rounded-full overflow-hidden ring-4 ring-gray-200 dark:ring-slate-700 shadow-md">
+                                    <img src={`/storage/${group.avatar}`} alt="Group" className="w-full h-full object-cover" />
+                                </div>
+                            </div>
+        
+                            <div className="flex-1">
+                                <InputLabel htmlFor="avatar" value="Group Picture" className="text-gray-700 dark:text-gray-200 font-medium" />
+        
+                                <label
+                                    htmlFor="avatar"
+                                    className="mt-2 inline-flex items-center px-4 py-2 bg-blue-600 dark:bg-white text-white dark:text-slate-900 text-sm font-medium rounded-lg shadow cursor-pointer transition hover:bg-blue-700 dark:hover:bg-gray-200"
+                                >
+                                    Upload Group Picture
+                                </label>
+        
+                                <input
+                                    id="avatar"
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={(e) => setData('avatar', e.target.files[0])}
+                                />
+        
+                                <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                                    Please upload a square picture (1:1 ratio works best)
+                                </p>
+        
+                                <InputError className="mt-2 dark:text-red-400" message={errors.avatar} />
+                            </div>
                             
                             <div>
                                 <InputLabel htmlFor="name" value="Group Name" />

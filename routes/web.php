@@ -17,6 +17,7 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::post('/groups', [GroupController::class, 'store'])->name('group.store');
     Route::get('/groups/{group}', [MessageController::class, 'byGroup'])->name('chat.group');
     Route::get('/groups/{group}/edit', [GroupController::class, 'edit'])->name('group.edit');
+    Route::patch('/groups/{group}', [GroupController::class, 'update'])->name('group.update');
     Route::delete('/groups/{group}', [GroupController::class, 'destroy'])->name('group.destroy');
     Route::patch('/groups/{group}/lock', [GroupController::class, 'lockGroup'])->name('group.lock');
     Route::get('/groups/{group}/schedule-message', [GroupController::class, 'scheduleMessage'])->name('group.message.schedule');
@@ -34,6 +35,7 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::delete('/messages/{message}', [MessageController::class, 'destroy'])->name('message.destroy');
     Route::get('/messages/{message}', [MessageController::class, 'show'])->name('message.show');
     Route::patch('/messages/{message}/pin', [MessageController::class, 'pin'])->name('message.pin');
+    Route::patch('/messages/{message}/unpin', [MessageController::class, 'unpin'])->name('message.unpin');
     Route::patch('/messages/{message}/update', [MessageController::class, 'update'])->name('message.update');
     Route::get('/messages/older/{message}', [MessageController::class, 'loadOlder'])->name('message.loadOlder');
     Route::get('/messsages/search', [MessageController::class, 'search'])->name('message.search');

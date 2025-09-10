@@ -5,7 +5,7 @@ import MessageEditModal from './MessageEditModal';
 import { useState } from 'react';
 import { router } from '@inertiajs/react';
 
-const MessageOptionsDropdown = ({message, currentUser, setReplyingTo, setPinnedMessage, isSender, isAdmin}) => {
+const MessageOptionsDropdown = ({message, currentUser, setReplyingTo, setPinnedMessages, isSender, isAdmin}) => {
     const {emit} = useEventBus();
     const [isOpen, setIsOpen] = useState(false);
     const [editMessage, setEditMessage] = useState(null);
@@ -21,39 +21,47 @@ const MessageOptionsDropdown = ({message, currentUser, setReplyingTo, setPinnedM
                 message: editMessage,
             })
             .then((response) => {
-                console.log(response);
                 setIsOpen(false);
                 setEditMessage(null);
             })
             .catch((error) => {
                 setIsOpen(false);
                 const message = error.response?.data?.message;
-                console.error(message);
+                // console.error(message);
             });
     };
 
     const onMessageDelete = () => {
-        if(currentUser.id !== message.sender_id) return;
+        if(parseInt(currentUser.id) !== parseInt(message.sender_id)) return;
         
         axios.delete(route('message.destroy', message.id))
             .then((res) => {
                 emit('message.deleted', {message, prevMessage : res.data.message});
                 emit('toast.show', "Message deleted")
-                console.log(res.data);
             })
             .catch((err) => {
-                console.log(err);
+                // console.log(err);
             })
     }
 
     const onMessagePin = () => {
         if(!isAdmin) return;
 
+        if(message.is_pinned) return;
+
         axios.patch(route('message.pin', message.id))
             .then((res) => {
                 emit('message.pin', message);
                 emit('toast.show', 'Message Pinned');
-                setPinnedMessage(message);
+                setPinnedMessages((prev) => {
+                    if(prev.some((m) => m.id === message.id)){
+                        return prev;
+                    }
+
+                    return [...prev, message].sort(
+                        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+                    )
+                });
             })
             .catch((err) => {
                 console.log(err);

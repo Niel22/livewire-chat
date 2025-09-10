@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Group extends Model
 {
@@ -14,6 +15,7 @@ class Group extends Model
         'description',
         'admin_id',
         'is_locked',
+        'avatar'
     ];
 
     public function members(){
@@ -38,6 +40,7 @@ class Group extends Model
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'avatar' => $this->avatar ? Storage::url($this->avatar) : null,
             'members' => $this->members->count(),
             'membersList' => $this->members,
             'is_group' => true,
@@ -47,7 +50,7 @@ class Group extends Model
             'updated_at' => $this->updated_at,
             'admin' => $this->admin,
             'last_message' => $this->last_message?->message,
-            'last_message_date' => $this->updated_at,
+            'last_message_date' => $this->last_message?->created_at,
         ];
     }
 }

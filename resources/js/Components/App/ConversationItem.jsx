@@ -1,11 +1,9 @@
 
-import { Link, usePage } from '@inertiajs/react';
-import React from 'react'
-import UserAvatar from './UserAvatar';
-import GroupAvatar from './GroupAvatar';
-import UserOptionsDropdown from './UserOptionsDropdown';
 import { formatMessageDateShort } from '@/helpers';
 import { PaperClipIcon } from '@heroicons/react/24/solid';
+import { Link, usePage } from '@inertiajs/react';
+import GroupAvatar from './GroupAvatar';
+import UserAvatar from './UserAvatar';
 
 const ConversationItem = ({conversation, selectedConversation = null, online = null}) => {
   const page = usePage();
@@ -40,7 +38,7 @@ const ConversationItem = ({conversation, selectedConversation = null, online = n
         <UserAvatar user={conversation} online={online} />
       )}
 
-      {conversation.is_group && <GroupAvatar />}
+      {conversation.is_group && <GroupAvatar avatar={conversation.avatar} />}
 
       <div className="flex-1 text-xs max-w-full overflow-hidden">
         <div className="flex gap-1 justify-between items-center">
@@ -53,7 +51,7 @@ const ConversationItem = ({conversation, selectedConversation = null, online = n
             </span>
           )}
         </div>
-        {conversation.last_message_date && (
+        {(conversation.last_message_date) && (
           conversation.last_message ? (
             <p className="text-xs text-gray-600 dark:text-gray-400 text-nowrap truncate">
               {conversation.last_message}

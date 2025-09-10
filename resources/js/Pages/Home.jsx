@@ -13,9 +13,9 @@ import { fetchMessageById } from "@/helpers";
 import useMessageEvents from "@/hooks/useMessageEvents";
 import MessageSearchModal from "@/Components/App/MessageSearchModal";
 
-function Home({ selectedConversation = null, messages = null, online = null, pinned }) {
+function Home({ selectedConversation = null, messages = null, online = null, pins }) {
     
-    const [pinnedMessage, setPinnedMessage] = useState(null);
+    const [pinnedMessages, setPinnedMessages] = useState([]);
     const [localMessages, setLocalMessages] = useState([]);
     const [noMoreMessages, setNoMoreMessages] = useState(false);
     const [scrollFromBottom, setScrollFromBottom] = useState(null);
@@ -44,7 +44,7 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
         return true;
     }
 
-    useMessageEvents({selectedConversation, auth, setLocalMessages, setPinnedMessage, setIsLocked});
+    useMessageEvents({selectedConversation, auth, setLocalMessages, setPinnedMessages, setIsLocked});
 
     const onAttchmentClick = (attachments, index) => {
         setPreviewAttachment({
@@ -59,8 +59,8 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
     }, [selectedConversation]);
 
     useEffect(() => {
-        setPinnedMessage(pinned);
-    }, [pinned])
+        setPinnedMessages(pins?.data);
+    }, [pins]);
 
     const loadMoreMessages = useCallback(() => {
         if(noMoreMessages){
@@ -211,7 +211,7 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
                     <ConversationHeader
                         handleViewOriginal={handleViewOriginal}
                         selectedConversation={selectedConversation}
-                        pinnedMessage={pinnedMessage}
+                        pinnedMessages={pinnedMessages}
                         isLocked={isLocked}
                         isAdmin={isAdmin}
                         online={online}
@@ -263,7 +263,7 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
                                         message={message}
                                         attachmentClick={onAttchmentClick}
                                         setReplyingTo={setReplyingTo}
-                                        setPinnedMessage={setPinnedMessage}
+                                        setPinnedMessages={setPinnedMessages}
                                         isAdmin={isAdmin}
                                         
                                     />

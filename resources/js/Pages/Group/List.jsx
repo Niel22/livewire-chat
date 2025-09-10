@@ -50,15 +50,12 @@ const List = ({groups}) => {
                         className="bg-white dark:bg-gray-800 shadow rounded-lg p-6 flex flex-col items-center"
                     >
                         <div className="avatar avatar-placeholder">
-                            <div className="
-                                bg-gray-400 text-gray-800 rounded-full w-20
-                                dark:bg-gray-700 dark:text-gray-100
-                            ">
-                                <span className="text-xl">
-                                <UserGroupIcon className="w-10" />
-                                
-                                </span>
-                            </div>
+                            {group.avatar && (<div className="bg-gray-400 dark:bg-gray-700 rounded-full overflow-hidden w-24 h-24 flex items-center justify-center text-gray-800 dark:text-gray-100">
+                                <img src={`/storage/${group.avatar}`} className="w-full" />
+                            </div>)}
+                            {!group.avatar && (<div className="bg-gray-400 dark:bg-gray-700 rounded-full w-24 h-24 flex items-center justify-center text-gray-800 dark:text-gray-100">
+                                <UserGroupIcon className="w-12 h-12" />
+                            </div>)}
                         </div>
                         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
                             {group.name}

@@ -8,7 +8,7 @@ import MessageOptionsDropdown from './MessageOptionsDropdown';
 import MessageReply from './MessageReply';
 import remarkGfm from 'remark-gfm';
 
-const MessageItem = ({message, attachmentClick, setReplyingTo, setPinnedMessage, handleViewOriginal, isAdmin}) => {
+const MessageItem = ({message, attachmentClick, setReplyingTo, setPinnedMessages, handleViewOriginal, isAdmin}) => {
     const currentUser = usePage().props.auth.user;
 
     const isSender = () => {
@@ -32,7 +32,7 @@ const MessageItem = ({message, attachmentClick, setReplyingTo, setPinnedMessage,
                 isSender() ? " chat-bubble-info" : " bg-gray-700"
             ) + ( message.attachments.length > 0 ? " max-w-[90%] sm:max-w-[55%] md:max-w-[45%] lg:max-w-[40%] " : " max-w-[95%] sm:max-w-[70%] md:max-w-[60%] lg:max-w-[55%]" )
         }>
-            <MessageOptionsDropdown isAdmin={isAdmin} isSender={isSender} setPinnedMessage={setPinnedMessage} setReplyingTo={setReplyingTo} message={message} currentUser={currentUser} />
+            <MessageOptionsDropdown isAdmin={isAdmin} isSender={isSender} setPinnedMessages={setPinnedMessages} setReplyingTo={setReplyingTo} message={message} currentUser={currentUser} />
             {message.replyTo && (<MessageReply handleViewOriginal={handleViewOriginal} message={message.replyTo} />)}
             {message.attachments.length > 0 && (<MessageAttachments attachments={message.attachments} attachmentClick={attachmentClick} />)}
             <div className='chat-message'>

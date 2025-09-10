@@ -1,7 +1,7 @@
 import { useEventBus } from "@/EventBus";
 import { useEffect } from "react";
 
-export default function useMessageEvents({selectedConversation, auth, setLocalMessages, setPinnedMessage, setIsLocked}){
+export default function useMessageEvents({selectedConversation, auth, setLocalMessages, setPinnedMessages, setIsLocked}){
     const { on } = useEventBus();
 
     const messageCreated = (message) => {
@@ -67,12 +67,27 @@ export default function useMessageEvents({selectedConversation, auth, setLocalMe
 
 
     const messagePinned = (message) => {
-        if(selectedConversation?.is_group && selectedConversation?.id == message.group_id){
-            setPinnedMessage(message);
-        }else if(!selectedConversation?.is_group && selectedConversation?.id == message.conversation_id){
-            setPinnedMessage(message);
-        }
-    }
+        const isGroup = selectedConversation?.is_group;
+        const match = isGroup
+            ? selectedConversation?.id === message.group_id
+            : selectedConversation?.id === message.conversation_id;
+
+        if (!match) return;
+
+        setPinnedMessages((prev) => {
+            if (message.is_pinned) {
+                if (prev.some((m) => m.id === message.id)) {
+                    return prev;
+                }
+                return [...prev, message].sort(
+                    (a, b) => new Date(b.created_at) - new Date(a.created_at)
+                );
+            } 
+            
+            return prev.filter((m) => m.id !== message.id);
+        });
+    };
+
 
     const groupLocked = (group) => {
         setIsLocked(group.is_locked);

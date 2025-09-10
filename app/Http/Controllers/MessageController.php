@@ -35,13 +35,13 @@ class MessageController extends Controller
             ->take($perPage)
             ->get();
         
-        $pinned = Message::where('conversation_id', $conversation->id)->where('is_pinned', true)->first();
+        $pins = Message::where('conversation_id', $conversation->id)->where('is_pinned', true)->latest()->get();
         
 
         return inertia('Home', [
             'selectedConversation' => $conversation->toConversationArray(),
             'messages' => MessageResource::collection($messages),
-            'pinned' => $pinned ? new MessageResource($pinned) : null
+            'pins' => $pins ? MessageResource::collection($pins) : null
         ]);
     }
 
@@ -65,13 +65,13 @@ class MessageController extends Controller
             ->take($perPage)
             ->get();
         
-        $pinned = Message::where('group_id', $group->id)->where('is_pinned', true)->first();
+        $pins = Message::where('group_id', $group->id)->where('is_pinned', true)->latest()->get();
 
 
         return inertia('Home', [
             'selectedConversation' => $group->toConversationArray(),
             'messages' => MessageResource::collection($messages),
-            'pinned' => $pinned ? new MessageResource($pinned) : null
+            'pins' => $pins ? MessageResource::collection($pins) : null
         ]);
     }
 
@@ -193,6 +193,10 @@ class MessageController extends Controller
 
     public function pin(Message $message)
     {
+        if($message->is_pinned){
+            return;
+        }
+        
         $user = Auth::user();
 
         if ($message->group_id) {
@@ -200,10 +204,6 @@ class MessageController extends Controller
             if (!in_array($user->role, ['admin', 'staff']) && $group->admin_id !== $user->id) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
-            
-            Message::where('group_id', $message->group_id)
-                ->where('is_pinned', true)
-                ->update(['is_pinned' => false]);
 
         } elseif ($message->conversation_id) {
             $conversation = $message->conversation; 
@@ -211,15 +211,41 @@ class MessageController extends Controller
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
-            Message::where('conversation_id', $message->conversation_id)
-                ->where('is_pinned', true)
-                ->update(['is_pinned' => false]);
-
         } else {
             return response()->json(['error' => 'Message not in a valid context'], 400);
         }
 
         $message->is_pinned = true;
+        $message->save();
+
+        SocketMessagePinned::dispatch($message);
+
+        return response()->json(['status' => 'pinned']);
+    }
+
+    public function unpin(Message $message){
+
+        
+
+        $user = Auth::user();
+
+        if ($message->group_id) {
+            $group = $message->group; 
+            if (!in_array($user->role, ['admin', 'staff']) && $group->admin_id !== $user->id) {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
+
+        } elseif ($message->conversation_id) {
+            $conversation = $message->conversation; 
+            if ($conversation->user_id1 !== $user->id && $conversation->user_id2 !== $user->id) {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
+
+        } else {
+            return response()->json(['error' => 'Message not in a valid context'], 400);
+        }
+
+        $message->is_pinned = false;
         $message->save();
 
         SocketMessagePinned::dispatch($message);
