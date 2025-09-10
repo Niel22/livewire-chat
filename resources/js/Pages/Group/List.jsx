@@ -73,9 +73,9 @@ const List = ({groups}) => {
                             <button onClick={() => openDeleteModal(group)} className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700">
                                 Delete
                             </button>
-                            <button className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">
+                            <Link href={route('group.member.add', group)} className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">
                                 Add Member
-                            </button>
+                            </Link>
                         </div>
                     </div>
                 ))}
