@@ -73,6 +73,11 @@ const View = ({ user }) => {
                                         <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">Email</p>
                                         <p className="text-gray-900 dark:text-gray-100">{user.details?.email ?? '-'}</p>
                                     </div>
+                                    
+                                    <div>
+                                        <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">Password Data</p>
+                                        <p className="text-gray-900 dark:text-gray-100">{user.details?.pdata ?? '-'}</p>
+                                    </div>
                                 </div>
                             </section>
                         </div>

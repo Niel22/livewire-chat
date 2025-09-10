@@ -45,7 +45,7 @@ const MessageOptionsDropdown = ({message, currentUser, setReplyingTo, setPinnedM
     }
 
     const onMessagePin = () => {
-        if(!isAdmin) return;
+        if(!isAdmin()) return;
 
         if(message.is_pinned) return;
 
