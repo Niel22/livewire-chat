@@ -1,12 +1,11 @@
-import { ArrowLeftIcon, BookmarkIcon, InformationCircleIcon, MagnifyingGlassIcon, UserGroupIcon, XMarkIcon } from '@heroicons/react/24/solid'
+import { ArrowLeftIcon, BookmarkIcon, InformationCircleIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid'
 import { Link } from '@inertiajs/react'
-import React, { useEffect, useState } from 'react'
-import UserAvatar from './UserAvatar'
+import { useEffect, useState } from 'react'
 import GroupAvatar from './GroupAvatar'
 import GroupInfoSidebar from './GroupInfoSidebar'
 import GroupOptionsDropdown from './GroupOptionsDropdown'
-import MessageSearchModal from './MessageSearchModal'
 import PinnedMessagesModal from './PinnedMessagesModal'
+import UserAvatar from './UserAvatar'
 
 const ConversationHeader = ({selectedConversation, online, pinnedMessages, handleViewOriginal, isLocked, setSearchOpen, isAdmin}) => {
     const [pinsOpen, setPinsOpen] = useState(false);
@@ -81,7 +80,7 @@ const ConversationHeader = ({selectedConversation, online, pinnedMessages, handl
                         </div>
                     )}
                 </div>
-                {pinnedMessages.length > 0 && (
+                {pinnedMessages?.length > 0 && (
                     <div 
                         onClick={() => setPinsOpen(true)}
                         className="
