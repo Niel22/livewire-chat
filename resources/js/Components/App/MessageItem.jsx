@@ -30,7 +30,7 @@ const MessageItem = ({message, attachmentClick, setReplyingTo, setPinnedMessage,
         <div id={`message-${message.id}`} className={
             "chat-bubble relative rounded-xl break-all whitespace-pre-wrap overflow-hidden" + (
                 isSender() ? " chat-bubble-info" : " bg-gray-700"
-            ) + ( message.attachments.length > 0 ? " max-w-[70%] sm:max-w-[55%] md:max-w-[45%] lg:max-w-[40%] " : " max-w-[85%] sm:max-w-[70%] md:max-w-[60%] lg:max-w-[55%]" )
+            ) + ( message.attachments.length > 0 ? " max-w-[90%] sm:max-w-[55%] md:max-w-[45%] lg:max-w-[40%] " : " max-w-[95%] sm:max-w-[70%] md:max-w-[60%] lg:max-w-[55%]" )
         }>
             <MessageOptionsDropdown isAdmin={isAdmin} isSender={isSender} setPinnedMessage={setPinnedMessage} setReplyingTo={setReplyingTo} message={message} currentUser={currentUser} />
             {message.replyTo && (<MessageReply handleViewOriginal={handleViewOriginal} message={message.replyTo} />)}
