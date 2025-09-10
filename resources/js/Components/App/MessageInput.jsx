@@ -142,6 +142,7 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
     }).then((response) => {
       setReplyingTo(null);
       setNewMessage('');
+      emit("message.created", response.data);
       setMessageSending(false);
       setUploadProgress(0);
       setChosenFiles([]);

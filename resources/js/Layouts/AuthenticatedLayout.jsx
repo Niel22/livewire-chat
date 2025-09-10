@@ -291,7 +291,7 @@ export default function AuthenticatedLayout({ header, children }) {
 
                     <div
                         className={
-                            "fixed top-0 right-0 h-full w-[75%] sm:w-[30%] bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out z-50 " +
+                            "fixed top-0 right-0 h-full w-[75%] max-w-xs sm:w-[30%] bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out z-50 " +
                             (showingNavigationDropdown
                                 ? "translate-x-0"
                                 : "translate-x-full")
@@ -308,29 +308,32 @@ export default function AuthenticatedLayout({ header, children }) {
 
                         {/* Divider with user info */}
                         <div className="border-t border-gray-200 dark:border-gray-700 pb-4 pt-4">
-                            {isAdmin() && (
                                 <div className="mt-3 space-y-1 px-4">
-                                    <ResponsiveNavLink
-                                        href={route("dashboard")}
-                                        active={route().current("dashboard")}
-                                        className="block text-gray-700 dark:text-gray-200"
-                                    >
-                                        Dashboard
-                                    </ResponsiveNavLink>
-                                    <ResponsiveNavLink
-                                        href={route("group.list")}
-                                        active={route().current("group.list")}
-                                        className="block text-gray-700 dark:text-gray-200"
-                                    >
-                                        Group
-                                    </ResponsiveNavLink>
-                                    <ResponsiveNavLink
-                                        href={route("profile.edit")}
-                                        active={route().current("profile.edit")}
-                                        className="block text-gray-700 dark:text-gray-200"
-                                    >
-                                        Profile
-                                    </ResponsiveNavLink>
+                            {isAdmin() && (
+                                    <>
+                                        <ResponsiveNavLink
+                                            href={route("dashboard")}
+                                            active={route().current("dashboard")}
+                                            className="block text-gray-700 dark:text-gray-200"
+                                        >
+                                            Dashboard
+                                        </ResponsiveNavLink>
+                                        <ResponsiveNavLink
+                                            href={route("group.list")}
+                                            active={route().current("group.list")}
+                                            className="block text-gray-700 dark:text-gray-200"
+                                        >
+                                            Group
+                                        </ResponsiveNavLink>
+                                        <ResponsiveNavLink
+                                            href={route("profile.edit")}
+                                            active={route().current("profile.edit")}
+                                            className="block text-gray-700 dark:text-gray-200"
+                                        >
+                                            Profile
+                                        </ResponsiveNavLink>
+                                    </>
+                                )}
                                     <ResponsiveNavLink
                                         method="post"
                                         href={route("logout")}
@@ -340,7 +343,6 @@ export default function AuthenticatedLayout({ header, children }) {
                                         Log Out
                                     </ResponsiveNavLink>
                                 </div>
-                            )}
                         </div>
                     </div>
                 </nav>

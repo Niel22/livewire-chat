@@ -30,7 +30,7 @@ const MessageAttachments = ({attachments, attachmentClick}) => {
                     {isImage(attachment) && (
                         <img 
                         src={attachment.url} 
-                        className="w-full max-w-sm h-auto object-contain rounded-md" 
+                        className="max-w-[200px] w-full h-[200px] object-cover rounded-md" 
                         />
                     )}
 
