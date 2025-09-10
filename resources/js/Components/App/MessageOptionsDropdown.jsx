@@ -46,8 +46,8 @@ const MessageOptionsDropdown = ({message, currentUser, setReplyingTo, setPinnedM
 
     const onMessagePin = () => {
         if(!isAdmin()) return;
-        console.log(message.is_pinned)
         if(message.is_pinned) return;
+        console.log(message.is_pinned)
 
         axios.patch(route('message.pin', message.id))
             .then((res) => {
