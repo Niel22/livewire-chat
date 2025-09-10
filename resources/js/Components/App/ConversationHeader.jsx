@@ -75,7 +75,7 @@ const ConversationHeader = ({selectedConversation, online, pinnedMessage, handle
                             >
                                 <InformationCircleIcon className="w-6 h-6" />
                             </button>
-                            (<GroupOptionsDropdown isAdmin={isAdmin} selectedConversation={selectedConversation} isLocked={isLocked} />)
+                            <GroupOptionsDropdown isAdmin={isAdmin} selectedConversation={selectedConversation} isLocked={isLocked} />
                         </div>
                     )}
                 </div>
