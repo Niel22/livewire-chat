@@ -28,7 +28,7 @@ const MessageItem = ({message, attachmentClick, setReplyingTo, setPinnedMessage,
         </div>
 
         <div id={`message-${message.id}`} className={
-            "chat-bubble relative rounded-xl break-all whitespace-pre-wrap overflow-hidden" + (
+            "chat-bubble relative rounded-xl break-all whitespace-pre-wrap" + (
                 isSender() ? " chat-bubble-info" : " bg-gray-700"
             ) + ( message.attachments.length > 0 ? " max-w-[90%] sm:max-w-[55%] md:max-w-[45%] lg:max-w-[40%] " : " max-w-[95%] sm:max-w-[70%] md:max-w-[60%] lg:max-w-[55%]" )
         }>
