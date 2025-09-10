@@ -193,45 +193,47 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
         </div>
 
         
-        {!isGroupLocked() && (<div className="border dark:border-slate-700 border-slate-300 shadow-md mx-2 rounded-full flex gap-1 items-end px-4 py-2">
-          <Popover className="relative">
-            <PopoverButton className="p-1 focus:outline-none focus:border-none text-gray-400 hover:text-gray-300">
-              <FaceSmileIcon className='w-6 h-6' />
-            </PopoverButton>
-            <PopoverPanel className="absolute z-10 left-0 bottom-full">
-              <EmojiPicker theme='dark' onEmojiClick={e => setNewMessage(newMessage + e.emoji)} />
-            </PopoverPanel>
-          </Popover>
+        {!isGroupLocked() && (
+          <div className="border dark:border-slate-700 border-slate-300 shadow-md mx-2 rounded-full flex gap-1 items-end px-4 py-2">
+            <Popover className="relative">
+              <PopoverButton className="p-1 focus:outline-none focus:border-none text-gray-400 hover:text-gray-300">
+                <FaceSmileIcon className='w-6 h-6' />
+              </PopoverButton>
+              <PopoverPanel className="absolute z-10 left-0 bottom-full">
+                <EmojiPicker theme='dark' onEmojiClick={e => setNewMessage(newMessage + e.emoji)} />
+              </PopoverPanel>
+            </Popover>
 
-          <NewMessageInput
-            value={newMessage}
-            onSend={onSendClick}
-            onChange={(e) => setNewMessage(e.target.value)}
-            onPaste={handlePaste}
-          />
+            <NewMessageInput
+              value={newMessage}
+              onSend={onSendClick}
+              onChange={(e) => setNewMessage(e.target.value)}
+              onPaste={handlePaste}
+            />
 
-          <button className="p-1 text-gray-400 hover:text-gray-300 relative">
-            <PaperClipIcon className='w-6' />
-            <input type="file" onChange={onFileChange} multiple className='absolute left-0 top-0 right-0 bottom-0 z-20 opacity-0 cursor-pointer' />
-          </button>
-
-          <button className="p-1 text-gray-400 hover:text-gray-300 cursor-pointer relative">
-            <PhotoIcon className='w-6' />
-            <input type="file" onChange={onFileChange} accept='image/*' multiple className='absolute left-0 top-0 right-0 bottom-0 z-20 opacity-0 cursor-pointer' />
-          </button>
-
-          {newMessage || chosenFiles?.length > 0 ? (
-            <button onClick={onSendClick} disabled={messageSending} className='btn btn-info'>
-              {messageSending ? (<span className="loading loading-dots loading-md"></span>) : (
-                <PaperAirplaneIcon className='w-6' />
-              )}
+            <button className="p-1 text-gray-400 hover:text-gray-300 relative">
+              <PaperClipIcon className='w-6' />
+              <input type="file" onChange={onFileChange} multiple className='absolute left-0 top-0 right-0 bottom-0 z-20 opacity-0 cursor-pointer' />
             </button>
-          ) : (
-            <button disabled={messageSending} className=' btn btn-info p-2'>
-              <HandThumbUpIcon onClick={onLikeClick} className='w-6 h-6' />
+
+            <button className="p-1 text-gray-400 hover:text-gray-300 cursor-pointer relative">
+              <PhotoIcon className='w-6' />
+              <input type="file" onChange={onFileChange} accept='image/*' multiple className='absolute left-0 top-0 right-0 bottom-0 z-20 opacity-0 cursor-pointer' />
             </button>
-          )}
-        </div>)}
+
+            {newMessage || chosenFiles?.length > 0 ? (
+              <button onClick={onSendClick} disabled={messageSending} className='btn btn-info'>
+                {messageSending ? (<span className="loading loading-dots loading-md"></span>) : (
+                  <PaperAirplaneIcon className='w-6' />
+                )}
+              </button>
+            ) : (
+              <button disabled={messageSending} className=' btn btn-info p-2'>
+                <HandThumbUpIcon onClick={onLikeClick} className='w-6 h-6' />
+              </button>
+            )}
+          </div>
+        )}
 
         {isGroupLocked() && (
           <div className="border dark:border-slate-700 border-slate-300 shadow-md mx-2 rounded-lg flex items-center gap-2 px-4 py-3 bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-300">

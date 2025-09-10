@@ -239,7 +239,7 @@ const ChatLayout = ({ children }) => {
                 </div>
 
                 {/* Main chat area */}
-                <div className="flex-1 flex flex-col min-w-0 overflow-y-auto bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-gray-100">
+                <div className="flex-1 flex flex-col min-w-0 overflow-hidden overflow-y-auto bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-gray-100">
                     {children}
                 </div>
             </div>
