@@ -65,18 +65,17 @@ export default function useMessageEvents({selectedConversation, auth, setLocalMe
         }
     }
 
-
     const messagePinned = (message) => {
         const isGroup = selectedConversation?.is_group;
         const match = isGroup
-            ? selectedConversation?.id === message.group_id
-            : selectedConversation?.id === message.conversation_id;
+            ? parseInt(selectedConversation?.id) === parseInt(message.group_id)
+            : parseInt(selectedConversation?.id) === parseInt(message.conversation_id);
 
         if (!match) return;
 
         setPinnedMessages((prev) => {
             if (message.is_pinned) {
-                if (prev.some((m) => m.id === message.id)) {
+                if (prev.some((m) => parseInt(m.id) === parseInt(message.id))) {
                     return prev;
                 }
                 return [...prev, message].sort(
@@ -84,7 +83,7 @@ export default function useMessageEvents({selectedConversation, auth, setLocalMe
                 );
             } 
             
-            return prev.filter((m) => m.id !== message.id);
+            return prev.filter((m) => parseInt(m.id) !== parseInt(message.id));
         });
     };
 

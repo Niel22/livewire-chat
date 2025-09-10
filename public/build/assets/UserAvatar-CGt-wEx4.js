@@ -1,3 +1,0 @@
-import{j as a}from"./app-BvQYeIn3.js";const i=({user:s,online:r=null,profile:l=!1})=>{let e=r?"avatar-online":r?"":"avatar-offline";const t=l?"w-40":"w-8";return a.jsxs(a.Fragment,{children:[s.avatar&&a.jsx("div",{className:`chat-image avatar ${e}`,children:a.jsx("div",{className:`rounded-full ${t}`,children:a.jsx("img",{src:s.avatar})})}),!s.avatar&&a.jsx("div",{className:`chat-image avatar avatar-placeholder ${e}`,children:a.jsx("div",{className:`rounded-full ${t}
-                    bg-gray-400 text-gray-800 
-                    dark:bg-gray-700 dark:text-gray-100`,children:a.jsx("span",{className:"text-xl",children:s.name.substring(0,1)})})})]})};export{i as U};

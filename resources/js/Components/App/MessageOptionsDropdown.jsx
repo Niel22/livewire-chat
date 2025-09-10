@@ -54,7 +54,7 @@ const MessageOptionsDropdown = ({message, currentUser, setReplyingTo, setPinnedM
                 emit('message.pin', message);
                 emit('toast.show', 'Message Pinned');
                 setPinnedMessages((prev) => {
-                    if(prev.some((m) => m.id === message.id)){
+                    if(prev.some((m) => parseInt(m.id) === parseInt(message.id))){
                         return prev;
                     }
 

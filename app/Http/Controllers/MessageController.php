@@ -201,7 +201,7 @@ class MessageController extends Controller
 
         if ($message->group_id) {
             $group = $message->group; 
-            if (!in_array($user->role, ['admin', 'staff']) && $group->admin_id !== $user->id) {
+            if (!in_array($user->role, ['admin', 'staff']) && (int)$group->admin_id !== (int)$user->id) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
@@ -225,17 +225,15 @@ class MessageController extends Controller
 
     public function unpin(Message $message){
 
-        
-
         $user = Auth::user();
 
-        if ($message->group_id) {
+        if ((int)$message->group_id) {
             $group = $message->group; 
             if (!in_array($user->role, ['admin', 'staff']) && $group->admin_id !== $user->id) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
-        } elseif ($message->conversation_id) {
+        } elseif ((int)$message->conversation_id) {
             $conversation = $message->conversation; 
             if ((int)$conversation->user_id1 !== (int)$user->id && (int)$conversation->user_id2 !== (int)$user->id) {
                 return response()->json(['error' => 'Unauthorized'], 403);
