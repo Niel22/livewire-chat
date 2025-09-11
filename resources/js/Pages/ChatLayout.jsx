@@ -172,14 +172,14 @@ const ChatLayout = ({ children }) => {
                 {/* Sidebar */}
                 <div
                     className={`transition-all 
-                                    w-full sm:w-[220px] md:w-[300px] 
+                                    w-full md:w-[300px] 
                                     bg-gradient-to-b from-blue-50 to-white 
                                     dark:from-slate-800 dark:to-slate-900 
                                     flex flex-col overflow-hidden 
                                     border-r border-gray-200 dark:border-slate-700 shadow-sm
                                     ${
                                         selectedConversation
-                                        ? "-ml-[100%] sm:ml-0 lg:ml-0" 
+                                        ? "-ml-[100%] md:ml-0 lg:ml-0" 
                                         : "ml-0"
                                 }`}
                 >
@@ -213,7 +213,7 @@ const ChatLayout = ({ children }) => {
                     </div>
 
                     {/* Conversations */}
-                    <div className="hide-scrollbar flex-1 overflow-auto px-2 pt-1 pb-5 space-y-1">
+                    <div className="hide-scrollbar flex-1 overflow-y-auto px-2 pt-1 pb-5 space-y-1">
                         {sortedConversations &&
                             sortedConversations.map((conversation) => (
                                 <ConversationItem
@@ -241,7 +241,7 @@ const ChatLayout = ({ children }) => {
                 </div>
 
                 {/* Main chat area */}
-                <div className="flex-1 flex flex-col min-w-0 overflow-hidden overflow-y-auto bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-gray-100">
+                <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-gray-100">
                     {children}
                 </div>
             </div>

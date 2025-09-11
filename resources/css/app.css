@@ -8,7 +8,11 @@
   font-family: 'Poppins', sans-serif;
 }
 #app {
-    /* height: 100vh; */
+    height: 100vh;
+}
+
+html, body {
+  overflow-x: hidden;
 }
 
 .conversation-item .avatar.avatar-online:before,
@@ -23,8 +27,10 @@
   display: none;
 }
 .hide-scrollbar {
-  -ms-overflow-style: none;  /* IE/Edge */
-  scrollbar-width: none;     /* Firefox */
+  -ms-overflow-style: none;      /* IE/Edge */
+  scrollbar-width: none;         /* Firefox */
+  -webkit-overflow-scrolling: touch; /* ✅ smooth iOS scrolling */
+  overscroll-behavior: contain;  /* ✅ prevent rubber-band overflow */
 }
 
 /* For the container with overflow */
@@ -32,6 +38,7 @@
   overflow-y: auto;          /* or overflow-x:auto */
   scrollbar-width: thin;     /* For Firefox */
   scrollbar-color: #555 #1e1e1e; /* thumb color, track color */
+  overscroll-behavior: contain;
 }
 
 /* Chrome, Edge, Safari */
