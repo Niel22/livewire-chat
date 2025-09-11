@@ -44,6 +44,10 @@ class GroupController extends Controller
 
             $validated['avatar'] = $avatar->storeAs('group_avatars', $avatarName, 'public');
         }
+
+        if(empty($avatar)){
+            unset($validated['avatar']);
+        }
         
 
         $group = Group::create($validated);
@@ -232,6 +236,5 @@ class GroupController extends Controller
         return response()->json(['error' => 'Problem Occured'], 400);
 
     }
-
 
 }
