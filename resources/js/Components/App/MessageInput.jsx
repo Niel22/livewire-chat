@@ -244,9 +244,9 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
           </div>
         )}
         
-        {inputErrorMessage && (
+        {/* {inputErrorMessage && (
           <p className='text-xs text-center text-red-400'>{inputErrorMessage}</p>
-        )}
+        )} */}
       </div>
     </div>
   )
