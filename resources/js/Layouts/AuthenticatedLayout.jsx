@@ -327,6 +327,13 @@ export default function AuthenticatedLayout({ header, children }) {
                                             Group
                                         </ResponsiveNavLink>
                                         <ResponsiveNavLink
+                                            href={route("user.list")}
+                                            active={route().current("user.list")}
+                                            className="block text-gray-700 dark:text-gray-200"
+                                        >
+                                            User
+                                        </ResponsiveNavLink>
+                                        <ResponsiveNavLink
                                             href={route("profile.edit")}
                                             active={route().current("profile.edit")}
                                             className="block text-gray-700 dark:text-gray-200"

@@ -239,7 +239,7 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
                         )}
 
                         {localMessages?.length > 0 && (
-                            <div className="flex-1 flex flex-col space-y-3">
+                            <div className="flex-1 flex flex-col space-y-2">
                                 <div className="
                                     w-max mx-auto 
                                     px-4 py-1.5 
