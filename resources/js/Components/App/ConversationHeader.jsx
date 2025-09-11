@@ -6,6 +6,7 @@ import GroupInfoSidebar from './GroupInfoSidebar'
 import GroupOptionsDropdown from './GroupOptionsDropdown'
 import PinnedMessagesModal from './PinnedMessagesModal'
 import UserAvatar from './UserAvatar'
+import GroupStats from './GroupStats'
 
 const ConversationHeader = ({selectedConversation, online, pinnedMessages, handleViewOriginal, isLocked, setSearchOpen, isAdmin}) => {
     const [pinsOpen, setPinsOpen] = useState(false);
@@ -52,11 +53,9 @@ const ConversationHeader = ({selectedConversation, online, pinnedMessages, handl
                                 {selectedConversation.name}
                             </h3>
                             {selectedConversation.is_group && (
-                                <p className="text-xs text-gray-500 dark:text-gray-400">
-                                    {selectedConversation.members + 1} members
-                                </p>
+                                <GroupStats totalMembers={parseInt(selectedConversation.member) + 1} />
                             )}
-                            {!selectedConversation.is_group && online && (
+                            {(!selectedConversation.is_group && online) && (
                                 <p className="text-xs text-blue-500">Online</p>
                             )}
                         </div>
@@ -105,7 +104,7 @@ const ConversationHeader = ({selectedConversation, online, pinnedMessages, handl
             </>
         )}
 
-        <GroupInfoSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} group={selectedConversation} />
+        <GroupInfoSidebar isAdmin={isAdmin} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} group={selectedConversation} />
 
     </>
   )

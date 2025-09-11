@@ -103,6 +103,8 @@ class UserController extends Controller
     }
 
     public function destroy(User $user){
+        if($user->role === "support") return;
+        
         if($user->delete()){
             return redirect()->route('user.list')->with('success', 'Account Deleted successfully!');
         }

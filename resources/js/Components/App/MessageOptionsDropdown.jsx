@@ -23,6 +23,7 @@ const MessageOptionsDropdown = ({message, currentUser, setReplyingTo, setPinnedM
             .then((response) => {
                 setIsOpen(false);
                 setEditMessage(null);
+                emit('message.updated', response.data);
             })
             .catch((error) => {
                 setIsOpen(false);

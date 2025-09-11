@@ -47,6 +47,8 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        $conversation = $user->conversations()->first();
+
+        return redirect(route('chat.user', $conversation->id));
     }
 }

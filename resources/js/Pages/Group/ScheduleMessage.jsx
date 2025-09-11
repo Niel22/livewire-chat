@@ -1,15 +1,18 @@
 import DeleteScheduleModal from '@/Components/App/DeleteScheduleModal'
+import ShowScheduleModal from '@/Components/App/ShowScheduleModal'
 import InputError from '@/Components/InputError'
 import InputLabel from '@/Components/InputLabel'
 import PrimaryButton from '@/Components/PrimaryButton'
 import TextAreaInput from '@/Components/TextAreaInput'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
 import { Transition } from '@headlessui/react'
+import { EyeIcon, TrashIcon } from '@heroicons/react/24/solid'
 import { Head, Link, router, useForm } from '@inertiajs/react'
 import React, { useState } from 'react'
 
 const ScheduleMessage = ({group, scheduled_messages}) => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showViewModal, setShowViewModal] = useState(false);
     const [selectedMessage, setSelectedMessage] = useState(null);
 
     const onCloseModal = () => {
@@ -186,21 +189,30 @@ const ScheduleMessage = ({group, scheduled_messages}) => {
                             <tbody>
                             {scheduled_messages.map((msg) => (
                                 <tr key={msg.id} className="border-t border-gray-200 dark:border-gray-700">
-                                <td className="px-4 py-2 text-gray-800 dark:text-gray-200">
+                                <td className="px-4 py-2 text-gray-800 dark:text-gray-200 truncate max-w-sm">
                                     {msg.message}
                                 </td>
                                 <td className="px-4 py-2 text-gray-600 dark:text-gray-400">
                                     {new Date(msg.scheduled_at).toLocaleString()}
                                 </td>
-                                <td className="px-4 py-2">
+                                <td className="px-4 space-x-3 py-2">
                                     <button
-                                    onClick={() => {
-                                        setShowDeleteModal(true);
-                                        setSelectedMessage(msg);
-                                    }}
-                                    className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                                        onClick={() => {
+                                            setShowViewModal(true);
+                                            setSelectedMessage(msg);
+                                        }}
+                                        className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
                                     >
-                                    Delete
+                                    <EyeIcon className='w-4' />
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setShowDeleteModal(true);
+                                            setSelectedMessage(msg);
+                                        }}
+                                        className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                                    >
+                                    <TrashIcon className='w-4' />
                                     </button>
                                 </td>
                                 </tr>
@@ -215,6 +227,7 @@ const ScheduleMessage = ({group, scheduled_messages}) => {
 
         </div>
 
+        <ShowScheduleModal isOpen={showViewModal} setIsOpen={setShowViewModal} message={selectedMessage} />
         <DeleteScheduleModal onClose={onCloseModal} onConfirm={onConfirmDelete} show={showDeleteModal} selectedMessage={selectedMessage} />
     </>
 

@@ -22,6 +22,7 @@ export default function AuthenticatedLayout({ header, children }) {
     const conversations = page.props.conversations;
     const sub_account = page.props.sub_account;
     const isAdmin = () => {
+        
         if (user.role === "admin") {
             return true;
         }

@@ -8,7 +8,7 @@
   font-family: 'Poppins', sans-serif;
 }
 #app {
-    height: 100vh;
+    /* height: 100vh; */
 }
 
 .conversation-item .avatar.avatar-online:before,
@@ -79,7 +79,7 @@ button {
 .chat-message-content > p,
 .chat-message-content > pre { 
   margin-top: 0;
-  margin-bottom: 5px;
+  /* margin-bottom: 5px; */
 }
 
 .chat-message-content > ol,

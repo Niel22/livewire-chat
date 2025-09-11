@@ -24,6 +24,7 @@ class StoreGroupRequest extends FormRequest
         return [
             'name' => 'required|string|unique:groups,name',
             'description' => 'required|string',
+            'member' => 'required|integer',
             'admin_id' => 'required|integer|exists:users,id',
             'avatar' => 'nullable|image|max:1024',
         ];

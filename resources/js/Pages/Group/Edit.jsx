@@ -17,6 +17,7 @@ const Edit = ({group, staffs}) => {
             description: group.description,
             admin_id: group.admin_id,
             avatar: null,
+            member: group.member,
             _method: "PATCH"
         });
 
@@ -125,6 +126,22 @@ const Edit = ({group, staffs}) => {
                                 </select>
 
                                 <InputError className="mt-2 dark:text-red-400" message={errors.admin_id} />
+                            </div>
+
+                            <div>
+                                <InputLabel htmlFor="member" value="Group Members Number" />
+
+                                <TextInput
+                                    id="member"
+                                    className="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
+                                    value={data.member}
+                                    onChange={(e) => setData('member', e.target.value)}
+                                    required
+                                    type="number"
+                                    autoComplete="off"
+                                />
+
+                                <InputError className="mt-2 dark:text-red-400" message={errors.name} />
                             </div>
 
                             <div className="flex items-center gap-4">

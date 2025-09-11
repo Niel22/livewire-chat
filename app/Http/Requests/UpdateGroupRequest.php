@@ -25,6 +25,7 @@ class UpdateGroupRequest extends FormRequest
         return [
             'name' => 'nullable|string|unique:groups,name,'. $id,
             'description' => 'nullable|string',
+            'member' => 'nullable|integer',
             'admin_id' => 'nullable|integer|exists:users,id',
             'avatar' => 'nullable|image|max:1024',
         ];

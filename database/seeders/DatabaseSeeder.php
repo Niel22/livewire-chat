@@ -20,10 +20,31 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         User::create([
-            'name' => 'System Administrator',
-            'email' => 'sysadmin@gmail.com',
+            'name' => 'Taskiwn Administrator',
+            'email' => 'sysadmin@taskwin.com',
             'password' => 'password$123',
             'role' => 'admin'
+        ]);
+
+        User::create([
+            'name' => 'General Customer Support',
+            'email' => 'general@taskwin.com',
+            'password' => 'password$123',
+            'role' => 'support',
+        ]);
+
+        User::create([
+            'name' => 'Finance Customer Support',
+            'email' => 'finance@taskwin.com',
+            'password' => 'password$123',
+            'role' => 'support',
+        ]);
+
+        User::create([
+            'name' => 'Coordinator',
+            'email' => 'coordinator@taskwin.com',
+            'password' => 'password$123',
+            'role' => 'support',
         ]);
         
         // User::factory()->create([

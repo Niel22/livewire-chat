@@ -53,6 +53,14 @@ export default function useMessageEvents({selectedConversation, auth, setLocalMe
         }
     }
 
+    const messageUpdated = (message) => {
+        setLocalMessages((prev) => {
+            return prev.map((m) => 
+                m.id === message.id ? {...m, message: message.message} : m
+            )
+        })
+    }
+
     const messageDeleted = ({message}) => {
         if(selectedConversation?.is_group && selectedConversation?.id == message.group_id){
             setLocalMessages(prevMessages => {
@@ -97,12 +105,14 @@ export default function useMessageEvents({selectedConversation, auth, setLocalMe
         const offDeleted = on('message.deleted', messageDeleted);
         const offPinned = on('message.pinned', messagePinned);
         const offGroupLocked = on('group.locked', groupLocked);
+        const offMessageUpdated = on('message.updated', messageUpdated);
 
         return () => {
             offCreated();
             offDeleted();
             offPinned();
             offGroupLocked();
+            offMessageUpdated();
         };
     }, [selectedConversation, auth]);
 }

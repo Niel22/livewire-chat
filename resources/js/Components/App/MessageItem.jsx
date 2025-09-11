@@ -36,7 +36,7 @@ const MessageItem = ({message, attachmentClick, setReplyingTo, setPinnedMessages
             {message.replyTo && (<MessageReply handleViewOriginal={handleViewOriginal} message={message.replyTo} />)}
             {message.attachments.length > 0 && (<MessageAttachments attachments={message.attachments} attachmentClick={attachmentClick} />)}
             <div className='chat-message'>
-                <div className='chat-message-content'>
+                <div className='chat-message-content space-y-0'>
                     <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         components={{

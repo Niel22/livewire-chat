@@ -3,7 +3,7 @@ import React from 'react'
 
 const PinnedMessagesModal = ({open,onClose, pinnedMessages, handleViewOriginal, isAdmin}) => {
     const onMessageUnpin = (message) => {
-        if(!isAdmin) return;
+        if(!isAdmin()) return;
 
         axios.patch(route('message.unpin', message.id))
             .then((res) => {

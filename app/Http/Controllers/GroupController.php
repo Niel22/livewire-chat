@@ -24,7 +24,7 @@ class GroupController extends Controller
 {
     public function index(){
         return inertia('Group/List', [
-            'groups' => Group::with('admin')->withCount('members')->latest()->get()
+            'groups' => Group::with('admin')->latest()->get()
         ]);
     }
 
@@ -68,13 +68,16 @@ class GroupController extends Controller
         
         $validated = $request->validated();
 
-        if($avatar){
-
+        if(!empty($avatar)){
             if($group->avatar) Storage::disk('public')->delete($group->avatar);
 
             $avatarName = uniqid('avatar_') . '.' . $avatar->getClientOriginalExtension();
 
             $validated['avatar'] = $avatar->storeAs('group_avatars', $avatarName, 'public');
+        }
+
+        if(empty($avatar)){
+            unset($validated['avatar']);
         }
 
         if($group->update($validated)){
@@ -114,7 +117,7 @@ class GroupController extends Controller
 
         return inertia('Group/ScheduleMessage', [
             'group' => $group,
-            'scheduled_messages' => ScheduleMessage::where('group_id', $group->id)->latest()->get()
+            'scheduled_messages' => ScheduleMessage::with('attachments')->where('group_id', $group->id)->latest()->get()
         ]);
     }
 

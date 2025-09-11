@@ -15,7 +15,8 @@ class Group extends Model
         'description',
         'admin_id',
         'is_locked',
-        'avatar'
+        'avatar',
+        'member'
     ];
 
     public function members(){
@@ -49,6 +50,7 @@ class Group extends Model
             'description' => $this->description,
             'updated_at' => $this->updated_at,
             'admin' => $this->admin,
+            'member' => $this->member,
             'last_message' => $this->last_message?->message,
             'last_message_date' => $this->last_message?->created_at,
         ];

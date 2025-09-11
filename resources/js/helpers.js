@@ -128,3 +128,32 @@ export async function fetchMessageById(message) {
     }
 }
 
+export const formatScheduledTime = (dateString) => {
+  if (!dateString) return "--/--/----";
+
+  const date = new Date(dateString);
+
+  const formattedDate = date.toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "long",    
+    day: "numeric",  
+    year: "numeric",  
+  });
+
+  const formattedTime = date.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  return `${formattedDate} • ${formattedTime}`;
+};
+
+export const formatNumber = (num) => {
+  if (num >= 1_000_000) {
+    return (num / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
+  }
+  if (num >= 1_000) {
+    return (num / 1_000).toFixed(1).replace(/\.0$/, "") + "k";
+  }
+  return num.toString();
+};

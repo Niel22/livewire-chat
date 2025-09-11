@@ -3,7 +3,7 @@ import React from "react";
 import UserAvatar from "./UserAvatar";
 import { router } from "@inertiajs/react";
 
-const GroupInfoSidebar = ({ sidebarOpen, setSidebarOpen, group }) => {
+const GroupInfoSidebar = ({ sidebarOpen, setSidebarOpen, group, isAdmin }) => {
     
     const handleRemoveMember = (member) => {
         router.patch(route('group.member.remove', {group: group, user: member}));
@@ -73,7 +73,7 @@ const GroupInfoSidebar = ({ sidebarOpen, setSidebarOpen, group }) => {
 
                         <div>
                             <h3 className="font-semibold text-gray-700 dark:text-gray-200 text-sm mb-2">
-                                {group.members + 1} Participants
+                                {parseInt(group.member) + 1} Participants
                             </h3>
                             <div className="space-y-3">
                                 <button
@@ -95,24 +95,26 @@ const GroupInfoSidebar = ({ sidebarOpen, setSidebarOpen, group }) => {
                                         Admin
                                     </span>
                                 </button>
-                                {group.membersList?.map((member) => (
-                                    <div
-                                        key={member.id + member.updated_at}
-                                        className="flex items-center justify-between bg-gray-50 dark:bg-slate-800 p-3 rounded-lg shadow-sm"
-                                    >
-                                        <div className="flex items-center gap-3 overflow-hidden">
-                                            <UserAvatar user={member} />
-                                            <div className="overflow-hidden">
-                                                <h6 className="text-sm font-medium text-gray-800 dark:text-gray-100 truncate">
-                                                    {member.name}
-                                                </h6>
+                                { isAdmin() &&
+                                    group.membersList?.map((member) => (
+                                        <div
+                                            key={member.id + member.updated_at}
+                                            className="flex items-center justify-between bg-gray-50 dark:bg-slate-800 p-3 rounded-lg shadow-sm"
+                                        >
+                                            <div className="flex items-center gap-3 overflow-hidden">
+                                                <UserAvatar user={member} />
+                                                <div className="overflow-hidden">
+                                                    <h6 className="text-sm font-medium text-gray-800 dark:text-gray-100 truncate">
+                                                        {member.name}
+                                                    </h6>
+                                                </div>
                                             </div>
+                                            <button onClick={() => handleRemoveMember(member)} className="p-3 hover:bg-red-50/20 rounded-full">
+                                                <TrashIcon className="w-4 text-red-500" />
+                                            </button>
                                         </div>
-                                        <button onClick={() => handleRemoveMember(member)} className="p-3 hover:bg-red-50/20 rounded-full">
-                                            <TrashIcon className="w-4 text-red-500" />
-                                        </button>
-                                    </div>
-                                ))}
+                                    )
+                                )}
                             </div>
                         </div>
                     </div>
