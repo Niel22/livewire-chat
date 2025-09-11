@@ -103,7 +103,9 @@ const ChatLayout = ({ children }) => {
 
     useEffect(() => {
         setSortedConversations(
-            localConversations.sort((a, b) => {
+            localConversations
+            .filter(convo => convo.last_message_date !== null)
+            .sort((a, b) => {
                 if (a.last_message_date && b.last_message_date) {
                     return new Date(b.last_message_date) - new Date(a.last_message_date);
                 } else if (a.last_message_date) {
