@@ -23,8 +23,9 @@ class UserObserver
             'coordinator@taskwin.com',
         ];
 
+        
         if($user->staff_id !== null) return;
-
+        
         if($user->role !== "member") return;
 
         if (in_array($user->email, $systemEmails)) {
