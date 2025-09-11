@@ -49,6 +49,10 @@ class RegisteredUserController extends Controller
 
         $conversation = $user->conversations()->first();
 
-        return redirect(route('chat.user', $conversation->id));
+        if($conversation){
+            return redirect(route('chat.user', $conversation->id));
+        }
+
+        return redirect(route('dashboard', absolute: false));
     }
 }
