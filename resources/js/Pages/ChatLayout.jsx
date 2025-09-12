@@ -179,8 +179,8 @@ const ChatLayout = ({ children }) => {
                                     border-r border-gray-200 dark:border-slate-700 shadow-sm
                                     ${
                                         selectedConversation
-                                        ? "hidden md:flex lg:flex" 
-                                        : "flex"
+                                        ? "-ml-[100%] md:ml-0 lg:ml-0" 
+                                        : "ml-0"
                                 }`}
                 >
                     {/* Header */}
