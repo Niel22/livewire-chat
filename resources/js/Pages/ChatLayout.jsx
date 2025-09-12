@@ -168,11 +168,11 @@ const ChatLayout = ({ children }) => {
         <>
             <Head title="All Chats" />
 
-            <div className="flex-1 w-full flex overflow-hidden">
+            <div className="flex-1 flex overflow-hidden">
                 {/* Sidebar */}
                 <div
                     className={`transition-all 
-                                    w-full md:w-[300px] 
+                                    w-full sm:w-[300px] 
                                     bg-gradient-to-b from-blue-50 to-white 
                                     dark:from-slate-800 dark:to-slate-900 
                                     flex flex-col overflow-hidden 
@@ -189,14 +189,16 @@ const ChatLayout = ({ children }) => {
                                     text-gray-700 dark:text-gray-100 border-b border-gray-200 dark:border-slate-700"
                     >
                         My Conversations
-                        {auth.user.role === "admin" && (<div
-                            className="tooltip tooltip-left"
-                            data-tip="Create New Group"
-                        >
-                            <Link href={route('group.create')} className="text-blue-500 hover:text-blue-700 dark:text-indigo-400 dark:hover:text-indigo-300">
-                                <PlusCircleIcon className="w-7 h-7 inline-block ml-2" />
-                            </Link>
-                        </div>)}
+                        {auth.user.role === "admin" && (
+                            <div
+                                className="tooltip tooltip-left"
+                                data-tip="Create New Group"
+                            >
+                                <Link href={route('group.create')} className="text-blue-500 hover:text-blue-700 dark:text-indigo-400 dark:hover:text-indigo-300">
+                                    <PlusCircleIcon className="w-7 h-7 inline-block ml-2" />
+                                </Link>
+                            </div>
+                        )}
                     </div>
 
                     {/* Search */}
@@ -241,7 +243,7 @@ const ChatLayout = ({ children }) => {
                 </div>
 
                 {/* Main chat area */}
-                <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-gray-100">
+                <div className="w-full flex-1 mx-auto flex flex-col overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-gray-100">
                     {children}
                 </div>
             </div>
