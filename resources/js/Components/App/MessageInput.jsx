@@ -156,8 +156,8 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
   }
 
   return (
-    <div className='w-full mt-auto flex flex-wrap items-end justify-start z-100 py-3'>
-      <div className=" px-0 md:px-3 xs:p-0 min-w-0 md:min-w-[220px] basis-full flex-1 relative">
+    <div className=' mt-auto flex flex-wrap items-end justify-start z-100 py-3'>
+      <div className=" px-3 xs:p-0 min-w-[220px] basis-full flex-1 relative">
 
         {chosenFiles?.length > 0 && !!uploadProgress && (
           <progress className='progress progress-info w-full' value={uploadProgress} max="100" />
