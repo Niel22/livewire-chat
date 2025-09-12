@@ -157,7 +157,7 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
 
   return (
     <div className='max-w-full mt-auto flex flex-wrap items-end justify-start z-100 py-3 overflow-x-hidden'>
-      <div className=" px-1 md:px-3 xs:p-0 min-w-[220px] basis-full xs:basis-0 flex-1 relative">
+      <div className=" px-1 xs:p-0 min-w-[220px] basis-full xs:basis-0 flex-1 relative">
 
         {chosenFiles?.length > 0 && !!uploadProgress && (
           <progress className='progress progress-info w-full' value={uploadProgress} max="100" />
@@ -195,14 +195,14 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
         
         {!isGroupLocked() && (
           <div className="border dark:border-slate-700 border-slate-300 shadow-md mx-2 rounded-full flex gap-1 items-end px-4 py-2">
-            {/* <Popover className="relative">
+            <Popover className="relative">
               <PopoverButton className="p-1 focus:outline-none focus:border-none text-gray-400 hover:text-gray-300">
                 <FaceSmileIcon className='w-6 h-6' />
               </PopoverButton>
               <PopoverPanel className="absolute z-10 left-0 bottom-full">
                 <EmojiPicker theme='dark' onEmojiClick={e => setNewMessage(newMessage + e.emoji)} />
               </PopoverPanel>
-            </Popover> */}
+            </Popover>
 
             <NewMessageInput
               value={newMessage}
@@ -211,7 +211,7 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
               onPaste={handlePaste}
             />
 
-            {/* <button className="p-1 text-gray-400 hover:text-gray-300 relative">
+            <button className="p-1 text-gray-400 hover:text-gray-300 relative">
               <PaperClipIcon className='w-6' />
               <input type="file" onChange={onFileChange} multiple className='absolute left-0 top-0 right-0 bottom-0 z-20 opacity-0 cursor-pointer' />
             </button>
@@ -219,9 +219,9 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
             <button className="p-1 text-gray-400 hover:text-gray-300 cursor-pointer relative">
               <PhotoIcon className='w-6' />
               <input type="file" onChange={onFileChange} accept='image/*' multiple className='absolute left-0 top-0 right-0 bottom-0 z-20 opacity-0 cursor-pointer' />
-            </button> */}
+            </button>
 
-            {/* {newMessage || chosenFiles?.length > 0 ? (
+            {newMessage || chosenFiles?.length > 0 ? (
               <button onClick={onSendClick} disabled={messageSending} className='btn btn-info'>
                 {messageSending ? (<span className="loading loading-dots loading-md"></span>) : (
                   <PaperAirplaneIcon className='w-6' />
@@ -231,7 +231,7 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
               <button disabled={messageSending} className=' btn btn-info p-2'>
                 <HandThumbUpIcon onClick={onLikeClick} className='w-6 h-6' />
               </button>
-            )} */}
+            )}
           </div>
         )}
 
