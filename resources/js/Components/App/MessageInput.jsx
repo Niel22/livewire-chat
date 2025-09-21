@@ -194,7 +194,7 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
 
         
         {!isGroupLocked() && (
-          <div className="border dark:border-slate-700 border-slate-300 shadow-md mx-2 rounded-full flex gap-1 items-end px-4 py-2">
+          <div className="border dark:border-slate-700 max-w-full border-slate-300 shadow-md mx-2 rounded-full flex gap-1 items-end px-4 py-2">
             <Popover className="relative">
               <PopoverButton className="p-1 focus:outline-none focus:border-none text-gray-400 hover:text-gray-300">
                 <FaceSmileIcon className='w-6 h-6' />
@@ -204,12 +204,12 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
               </PopoverPanel>
             </Popover>
 
-            {/* <NewMessageInput
+            <NewMessageInput
               value={newMessage}
               onSend={onSendClick}
               onChange={(e) => setNewMessage(e.target.value)}
               onPaste={handlePaste}
-            /> */}
+            />
 
             <button className="p-1 text-gray-400 hover:text-gray-300 relative">
               <PaperClipIcon className='w-6' />

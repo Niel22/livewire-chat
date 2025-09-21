@@ -252,7 +252,7 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
                                     hover:bg-blue-100 dark:hover:bg-blue-800/40 
                                     transition
                                 ">
-                                    Load older messages
+                                    Load oldest messages
                                 </div>
 
                                 <div ref={loadMoreIntersect}></div>
