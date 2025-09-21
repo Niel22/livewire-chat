@@ -273,7 +273,7 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
                     </div>
 
                     
-                    <MessageInput isLocked={isLocked} conversation={selectedConversation} setReplyingTo={setReplyingTo} replyingTo={replyingTo} user={auth.user} />
+                    {/* <MessageInput isLocked={isLocked} conversation={selectedConversation} setReplyingTo={setReplyingTo} replyingTo={replyingTo} user={auth.user} /> */}
                 </div>
             )}
 
