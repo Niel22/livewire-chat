@@ -190,7 +190,7 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
     return (
         <>
             <Head title={selectedConversation?.is_group ? selectedConversation?.name : selectedConversation?.name} />
-
+            
             {!messages && (
                 <div
                     className="flex flex-col gap-8 justify-center items-center text-center h-full opacity-70 
@@ -206,8 +206,8 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
             )}
 
             {messages && (
-                <div className="flex overflow-hidden">
-                    {/* Header with subtle border */}
+                <div className="flex flex-col h-full overflow-hidden">
+                    
                     <ConversationHeader
                         handleViewOriginal={handleViewOriginal}
                         selectedConversation={selectedConversation}
@@ -222,7 +222,7 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
                                 shadow-sm transition-colors"
                     />
 
-                    {/* Messages section with gradient */}
+                    
                     <div
                         className="flex-1 min-w-0 overflow-y-auto custom-scrollbar p-5 
                                 bg-gradient-to-b from-blue-50/50 to-white 
