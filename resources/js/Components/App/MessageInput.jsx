@@ -204,12 +204,12 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
               </PopoverPanel>
             </Popover>
 
-            <NewMessageInput
+            {/* <NewMessageInput
               value={newMessage}
               onSend={onSendClick}
               onChange={(e) => setNewMessage(e.target.value)}
               onPaste={handlePaste}
-            />
+            /> */}
 
             <button className="p-1 text-gray-400 hover:text-gray-300 relative">
               <PaperClipIcon className='w-6' />
