@@ -204,12 +204,12 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
               </PopoverPanel>
             </Popover>
 
-            {/* <NewMessageInput
+            <NewMessageInput
               value={newMessage}
               onSend={onSendClick}
               onChange={(e) => setNewMessage(e.target.value)}
               onPaste={handlePaste}
-            /> */}
+            />
 
             <button className="p-1 text-gray-400 hover:text-gray-300 relative">
               <PaperClipIcon className='w-6' />
@@ -222,13 +222,13 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
             </button>
 
             {newMessage || chosenFiles?.length > 0 ? (
-              <button onClick={onSendClick} disabled={messageSending} className='btn btn-info'>
+              <button onClick={onSendClick} disabled={messageSending} className='py-2 px-3 rounded-md bg-blue-500'>
                 {messageSending ? (<span className="loading loading-dots loading-md"></span>) : (
                   <PaperAirplaneIcon className='w-6' />
                 )}
               </button>
             ) : (
-              <button disabled={messageSending} className=' btn btn-info p-2'>
+              <button disabled={messageSending} className=' py-2 px-3 rounded-md bg-blue-500 p-2'>
                 <HandThumbUpIcon onClick={onLikeClick} className='w-6 h-6' />
               </button>
             )}
