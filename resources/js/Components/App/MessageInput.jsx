@@ -219,8 +219,8 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
 
               {!isGroupLocked() && (
                   <div className="border dark:border-slate-700 border-slate-300 shadow-md mx-2 rounded-full flex gap-1 items-end px-4 py-2">
-                      <button className="p-1 text-gray-400 hover:text-gray-300 relative">
-                          <PhotoIcon className="w-6" />
+                      <button className="p-1 text-gray-400 overflow-hidden hover:text-gray-300 relative">
+                          <PhotoIcon className="w-4 md:w-6" />
                           <input
                               type="file"
                               onChange={onFileChange}
