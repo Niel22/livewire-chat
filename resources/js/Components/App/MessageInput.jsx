@@ -221,7 +221,7 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
               <input type="file" onChange={onFileChange} accept='image/*' multiple className='absolute left-0 top-0 right-0 bottom-0 z-20 opacity-0 cursor-pointer' />
             </button> */}
 
-            {/* {newMessage || chosenFiles?.length > 0 ? (
+            {newMessage || chosenFiles?.length > 0 ? (
               <button onClick={onSendClick} disabled={messageSending} className='py-2 px-3 rounded-md bg-blue-500'>
                 {messageSending ? (<span className="loading loading-dots loading-md"></span>) : (
                   <PaperAirplaneIcon className='w-6' />
@@ -231,7 +231,7 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
               <button disabled={messageSending} className=' py-2 px-3 rounded-md bg-blue-500 p-2'>
                 <HandThumbUpIcon onClick={onLikeClick} className='w-6 h-6' />
               </button>
-            )} */}
+            )}
           </div>
         )}
 
