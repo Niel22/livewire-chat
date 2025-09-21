@@ -206,7 +206,7 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
             )}
 
             {messages && (
-                <>
+                <div className="flex overflow-hidden">
                     {/* Header with subtle border */}
                     <ConversationHeader
                         handleViewOriginal={handleViewOriginal}
@@ -274,7 +274,7 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
 
                     
                     <MessageInput isLocked={isLocked} conversation={selectedConversation} setReplyingTo={setReplyingTo} replyingTo={replyingTo} user={auth.user} />
-                </>
+                </div>
             )}
 
             {previewAttachment.attachments && (
