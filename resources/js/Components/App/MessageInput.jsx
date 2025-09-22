@@ -220,7 +220,8 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
               {!isGroupLocked() && (
                   <div className="border dark:border-slate-700 border-slate-300 shadow-md mx-2 rounded-full flex gap-1 items-end px-4 py-2">
                       <button className="p-1 text-gray-400 overflow-hidden hover:text-gray-300 relative">
-                          <PaperClipIcon className="w-6" />
+                          <PaperClipIcon className="hidden md:block w-6" />
+                          <PhotoIcon className="md:hidden w-6" />
                           <input
                               type="file"
                               onChange={onFileChange}
@@ -229,7 +230,7 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
                           />
                       </button>
 
-                      <button className="p-1 text-gray-400 hover:text-gray-300 cursor-pointer relative">
+                      <button className="hidden md:flex p-1 text-gray-400 hover:text-gray-300 cursor-pointer relative">
                           <PhotoIcon className="w-6" />
                           <input
                               type="file"
