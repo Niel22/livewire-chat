@@ -43,7 +43,7 @@ const NewMessageInput = ({value, onChange, onSend, onPaste}) => {
         data-gramm_editor="false"
         onPaste={onPaste}
         autoFocus
-        className='hide-scrollbar input border-none bg-transparent outline-none shadow-none flex-1 min-w-0 max-w-full text-sm focus:outline-none resize-none overflow-y-auto max-h-40 -webkit-text-size-adjust-100'
+        className='hide-scrollbar input border-none bg-transparent outline-none shadow-none flex-1 min-w-0 max-w-full text-[16px] focus:outline-none resize-none overflow-y-auto max-h-40 -webkit-text-size-adjust-100'
     >
     </textarea>
   )
