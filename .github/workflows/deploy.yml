@@ -24,17 +24,6 @@ jobs:
           ini-values: post_max_size=256M, upload_max_filesize=256M
           coverage: none
       
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build Node app
-        run: npm run build
-
       - name: Deploy via SSH and Run Laravel Commands
         uses: appleboy/ssh-action@master
         with:
