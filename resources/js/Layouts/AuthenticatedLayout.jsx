@@ -1,5 +1,6 @@
 import NewMessageNotification from "@/Components/App/NewMessageNotification";
 import Toast from "@/Components/App/Toast";
+import TranslationWidget from "@/Components/App/TranslationWidget";
 import UserAvatar from "@/Components/App/UserAvatar";
 import ApplicationLogo from "@/Components/ApplicationLogo";
 import DarkModeToggle from "@/Components/DarkModeToggle";
@@ -9,18 +10,32 @@ import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import { useEventBus } from "@/EventBus";
 import { Link, usePage } from "@inertiajs/react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function AuthenticatedLayout({ header, children }) {
+    const { t } = useTranslation("sidebar");
+    const { component } = usePage();
     useEffect(() => {
         if ("Notification" in window && Notification.permission !== "granted") {
             Notification.requestPermission();
         }
     }, []);
 
+    
+
     const page = usePage();
     const user = page.props.auth.user;
     const conversations = page.props.conversations;
+    const selectedConversation = page.props.selectedConversation;
     const sub_account = page.props.sub_account;
+
+    const isMobile = () => {
+        if(selectedConversation){
+            return true;
+        }
+
+        return false;
+    }
     const isAdmin = () => {
         
         if (user.role === "admin") {
@@ -150,7 +165,7 @@ export default function AuthenticatedLayout({ header, children }) {
                     </nav>
                 )}
 
-                <nav className="border-b border-gray-100 bg-white dark:border-gray-700 dark:bg-gray-800 shadow-lg">
+                <nav className={`${isMobile() && "hidden md:block"} border-b border-gray-100 bg-white dark:border-gray-700 dark:bg-gray-800 shadow-lg`}>
                     <div className="mx-auto max-w-[90%] px-4 sm:px-6 lg:px-8">
                         <div className="flex h-16 justify-between">
                             <div className="flex">
@@ -195,6 +210,7 @@ export default function AuthenticatedLayout({ header, children }) {
 
                             <div className="hidden sm:ms-6 sm:flex sm:items-center">
                                 <DarkModeToggle />
+                                <TranslationWidget />
                                 <div className="relative ms-3">
                                     <Dropdown>
                                         <Dropdown.Trigger>
@@ -225,14 +241,14 @@ export default function AuthenticatedLayout({ header, children }) {
                                             <Dropdown.Link
                                                 href={route("profile.edit")}
                                             >
-                                                Profile
+                                                {t("profile")}
                                             </Dropdown.Link>
                                             <Dropdown.Link
                                                 href={route("logout")}
                                                 method="post"
                                                 as="button"
                                             >
-                                                Log Out
+                                                {t("logout")}
                                             </Dropdown.Link>
                                         </Dropdown.Content>
                                     </Dropdown>
@@ -240,7 +256,10 @@ export default function AuthenticatedLayout({ header, children }) {
                             </div>
 
                             <div className="-me-2 flex items-center sm:hidden">
-                                <DarkModeToggle />
+                                <div className="flex items-center mr-2">
+                                    <DarkModeToggle />
+                                    <TranslationWidget />
+                                </div>
                                 <button
                                     onClick={() =>
                                         setShowingNavigationDropdown(
@@ -311,44 +330,44 @@ export default function AuthenticatedLayout({ header, children }) {
                         <div className="border-t border-gray-200 dark:border-gray-700 pb-4 pt-4">
                                 <div className="mt-3 space-y-1 px-4">
                             {isAdmin() && (
-                                    <>
-                                        <ResponsiveNavLink
-                                            href={route("dashboard")}
-                                            active={route().current("dashboard")}
-                                            className="block text-gray-700 dark:text-gray-200"
-                                        >
-                                            Dashboard
-                                        </ResponsiveNavLink>
-                                        <ResponsiveNavLink
-                                            href={route("group.list")}
-                                            active={route().current("group.list")}
-                                            className="block text-gray-700 dark:text-gray-200"
-                                        >
-                                            Group
-                                        </ResponsiveNavLink>
-                                        <ResponsiveNavLink
-                                            href={route("user.list")}
-                                            active={route().current("user.list")}
-                                            className="block text-gray-700 dark:text-gray-200"
-                                        >
-                                            User
-                                        </ResponsiveNavLink>
+                                        <>
+                                            <ResponsiveNavLink
+                                                href={route("dashboard")}
+                                                active={route().current("dashboard")}
+                                                className="block text-gray-700 dark:text-gray-200"
+                                            >
+                                                Dashboard
+                                            </ResponsiveNavLink>
+                                            <ResponsiveNavLink
+                                                href={route("group.list")}
+                                                active={route().current("group.list")}
+                                                className="block text-gray-700 dark:text-gray-200"
+                                            >
+                                                Group
+                                            </ResponsiveNavLink>
+                                            <ResponsiveNavLink
+                                                href={route("user.list")}
+                                                active={route().current("user.list")}
+                                                className="block text-gray-700 dark:text-gray-200"
+                                            >
+                                                User
+                                            </ResponsiveNavLink>
+                                        </>
+                                    )}
                                         <ResponsiveNavLink
                                             href={route("profile.edit")}
                                             active={route().current("profile.edit")}
                                             className="block text-gray-700 dark:text-gray-200"
                                         >
-                                            Profile
+                                            {t("profile")}
                                         </ResponsiveNavLink>
-                                    </>
-                                )}
                                     <ResponsiveNavLink
                                         method="post"
                                         href={route("logout")}
                                         as="button"
                                         className="block text-gray-700 hover:bg-red-300 dark:hover:bg-red-500 dark:text-gray-200"
                                     >
-                                        Log Out
+                                        {t("logout")}
                                     </ResponsiveNavLink>
                                 </div>
                         </div>

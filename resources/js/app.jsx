@@ -1,3 +1,5 @@
+import './i18n';
+
 import '../css/app.css';
 import './bootstrap';
 

@@ -1,16 +1,14 @@
-import UserAvatar from '@/Components/App/UserAvatar';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Transition } from '@headlessui/react';
 import { Link, useForm, usePage } from '@inertiajs/react';
+import { useTranslation } from "react-i18next";
+import myImage from '@/assets/img.png';
 
-export default function UpdateProfileInformation({
-    mustVerifyEmail,
-    status,
-    className = '',
-}) {
+export default function UpdateProfileInformation({ mustVerifyEmail, status, className = '' }) {
+    const { t } = useTranslation('profile');
     const user = usePage().props.auth.user;
 
     const { data, setData, post, errors, processing, recentlySuccessful } =
@@ -23,9 +21,7 @@ export default function UpdateProfileInformation({
 
     const submit = (e) => {
         e.preventDefault();
-
         post(route('profile.update'));
-
         e.target.files = [];
     };
 
@@ -33,11 +29,11 @@ export default function UpdateProfileInformation({
         <section className={`dark:bg-gray-800 bg-white` + className}>
             <header>
                 <h2 className="text-lg font-medium text-gray-900 dark:text-gray-200">
-                    Profile Information
+                    {t('profileInformation')}
                 </h2>
 
                 <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                    Update your account's profile information and email address.
+                    {t('updateProfileInfo')}
                 </p>
             </header>
 
@@ -45,18 +41,18 @@ export default function UpdateProfileInformation({
                 <div className="flex flex-col md:flex-row items-center gap-6 p-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm">
                     <div className="relative">
                         <div className="w-32 h-32 rounded-full overflow-hidden ring-4 ring-gray-200 dark:ring-slate-700 shadow-md">
-                            <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" />
+                            <img src={user.avatar ?? myImage} alt="Profile" className="w-full h-full object-cover" />
                         </div>
                     </div>
 
                     <div className="flex-1">
-                        <InputLabel htmlFor="avatar" value="Profile Picture" className="text-gray-700 dark:text-gray-200 font-medium" />
+                        <InputLabel htmlFor="avatar" value={t('profilePicture')} className="text-gray-700 dark:text-gray-200 font-medium" />
 
                         <label
                             htmlFor="avatar"
                             className="mt-2 inline-flex items-center px-4 py-2 bg-blue-600 dark:bg-white text-white dark:text-slate-900 text-sm font-medium rounded-lg shadow cursor-pointer transition hover:bg-blue-700 dark:hover:bg-gray-200"
                         >
-                            Upload New Picture
+                            {t('uploadNewPicture')}
                         </label>
 
                         <input
@@ -67,15 +63,14 @@ export default function UpdateProfileInformation({
                             onChange={(e) => setData('avatar', e.target.files[0])}
                         />
 
-                        <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                            Please upload a square picture (1:1 ratio works best)
-                        </p>
+                        <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">{t('pictureHint')}</p>
 
                         <InputError className="mt-2 dark:text-red-400" message={errors.avatar} />
                     </div>
                 </div>
+
                 <div>
-                    <InputLabel htmlFor="name" value="Name" />
+                    <InputLabel htmlFor="name" value={t('name')} />
 
                     <TextInput
                         id="name"
@@ -91,7 +86,7 @@ export default function UpdateProfileInformation({
                 </div>
 
                 <div>
-                    <InputLabel htmlFor="email" value="Email" />
+                    <InputLabel htmlFor="email" value={t('email')} />
 
                     <TextInput
                         id="email"
@@ -109,27 +104,27 @@ export default function UpdateProfileInformation({
                 {mustVerifyEmail && user.email_verified_at === null && (
                     <div>
                         <p className="mt-2 text-sm text-gray-800 dark:text-gray-200">
-                            Your email address is unverified.
+                            {t('emailUnverified')}
                             <Link
                                 href={route('verification.send')}
                                 method="post"
                                 as="button"
                                 className="rounded-md text-sm text-gray-600 dark:text-gray-300 underline hover:text-gray-900 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                             >
-                                Click here to re-send the verification email.
+                                {t('resendVerification')}
                             </Link>
                         </p>
 
                         {status === 'verification-link-sent' && (
                             <div className="mt-2 text-sm font-medium text-green-600 dark:text-green-400">
-                                A new verification link has been sent to your email address.
+                                {t('verificationSent')}
                             </div>
                         )}
                     </div>
                 )}
 
                 <div className="flex items-center gap-4">
-                    <PrimaryButton disabled={processing}>Save</PrimaryButton>
+                    <PrimaryButton disabled={processing}>{t('save')}</PrimaryButton>
 
                     <Transition
                         show={recentlySuccessful}
@@ -138,11 +133,10 @@ export default function UpdateProfileInformation({
                         leave="transition ease-in-out"
                         leaveTo="opacity-0"
                     >
-                        <p className="text-sm text-gray-600 dark:text-gray-400">Saved.</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">{t('saved')}</p>
                     </Transition>
                 </div>
             </form>
         </section>
-
     );
 }

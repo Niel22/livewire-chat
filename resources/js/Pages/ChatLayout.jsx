@@ -5,8 +5,10 @@ import { useEventBus } from "@/EventBus";
 import { ChatBubbleLeftRightIcon, PlusCircleIcon } from "@heroicons/react/24/solid";
 import { Head, Link, usePage } from "@inertiajs/react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const ChatLayout = ({ children }) => {
+    const { t } = useTranslation("sidebar");
     const page = usePage();
 
     const auth = page.props.auth;
@@ -189,11 +191,11 @@ const ChatLayout = ({ children }) => {
                         className="flex items-center justify-between py-3 px-4 text-lg font-semibold 
                                     text-gray-700 dark:text-gray-100 border-b border-gray-200 dark:border-slate-700"
                     >
-                        My Conversations
+                        {t("title")}
                         {auth.user.role === "admin" && (
                             <div
                                 className="tooltip tooltip-left"
-                                data-tip="Create New Group"
+                                data-tip={t("tooltip.createGroup")}
                             >
                                 <Link href={route('group.create')} className="text-blue-500 hover:text-blue-700 dark:text-indigo-400 dark:hover:text-indigo-300">
                                     <PlusCircleIcon className="w-7 h-7 inline-block ml-2" />
@@ -206,7 +208,7 @@ const ChatLayout = ({ children }) => {
                     <div className="p-3 border-b border-gray-200 dark:border-slate-700">
                         <TextInput
                             onKeyUp={onSearch}
-                            placeholder="Filter users and groups"
+                            placeholder={t("searchPlaceholder")}
                             className="w-full bg-white/70 dark:bg-slate-700 
                                 text-gray-800 dark:text-gray-100 
                                 placeholder-gray-400 dark:placeholder-gray-300 
@@ -232,11 +234,10 @@ const ChatLayout = ({ children }) => {
                                 <ChatBubbleLeftRightIcon className="h-12 w-12 text-gray-400" />
                                 </div>
                                 <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-200">
-                                No Conversations
+                                    {t("noConversations.title")}
                                 </h2>
                                 <p className="text-gray-500 dark:text-gray-400 mt-2 max-w-sm">
-                                You are not in any group yet or haven’t started a chat. Join a group or
-                                create a new one to begin chatting.
+                                    {t("noConversations.message")}
                                 </p>
                             </div>
                         )}

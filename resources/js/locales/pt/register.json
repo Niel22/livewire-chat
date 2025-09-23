@@ -1,0 +1,9 @@
+{
+  "title": "Registrar",
+  "name": "Nome",
+  "email": "E-mail",
+  "password": "Senha",
+  "confirm_password": "Confirmar Senha",
+  "already_registered": "Já possui cadastro?",
+  "register": "Registrar"
+}

@@ -1,0 +1,7 @@
+{
+  "title": "Verificação de E-mail",
+  "message": "Obrigado por se inscrever! Antes de começar, você poderia verificar seu endereço de e-mail clicando no link que acabamos de enviar? Se você não recebeu o e-mail, teremos prazer em enviar outro.",
+  "statusMessage": "Um novo link de verificação foi enviado para o endereço de e-mail que você forneceu durante o registro.",
+  "resendButton": "Reenviar E-mail de Verificação",
+  "logout": "Sair"
+}

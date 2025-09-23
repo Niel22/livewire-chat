@@ -1,0 +1,13 @@
+{
+  "title": "Minhas Conversas",
+  "searchPlaceholder": "Filtrar usuários e grupos",
+  "logout": "Sair",
+  "profile": "Perfil",
+  "noConversations": {
+    "title": "Nenhuma Conversa",
+    "message": "Você ainda não está em nenhum grupo ou não iniciou um chat. Participe de um grupo ou crie um novo para começar a conversar."
+  },
+  "tooltip": {
+    "createGroup": "Criar Novo Grupo"
+  }
+}

@@ -4,8 +4,10 @@ import { ArrowUturnLeftIcon, BookmarkIcon, EllipsisVerticalIcon, InboxArrowDownI
 import MessageEditModal from './MessageEditModal';
 import { useState } from 'react';
 import { router } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
 
 const MessageOptionsDropdown = ({isSubAccount, message, currentUser, setReplyingTo, setPinnedMessages, isSender, isAdmin}) => {
+    const { t } = useTranslation('convo');
     const {emit} = useEventBus();
     const [isOpen, setIsOpen] = useState(false);
     const [editMessage, setEditMessage] = useState(null);
@@ -91,7 +93,7 @@ const MessageOptionsDropdown = ({isSubAccount, message, currentUser, setReplying
                                             text-gray-800 dark:text-gray-200`}
                             >
                                 <ArrowUturnLeftIcon className="size-4 text-gray-500 dark:text-gray-300" />
-                                Reply To
+                                {t('replyTo')}
                                 <kbd className="ml-auto hidden font-sans text-xs text-gray-500 dark:text-gray-400 group-data-focus:inline">
                                 ⌘E
                                 </kbd>
@@ -112,7 +114,7 @@ const MessageOptionsDropdown = ({isSubAccount, message, currentUser, setReplying
                                                 text-gray-800 dark:text-gray-200`}
                                 >
                                     <InboxArrowDownIcon className="size-4 text-gray-500 dark:text-gray-300" />
-                                    Message Privately
+                                    {t('replyTo')}
                                     <kbd className="ml-auto hidden font-sans text-xs text-gray-500 dark:text-gray-400 group-data-focus:inline">
                                     ⌘E
                                     </kbd>
@@ -134,7 +136,7 @@ const MessageOptionsDropdown = ({isSubAccount, message, currentUser, setReplying
                                                     text-gray-800 dark:text-gray-200`}
                                     >
                                         <BookmarkIcon className="size-4 text-gray-500 dark:text-gray-300" />
-                                        Pin
+                                        {t('pin')}
                                         <kbd className="ml-auto hidden font-sans text-xs text-gray-500 dark:text-gray-400 group-data-focus:inline">
                                         ⌘E
                                         </kbd>
@@ -152,7 +154,7 @@ const MessageOptionsDropdown = ({isSubAccount, message, currentUser, setReplying
                                                     text-gray-800 dark:text-gray-200`}
                                     >
                                         <PencilIcon className="size-4 text-gray-500 dark:text-gray-300" />
-                                        Edit
+                                        {t('edit')}
                                         <kbd className="ml-auto hidden font-sans text-xs text-gray-500 dark:text-gray-400 group-data-focus:inline">
                                         ⌘E
                                         </kbd>
@@ -175,7 +177,7 @@ const MessageOptionsDropdown = ({isSubAccount, message, currentUser, setReplying
                                                     text-gray-800 dark:text-gray-200`}
                                     >
                                         <TrashIcon className="size-4 text-gray-500 dark:text-gray-300" />
-                                        Delete
+                                        {t('delete')}
                                         <kbd className="ml-auto hidden font-sans text-xs text-gray-500 dark:text-gray-400 group-data-focus:inline">
                                         ⌘E
                                         </kbd>

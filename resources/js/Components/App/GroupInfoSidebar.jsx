@@ -4,8 +4,10 @@ import UserAvatar from "./UserAvatar";
 import { router } from "@inertiajs/react";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from "remark-gfm";
+import { useTranslation } from "react-i18next";
 
 const GroupInfoSidebar = ({ sidebarOpen, setSidebarOpen, group, isAdmin }) => {
+    const { t } = useTranslation('convo');
     
     const handleRemoveMember = (member) => {
         router.patch(route('group.member.remove', {group: group, user: member}));
@@ -38,7 +40,7 @@ const GroupInfoSidebar = ({ sidebarOpen, setSidebarOpen, group, isAdmin }) => {
                 >
                     <div className="flex border-b border-slate-600 shadow-sm py-5 px-6 justify-between items-center">
                         <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">
-                            Group Info
+                            {t('groupInfo')}
                         </h2>
                         <button
                             onClick={() => setSidebarOpen(false)}
@@ -60,15 +62,15 @@ const GroupInfoSidebar = ({ sidebarOpen, setSidebarOpen, group, isAdmin }) => {
                                 {group.name}
                             </h3>
                             <p className="text-xs text-gray-500 dark:text-gray-400">
-                                Group · {group.members + 1} Members
+                                {t('group')} · {group.members + 1} {t('members')}
                             </p>
                         </div>
 
                         <div>
                             <h3 className="font-semibold text-gray-700 dark:text-gray-200 text-sm mb-1">
-                                Group Info
+                                {t('groupInfo')}
                             </h3>
-                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                            <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
                                 <ReactMarkdown 
                                     remarkPlugins={[remarkGfm]}
                                     components={{
@@ -81,13 +83,13 @@ const GroupInfoSidebar = ({ sidebarOpen, setSidebarOpen, group, isAdmin }) => {
                                             />
                                         ),
                                     }}
-                                >{group.description}</ReactMarkdown>
-                            </p>
+                                >{group.description || "" }</ReactMarkdown>
+                            </div>
                         </div>
 
                         <div>
                             <h3 className="font-semibold text-gray-700 dark:text-gray-200 text-sm mb-2">
-                                {parseInt(group.member) + 1} Participants
+                                {parseInt(group.member) + 1} {t('participants')}
                             </h3>
                             <div className="space-y-3">
                                 <button
@@ -106,7 +108,7 @@ const GroupInfoSidebar = ({ sidebarOpen, setSidebarOpen, group, isAdmin }) => {
                                         </div>
                                     </div>
                                     <span className="text-xs px-2 py-1 rounded bg-blue-100 text-blue-600 dark:bg-blue-800 dark:text-blue-100">
-                                        Admin
+                                        {t('admin')}
                                     </span>
                                 </button>
                                 { isAdmin() &&
@@ -135,7 +137,7 @@ const GroupInfoSidebar = ({ sidebarOpen, setSidebarOpen, group, isAdmin }) => {
 
                     <div className="p-6 border-t border-slate-600">
                         <button onClick={() => handleExitGroup()} className="w-full py-2 px-3 rounded-md bg-red-500 hover:bg-red-600 text-white text-sm font-medium cursor-pointer">
-                            Exit Group
+                            {t('exitGroup')}
                         </button>
                     </div>
                 </div>

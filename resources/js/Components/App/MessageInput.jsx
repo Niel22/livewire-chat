@@ -9,8 +9,10 @@ import CustomAudioPlayer from './CustomAudioPlayer';
 import AttachmentPreview from './AttachmentPreview';
 import { useEventBus } from '@/EventBus';
 import ReplyToMessage from './ReplyToMessage';
+import { useTranslation } from 'react-i18next';
 
 const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isLocked = false}) => {
+  const { t } = useTranslation('convo');
   const isGroupLocked = () => {
     if(conversation?.is_group && isLocked){
       if (user.role !== "admin" && user.id !== conversation.admin.id) {
@@ -107,7 +109,6 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
   }
 
   const onLikeClick = () => {
-    emit('toast.show', 'Message sent successfully');
     if(messageSending){
       return;
     }
@@ -150,14 +151,14 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
       setMessageSending(false);
       const message = error.response?.data?.message;
       setInputErrorMessage(
-        message || "An error occured while sending message"
+        message || t('messageError')
       );
     });
   }
 
   return (
-      <div className="max-w-full mt-auto flex flex-wrap items-end justify-start z-100 py-3 ">
-          <div className=" px-1 xs:p-0 min-w-md basis-full flex-1 relative">
+      <div className="max-w-full pb-6 md:pb-3 mt-auto flex flex-wrap items-end justify-start z-100 py-1.5 md:py-3 ">
+          <div className=" px-1 xs:p-0 min-w-md basis-full relative">
               {chosenFiles?.length > 0 && !!uploadProgress && (
                   <progress
                       className="progress progress-info w-full"
@@ -218,7 +219,7 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
               </div>
 
               {!isGroupLocked() && (
-                  <div className="border dark:border-slate-700 border-slate-300 shadow-md mx-2 rounded-full flex gap-1 items-end px-4 py-2">
+                  <div className="border dark:border-slate-700 border-slate-300 shadow-md mx-2 rounded-full flex gap-1 items-end px-4 py-1 md:py-2">
                       <button className="p-1 text-gray-400 overflow-hidden hover:text-gray-300 relative">
                           <PaperClipIcon className="hidden md:block w-6" />
                           <PhotoIcon className="md:hidden w-6" />
@@ -288,8 +289,7 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
                   <div className="border dark:border-slate-700 border-slate-300 shadow-md mx-2 rounded-lg flex items-center gap-2 px-4 py-3 bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-300">
                       <LockClosedIcon className="w-6 h-6 text-gray-500 dark:text-gray-400" />
                       <span className="text-sm">
-                          This group is locked. You cannot send messages at the
-                          moment.
+                          {t('groupLocked')}
                       </span>
                   </div>
               )}

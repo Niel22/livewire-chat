@@ -1,13 +1,15 @@
-import DangerButton from '@/Components/DangerButton';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import Modal from '@/Components/Modal';
-import SecondaryButton from '@/Components/SecondaryButton';
-import TextInput from '@/Components/TextInput';
-import { useForm } from '@inertiajs/react';
-import { useRef, useState } from 'react';
+import { useTranslation } from "react-i18next";
+import DangerButton from "@/Components/DangerButton";
+import InputError from "@/Components/InputError";
+import InputLabel from "@/Components/InputLabel";
+import Modal from "@/Components/Modal";
+import SecondaryButton from "@/Components/SecondaryButton";
+import TextInput from "@/Components/TextInput";
+import { useForm } from "@inertiajs/react";
+import { useRef, useState } from "react";
 
-export default function DeleteUserForm({ className = '' }) {
+export default function DeleteUserForm({ className = "" }) {
+    const { t } = useTranslation('profile');
     const [confirmingUserDeletion, setConfirmingUserDeletion] = useState(false);
     const passwordInput = useRef();
 
@@ -20,17 +22,15 @@ export default function DeleteUserForm({ className = '' }) {
         errors,
         clearErrors,
     } = useForm({
-        password: '',
+        password: "",
     });
 
-    const confirmUserDeletion = () => {
-        setConfirmingUserDeletion(true);
-    };
+    const confirmUserDeletion = () => setConfirmingUserDeletion(true);
 
     const deleteUser = (e) => {
         e.preventDefault();
 
-        destroy(route('profile.destroy'), {
+        destroy(route("profile.destroy"), {
             preserveScroll: true,
             onSuccess: () => closeModal(),
             onError: () => passwordInput.current.focus(),
@@ -40,7 +40,6 @@ export default function DeleteUserForm({ className = '' }) {
 
     const closeModal = () => {
         setConfirmingUserDeletion(false);
-
         clearErrors();
         reset();
     };
@@ -49,38 +48,35 @@ export default function DeleteUserForm({ className = '' }) {
         <section className={`space-y-6 ${className}`}>
             <header>
                 <h2 className="text-lg font-medium text-gray-900 dark:text-gray-200">
-                    Delete Account
+                    {t('deleteAccount')}
                 </h2>
 
                 <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                    Once your account is deleted, all of its resources and data
-                    will be permanently deleted. Before deleting your account,
-                    please download any data or information that you wish to
-                    retain.
+                    {t('deleteAccountWarning')}
                 </p>
             </header>
 
             <DangerButton onClick={confirmUserDeletion}>
-                Delete Account
+                {t('deleteAccount')}
             </DangerButton>
 
             <Modal show={confirmingUserDeletion} onClose={closeModal}>
-                <form onSubmit={deleteUser} className="p-6">
+                <form
+                    onSubmit={deleteUser}
+                    className="p-6 bg-white dark:bg-gray-900 rounded-lg shadow-lg"
+                >
                     <h2 className="text-lg font-medium text-gray-900 dark:text-gray-200">
-                        Are you sure you want to delete your account?
+                        {t('deleteAccountConfirmation')}
                     </h2>
 
                     <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                        Once your account is deleted, all of its resources and
-                        data will be permanently deleted. Please enter your
-                        password to confirm you would like to permanently delete
-                        your account.
+                        {t('deleteAccountPasswordPrompt')}
                     </p>
 
                     <div className="mt-6">
                         <InputLabel
                             htmlFor="password"
-                            value="Password"
+                            value={t('password')}
                             className="sr-only dark:text-gray-200"
                         />
 
@@ -91,31 +87,38 @@ export default function DeleteUserForm({ className = '' }) {
                             ref={passwordInput}
                             value={data.password}
                             onChange={(e) =>
-                                setData('password', e.target.value)
+                                setData("password", e.target.value)
                             }
-                            className="mt-1 block w-3/4 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
+                            className="mt-1 block w-3/4 border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:placeholder-gray-400"
                             isFocused
-                            placeholder="Password"
+                            placeholder={t('password')}
                         />
 
                         <InputError
                             message={errors.password}
-                            className="mt-2 dark:text-red-400"
+                            className="mt-2 text-red-600 dark:text-red-400"
                         />
                     </div>
 
-                    <div className="mt-6 flex justify-end">
-                        <SecondaryButton className="dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600" onClick={closeModal}>
-                            Cancel
+                    <div className="mt-6 flex justify-end gap-3">
+                        <SecondaryButton
+                            type="button"
+                            className="bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600"
+                            onClick={closeModal}
+                        >
+                            {t('cancel')}
                         </SecondaryButton>
 
-                        <DangerButton className="ms-3 dark:bg-red-600 dark:hover:bg-red-500" disabled={processing}>
-                            Delete Account
+                        <DangerButton
+                            type="submit"
+                            className="bg-red-600 text-white dark:bg-red-600 dark:hover:bg-red-500 hover:bg-red-700"
+                            disabled={processing}
+                        >
+                            {t('deleteAccount')}
                         </DangerButton>
                     </div>
                 </form>
             </Modal>
         </section>
-
     );
 }

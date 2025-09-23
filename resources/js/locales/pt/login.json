@@ -1,0 +1,10 @@
+{
+  "title": "Entrar",
+  "email": "E-mail",
+  "password": "Senha",
+  "remember": "Lembrar de mim",
+  "forgot_password": "Esqueceu sua senha?",
+  "login": "Entrar",
+  "no_account": "Não tem uma conta? Registrar",
+  "status_success": "Login bem-sucedido"
+}

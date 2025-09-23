@@ -2,8 +2,10 @@ import { useEventBus } from '@/EventBus'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { CalendarIcon, EllipsisVerticalIcon, LockClosedIcon, LockOpenIcon, UserPlusIcon } from '@heroicons/react/24/solid'
 import { Link } from '@inertiajs/react'
+import { useTranslation } from 'react-i18next'
 
 const GroupOptionsDropdown = ({selectedConversation, isLocked, isAdmin}) => {
+  const { t } = useTranslation('convo');
     const {emit} = useEventBus();
 
     const handleLock = () => {
@@ -36,12 +38,12 @@ const GroupOptionsDropdown = ({selectedConversation, isLocked, isAdmin}) => {
               {({ active }) => (
                 <Link
                   href={route('group.message.schedule', selectedConversation)}
-                  className={`group flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm 
+                  className={`group flex w-full items-center gap-2 rounded-md truncate px-2 py-2 text-sm 
                               ${active ? "bg-gray-100 dark:bg-gray-700" : ""} 
                               text-gray-800 dark:text-gray-200`}
                 >
                   <CalendarIcon className="h-4 w-4 text-gray-500 dark:text-gray-300" />
-                  Schedule Message
+                  {t('scheduleMessage')}
                 </Link>
               )}
             </MenuItem>
@@ -61,12 +63,12 @@ const GroupOptionsDropdown = ({selectedConversation, isLocked, isAdmin}) => {
                       {isLocked ? (
                         <div className="flex items-center gap-1">
                             <LockOpenIcon className="h-4 w-4 text-gray-500 dark:text-gray-300" />
-                            <span>Unlock Group</span>
+                            <span>{t('unlockGroup')}</span>
                         </div>
                         ) : (
                         <div className="flex items-center gap-1">
                             <LockClosedIcon className="h-4 w-4 text-gray-500 dark:text-gray-300" />
-                            <span>Lock Group</span>
+                            <span>{t('lockGroup')}</span>
                         </div>
                         )}
                     </button>
@@ -83,7 +85,7 @@ const GroupOptionsDropdown = ({selectedConversation, isLocked, isAdmin}) => {
                                   text-gray-800 dark:text-gray-200`}
                     >
                       <UserPlusIcon className="h-4 w-4 text-gray-500 dark:text-gray-300" />
-                      Add Member
+                      {t('addMember')}
                     </Link>
                   )}
                 </MenuItem>

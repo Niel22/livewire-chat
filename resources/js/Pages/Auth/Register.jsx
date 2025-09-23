@@ -4,8 +4,10 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
 
 export default function Register() {
+    const { t } = useTranslation("register");
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
@@ -15,7 +17,6 @@ export default function Register() {
 
     const submit = (e) => {
         e.preventDefault();
-
         post(route('register'), {
             onFinish: () => reset('password', 'password_confirmation'),
         });
@@ -23,12 +24,11 @@ export default function Register() {
 
     return (
         <GuestLayout>
-            <Head title="Register" />
+            <Head title={t("title")} />
 
             <form onSubmit={submit}>
                 <div>
-                    <InputLabel htmlFor="name" value="Name" className="dark:text-gray-200" />
-
+                    <InputLabel htmlFor="name" value={t("name")} className="dark:text-gray-200" />
                     <TextInput
                         id="name"
                         name="name"
@@ -39,13 +39,11 @@ export default function Register() {
                         onChange={(e) => setData('name', e.target.value)}
                         required
                     />
-
                     <InputError message={errors.name} className="mt-2 dark:text-red-400" />
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="email" value="Email" className="dark:text-gray-200" />
-
+                    <InputLabel htmlFor="email" value={t("email")} className="dark:text-gray-200" />
                     <TextInput
                         id="email"
                         type="email"
@@ -56,13 +54,11 @@ export default function Register() {
                         onChange={(e) => setData('email', e.target.value)}
                         required
                     />
-
                     <InputError message={errors.email} className="mt-2 dark:text-red-400" />
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" className="dark:text-gray-200" />
-
+                    <InputLabel htmlFor="password" value={t("password")} className="dark:text-gray-200" />
                     <TextInput
                         id="password"
                         type="password"
@@ -73,17 +69,15 @@ export default function Register() {
                         onChange={(e) => setData('password', e.target.value)}
                         required
                     />
-
                     <InputError message={errors.password} className="mt-2 dark:text-red-400" />
                 </div>
 
                 <div className="mt-4">
                     <InputLabel
                         htmlFor="password_confirmation"
-                        value="Confirm Password"
+                        value={t("confirm_password")}
                         className="dark:text-gray-200"
                     />
-
                     <TextInput
                         id="password_confirmation"
                         type="password"
@@ -94,11 +88,7 @@ export default function Register() {
                         onChange={(e) => setData('password_confirmation', e.target.value)}
                         required
                     />
-
-                    <InputError
-                        message={errors.password_confirmation}
-                        className="mt-2 dark:text-red-400"
-                    />
+                    <InputError message={errors.password_confirmation} className="mt-2 dark:text-red-400" />
                 </div>
 
                 <div className="mt-4 flex items-center justify-end">
@@ -106,15 +96,14 @@ export default function Register() {
                         href={route('login')}
                         className="rounded-md text-sm text-gray-600 dark:text-gray-300 underline hover:text-gray-900 dark:hover:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     >
-                        Already registered?
+                        {t("already_registered")}
                     </Link>
 
                     <PrimaryButton className="ms-4" disabled={processing}>
-                        Register
+                        {t("register")}
                     </PrimaryButton>
                 </div>
             </form>
-
         </GuestLayout>
     );
 }

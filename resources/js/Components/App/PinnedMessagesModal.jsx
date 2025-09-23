@@ -1,7 +1,9 @@
 import { BookmarkIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import React from 'react'
+import { useTranslation } from 'react-i18next';
 
 const PinnedMessagesModal = ({open,onClose, pinnedMessages, handleViewOriginal, isAdmin}) => {
+  const { t } = useTranslation('convo');
     const onMessageUnpin = (message) => {
         if(!isAdmin()) return;
 
@@ -34,12 +36,12 @@ const PinnedMessagesModal = ({open,onClose, pinnedMessages, handleViewOriginal, 
 
         <h2 className="text-lg font-semibold mb-3 dark:text-white flex items-center gap-2">
           <BookmarkIcon className="w-5 h-5 text-emerald-500" />
-          Pinned Messages
+          {t('pinnedMessages')}
         </h2>
 
         <div className="max-h-64 overflow-y-auto border-t dark:border-gray-700 pt-2">
           {pinnedMessages?.length === 0 && (
-            <p className="text-gray-500 text-sm text-center">No pinned messages...</p>
+            <p className="text-gray-500 text-sm text-center">{t('noPinnedMessages')}</p>
           )}
 
           {pinnedMessages?.map((msg) => (
@@ -53,10 +55,10 @@ const PinnedMessagesModal = ({open,onClose, pinnedMessages, handleViewOriginal, 
             >
               <div className="w-0 flex-1">
                 <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                  {msg.sender?.name || "Unknown"}
+                  {msg.sender?.name || t('unknownSender')}
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-300 truncate">
-                  {msg.message || "Attachment"}
+                  {msg.message || t('attachment')}
                 </div>
               </div>
               <button className='rounded-full p-2 hover:bg-slate-900/50' onClick={(e) => {

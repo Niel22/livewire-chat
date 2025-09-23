@@ -12,8 +12,10 @@ import AttachmentPreviewModal from "@/Components/App/AttachmentPreviewModal";
 import { fetchMessageById } from "@/helpers";
 import useMessageEvents from "@/hooks/useMessageEvents";
 import MessageSearchModal from "@/Components/App/MessageSearchModal";
+import { useTranslation } from "react-i18next";
 
 function Home({ selectedConversation = null, messages = null, online = null, pins }) {
+    const { t } = useTranslation('convo');
     
     const [pinnedMessages, setPinnedMessages] = useState([]);
     const [localMessages, setLocalMessages] = useState([]);
@@ -61,6 +63,10 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
     useEffect(() => {
         setPinnedMessages(pins?.data);
     }, [pins]);
+   
+    useEffect(() => {
+        setPinnedMessages([]);
+    }, []);
 
     const loadMoreMessages = useCallback(() => {
         if(noMoreMessages){
@@ -199,7 +205,7 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
                                 transition-colors"
                 >
                     <div className="text-2xl md:text-4xl p-16 text-gray-700 dark:text-slate-200">
-                        Please select a conversation
+                        {t('pleaseSelectConversation')}
                     </div>
                     <ChatBubbleLeftRightIcon className="w-32 h-32 inline-block text-blue-400 dark:text-slate-400" />
                 </div>
@@ -233,7 +239,7 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
                         {!localMessages?.length && (
                             <div className="flex justify-center items-center h-full">
                                 <div className="text-lg text-gray-600 dark:text-slate-300">
-                                    No messages found
+                                    {t('noMessagesFound')}
                                 </div>
                             </div>
                         )}
@@ -243,7 +249,7 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
                                 <div className="
                                     w-max mx-auto 
                                     px-4 py-1.5 
-                                    text-sm font-medium 
+                                    text-xs md:text-sm font-medium 
                                     text-blue-700 dark:text-blue-300 
                                     bg-blue-50 dark:bg-blue-900/30 
                                     border border-blue-200 dark:border-blue-800 
@@ -252,7 +258,7 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
                                     hover:bg-blue-100 dark:hover:bg-blue-800/40 
                                     transition
                                 ">
-                                    Load oldest messages
+                                    {t('loadOldestMessages')}
                                 </div>
 
                                 <div ref={loadMoreIntersect}></div>

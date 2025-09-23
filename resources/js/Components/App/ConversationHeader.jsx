@@ -35,7 +35,6 @@ const ConversationHeader = ({selectedConversation, online, pinnedMessages, handl
                             <ArrowLeftIcon className="w-6 h-6 transition" />
                         </Link>
 
-                        {/* Avatar */}
                         {!selectedConversation.is_group && (
                             <UserAvatar 
                                 user={selectedConversation} 
@@ -47,7 +46,6 @@ const ConversationHeader = ({selectedConversation, online, pinnedMessages, handl
                             <GroupAvatar avatar={selectedConversation.avatar} className="ring-1 ring-blue-400/40 rounded-full" />
                         )}
 
-                        {/* Conversation details */}
                         <div>
                             <h3 className="font-semibold text-sm sm:text-base text-gray-800 dark:text-gray-100">
                                 {selectedConversation.name}
@@ -94,7 +92,7 @@ const ConversationHeader = ({selectedConversation, online, pinnedMessages, handl
                                 <BookmarkIcon className='w-4 h-4' />
                             </span>
                             <p className="truncate text-gray-800 dark:text-gray-200 max-w-[200px] sm:max-w-[400px]">
-                                {pinnedMessages[0].message}
+                                {pinnedMessages[0].message ?? "Attachment"}
                             </p>
                         </div>
                     </div>
