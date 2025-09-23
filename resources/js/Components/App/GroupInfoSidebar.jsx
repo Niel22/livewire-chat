@@ -2,6 +2,8 @@ import { TrashIcon, UserGroupIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import React from "react";
 import UserAvatar from "./UserAvatar";
 import { router } from "@inertiajs/react";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from "remark-gfm";
 
 const GroupInfoSidebar = ({ sidebarOpen, setSidebarOpen, group, isAdmin }) => {
     
@@ -67,7 +69,19 @@ const GroupInfoSidebar = ({ sidebarOpen, setSidebarOpen, group, isAdmin }) => {
                                 Group Info
                             </h3>
                             <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                                {group.description}.
+                                <ReactMarkdown 
+                                    remarkPlugins={[remarkGfm]}
+                                    components={{
+                                        a: ({node, ...props}) => (
+                                            <a 
+                                            {...props} 
+                                            className="text-blue-500 underline hover:text-blue-700"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            />
+                                        ),
+                                    }}
+                                >{group.description}</ReactMarkdown>
                             </p>
                         </div>
 
