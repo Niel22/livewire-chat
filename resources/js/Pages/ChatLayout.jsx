@@ -14,6 +14,7 @@ const ChatLayout = ({ children }) => {
     const selectedConversation = page.props.selectedConversation;
     const [localConversations, setLocalConversations] = useState([]);
     const [sortedConversations, setSortedConversations] = useState([]);
+
     const {on} = useEventBus();
 
     const [onlineUsers, setOnlineUsers] = useState({});
@@ -104,7 +105,7 @@ const ChatLayout = ({ children }) => {
     useEffect(() => {
         setSortedConversations(
             localConversations
-            .filter(convo => convo.last_message_date !== null)
+            .filter(convo => convo.is_group || convo.last_message_date !== null)
             .sort((a, b) => {
                 if (a.last_message_date && b.last_message_date) {
                     return new Date(b.last_message_date) - new Date(a.last_message_date);

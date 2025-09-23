@@ -1,11 +1,11 @@
 import { useEventBus } from '@/EventBus'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
-import { ArrowUturnLeftIcon, BookmarkIcon, EllipsisVerticalIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid'
+import { ArrowUturnLeftIcon, BookmarkIcon, EllipsisVerticalIcon, InboxArrowDownIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid'
 import MessageEditModal from './MessageEditModal';
 import { useState } from 'react';
 import { router } from '@inertiajs/react';
 
-const MessageOptionsDropdown = ({message, currentUser, setReplyingTo, setPinnedMessages, isSender, isAdmin}) => {
+const MessageOptionsDropdown = ({isSubAccount, message, currentUser, setReplyingTo, setPinnedMessages, isSender, isAdmin}) => {
     const {emit} = useEventBus();
     const [isOpen, setIsOpen] = useState(false);
     const [editMessage, setEditMessage] = useState(null);
@@ -99,19 +99,20 @@ const MessageOptionsDropdown = ({message, currentUser, setReplyingTo, setPinnedM
                             )}
                         </MenuItem>
                     </div>
+                    
 
-                    {isAdmin() && (
+                    {isSubAccount() && (
                         <div className="p-1">
                             <MenuItem>
                                 {({ active }) => (
                                 <button
-                                    onClick={() => onMessagePin()}
+                                    onClick={() => setReplyingTo(message)}
                                     className={`group flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm 
                                                 ${active ? "bg-gray-100 dark:bg-gray-700" : ""} 
                                                 text-gray-800 dark:text-gray-200`}
                                 >
-                                    <BookmarkIcon className="size-4 text-gray-500 dark:text-gray-300" />
-                                    Pin
+                                    <InboxArrowDownIcon className="size-4 text-gray-500 dark:text-gray-300" />
+                                    Message Privately
                                     <kbd className="ml-auto hidden font-sans text-xs text-gray-500 dark:text-gray-400 group-data-focus:inline">
                                     ⌘E
                                     </kbd>
@@ -121,8 +122,26 @@ const MessageOptionsDropdown = ({message, currentUser, setReplyingTo, setPinnedM
                         </div>
                     )}
 
-                    {(isSender() || isAdmin()) && (
+                    {isAdmin() && (
                         <>
+                            <div className="p-1">
+                                <MenuItem>
+                                    {({ active }) => (
+                                    <button
+                                        onClick={() => onMessagePin()}
+                                        className={`group flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm 
+                                                    ${active ? "bg-gray-100 dark:bg-gray-700" : ""} 
+                                                    text-gray-800 dark:text-gray-200`}
+                                    >
+                                        <BookmarkIcon className="size-4 text-gray-500 dark:text-gray-300" />
+                                        Pin
+                                        <kbd className="ml-auto hidden font-sans text-xs text-gray-500 dark:text-gray-400 group-data-focus:inline">
+                                        ⌘E
+                                        </kbd>
+                                    </button>
+                                    )}
+                                </MenuItem>
+                            </div>
                             <div className="p-1">
                                 <MenuItem>
                                     {({ active }) => (
@@ -141,6 +160,11 @@ const MessageOptionsDropdown = ({message, currentUser, setReplyingTo, setPinnedM
                                     )}
                                 </MenuItem>
                             </div>
+                        </>
+                    )}
+
+                    {(isSender() || isAdmin()) && (
+                        <>
                             <div className="p-1">
                                 <MenuItem>
                                     {({ active }) => (

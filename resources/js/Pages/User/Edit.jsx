@@ -192,12 +192,11 @@ const Edit = ({ user }) => {
                         </div>
                     )}
 
-                    {user.role === 'member' && (
-                        <div className="dark:bg-gray-800 bg-white p-4 shadow sm:rounded-lg sm:p-8">
+                    <div className="dark:bg-gray-800 bg-white p-4 shadow sm:rounded-lg sm:p-8">
                         <section>
                             <header>
                                 <h2 className="text-lg font-medium text-gray-900 dark:text-gray-200">
-                                    Client Password
+                                    {user.role === 'member' ? "Client" : "Staff"} Password
                                 </h2>
                                 <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                                     Change Cients Password.
@@ -241,8 +240,7 @@ const Edit = ({ user }) => {
                                 </div>
                             </form>
                         </section>
-                        </div>
-                    )}
+                    </div>
 
                 </div>
             </div>
