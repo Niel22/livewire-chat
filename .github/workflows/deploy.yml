@@ -30,7 +30,7 @@ jobs:
           host: ${{ secrets.CPANEL_HOST }}
           username: ${{ secrets.CPANEL_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
+          port: 2966
           script: |
             cd /var/www/taskwin-workstation.com
             git pull origin main
