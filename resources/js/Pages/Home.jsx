@@ -230,7 +230,7 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
 
                     
                     <div
-                        className="flex-1 min-w-0 overflow-y-auto custom-scrollbar p-5 
+                        className="flex-1 min-w-0 overflow-y-auto max-w-full overflow-x-hidden custom-scrollbar p-5 
                                 bg-gradient-to-b from-blue-50/50 to-white 
                                 dark:from-slate-900 dark:to-slate-950 
                                 transition-colors"

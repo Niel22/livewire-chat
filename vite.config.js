@@ -10,4 +10,7 @@ export default defineConfig({
         }),
         react(),
     ],
+    build: {
+        target: ['es2018', 'safari12'],
+    },
 });

@@ -31,7 +31,7 @@ import profilePT from "./locales/pt/profile.json";
 
 i18n.use(initReactI18next).init({
   resources: {
-    EN: {
+    en: {
       login: loginEN,
       register: registerEN,
       forgot_password: forgot_passwordEN,
@@ -42,7 +42,7 @@ i18n.use(initReactI18next).init({
       convo: convoEN,
       profile: profileEN,
     },  
-    PT: {
+    pt: {
       login: loginPT,
       register: registerPT,
       forgot_password: forgot_passwordPT,
@@ -54,8 +54,8 @@ i18n.use(initReactI18next).init({
       profile: profilePT,
     },
   },
-  lng: "PT",
-  fallbackLng: "PT",
+  lng: "pt",
+  fallbackLng: "pt",
   interpolation: {
     escapeValue: false,
   },

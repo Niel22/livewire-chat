@@ -157,7 +157,7 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
   }
 
   return (
-      <div className="max-w-full mb-12 md:mb-0 mt-auto flex flex-wrap items-end justify-start z-100 py-1.5 md:py-3 ">
+      <div className="sticky bottom-0 max-w-full  md:mb-0 mt-auto flex flex-wrap items-end justify-start z-100 py-3 ">
           <div className=" px-1 xs:p-0 min-w-md basis-full relative">
               {chosenFiles?.length > 0 && !!uploadProgress && (
                   <progress
@@ -174,7 +174,7 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
                   />
               )}
 
-              <div className="flex flex-nowrap gap-1 px-2 py-2">
+              {chosenFiles.length > 0 && (<div className="flex flex-nowrap gap-1 px-2 py-2">
                   {chosenFiles?.map((file) => (
                       <div
                           key={file.file.name}
@@ -216,10 +216,10 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
                           </button>
                       </div>
                   ))}
-              </div>
+              </div>)}
 
               {!isGroupLocked() && (
-                  <div className="border dark:border-slate-700 border-slate-300 shadow-md mx-2 rounded-full flex gap-1 items-end px-4 py-1 md:py-2">
+                  <div className="border dark:border-slate-700 border-slate-300 shadow-md mx-0.5 md:mx-2 rounded-md md:rounded-full flex gap-1 items-center px-2 md:px-4 py-1 md:py-2">
                       <button className="p-1 text-gray-400 overflow-hidden hover:text-gray-300 relative">
                           <PaperClipIcon className="hidden md:block w-6" />
                           <PhotoIcon className="md:hidden w-6" />
@@ -252,7 +252,7 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
 
                       <Popover className="relative">
                             <PopoverButton className="p-1 focus:outline-none focus:border-none text-gray-400 hover:text-gray-300">
-                              <FaceSmileIcon className='w-6 h-6' />
+                              <FaceSmileIcon className='md:w-6 h-6' />
                             </PopoverButton>
                             <PopoverPanel className="absolute -right-[75px] bottom-14">
                               <EmojiPicker theme='dark' onEmojiClick={e => setNewMessage(newMessage + e.emoji)} />

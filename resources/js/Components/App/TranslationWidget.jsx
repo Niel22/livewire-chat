@@ -14,9 +14,9 @@ const TranslationWidget = () => {
 
   useEffect(() => {
     if (!lang) {
-      const browserLang = navigator.language.startsWith("pt") ? "PT" : "EN";
-      setLang(browserLang);
-      i18n.changeLanguage(browserLang);
+      // const browserLang = navigator.language.startsWith("pt") ? "pt" : "pt";
+      setLang("pt");
+      i18n.changeLanguage("pt");
     } else {
       i18n.changeLanguage(lang);
     }
@@ -24,7 +24,7 @@ const TranslationWidget = () => {
 
   return (
     <Menu as="div" className="relative inline-block text-left">
-      <Menu.Button className="text-xs bg-transparent font-bold md:text-sm py-2 px-3 rounded-xl border border-gray-300 dark:border-gray-600 dark:text-gray-200">
+      <Menu.Button className="uppercase text-xs bg-transparent font-bold md:text-sm py-2 px-3 rounded-xl border border-gray-300 dark:border-gray-600 dark:text-gray-200">
         {lang}
       </Menu.Button>
 
@@ -33,7 +33,7 @@ const TranslationWidget = () => {
         <Menu.Item>
           {({ active }) => (
             <button
-              onClick={() => handleSelect("EN")}
+              onClick={() => handleSelect("en")}
               className={`block w-full rounded text-left px-3 py-2 text-xs md:text-sm ${
                 active
                   ? "bg-gray-100 dark:bg-gray-700"
@@ -47,7 +47,7 @@ const TranslationWidget = () => {
         <Menu.Item>
           {({ active }) => (
             <button
-              onClick={() => handleSelect("PT")}
+              onClick={() => handleSelect("pt")}
               className={`block w-full rounded text-left px-3 py-2 text-xs md:text-sm ${
                 active
                   ? "bg-gray-100 dark:bg-gray-700"

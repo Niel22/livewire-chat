@@ -1,4 +1,7 @@
 import './i18n';
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
+
 
 import '../css/app.css';
 import './bootstrap';
