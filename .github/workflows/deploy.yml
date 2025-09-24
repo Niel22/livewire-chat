@@ -39,4 +39,3 @@ jobs:
             php artisan migrate --force
             php artisan cache:clear
             php artisan config:cache
-            systemctl restart apache2
