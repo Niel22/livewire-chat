@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 
 const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isLocked = false}) => {
   const { t } = useTranslation('convo');
-  const [focusClass, setFocusClass] = useState("mb-14");
+  // const [focusClass, setFocusClass] = useState("mb-14");
   const isGroupLocked = () => {
     if(conversation?.is_group && isLocked){
       if (user.role !== "admin" && user.id !== conversation.admin.id) {
@@ -159,7 +159,7 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
   }
 
   return (
-      <div className={`sticky bottom-0 max-w-full ${focusClass}  md:mb-0 mt-auto flex flex-wrap items-end justify-start z-100 py-3 `}>
+      <div className={`flex-none max-w-full  md:mb-0 mt-auto flex flex-wrap items-end justify-start z-100 py-3 `}>
           <div className=" px-1 xs:p-0 min-w-md basis-full relative">
               {chosenFiles?.length > 0 && !!uploadProgress && (
                   <progress
@@ -250,7 +250,7 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
                           onSend={onSendClick}
                           onChange={(e) => setNewMessage(e.target.value)}
                           onPaste={handlePaste}
-                          setFocusClass={setFocusClass}
+                          // setFocusClass={setFocusClass}
                       />
 
                       <Popover className="relative">

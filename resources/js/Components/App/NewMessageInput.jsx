@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next';
 
-const NewMessageInput = ({value, onChange, onSend, onPaste, setFocusClass}) => {
+const NewMessageInput = ({value, onChange, onSend, onPaste}) => {
     const { t } = useTranslation('convo');
     const input = useRef();
 
@@ -40,8 +40,8 @@ const NewMessageInput = ({value, onChange, onSend, onPaste, setFocusClass}) => {
         onChange={(e) => onChangeEvent(e)}
         autoCorrect='off'
         autoComplete='off'
-        onFocus={() => setFocusClass("mb-0")}
-        onBlur={() => setFocusClass("mb-14")}
+        // onFocus={() => setFocusClass("mb-0")}
+        // onBlur={() => setFocusClass("mb-14")}
         autoSave='off'
         data-gramm="false"
         data-gramm_editor="false"

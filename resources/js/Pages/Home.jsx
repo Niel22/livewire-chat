@@ -212,7 +212,7 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
             )}
 
             {messages && (
-                <div className="flex flex-col h-full overflow-hidden">
+                <div className="flex flex-col h-screen max-h-screen overflow-hidden">
                     
                     <ConversationHeader
                         handleViewOriginal={handleViewOriginal}
@@ -223,7 +223,7 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
                         online={online}
                         setSearchOpen={setSearchOpen}
 
-                        className="bg-white/80 dark:bg-slate-800/80 
+                        className="flex-none bg-white/80 dark:bg-slate-800/80 
                                 backdrop-blur-md border-b border-gray-200 dark:border-slate-700 
                                 shadow-sm transition-colors"
                     />
