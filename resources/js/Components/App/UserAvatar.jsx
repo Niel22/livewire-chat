@@ -1,8 +1,17 @@
 import React from 'react'
 
 const UserAvatar = ({user, online = null, profile = false}) => {
+ 
 
-    let OnlineClasses = online ? "avatar-online" : !online ? "avatar-offline" : "";
+    let OnlineClasses = "";
+
+    if (online === true) {
+    OnlineClasses = "avatar-online";
+    } else if (online === false) {
+    OnlineClasses = "avatar-offline";
+    }
+
+
 
     const sizeClass = profile ? "w-40" : "w-8";
     

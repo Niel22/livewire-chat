@@ -13,9 +13,13 @@ import { fetchMessageById } from "@/helpers";
 import useMessageEvents from "@/hooks/useMessageEvents";
 import MessageSearchModal from "@/Components/App/MessageSearchModal";
 import { useTranslation } from "react-i18next";
+import useOnlineStore from "@/store/useOnlineStore";
 
-function Home({ selectedConversation = null, messages = null, online = null, pins }) {
+function Home({ selectedConversation = null, messages = null, pins }) {
+    
     const { t } = useTranslation('convo');
+
+    const { isUserOnline } = useOnlineStore();
     
     const [pinnedMessages, setPinnedMessages] = useState([]);
     const [localMessages, setLocalMessages] = useState([]);
@@ -41,6 +45,10 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
             }
 
             return false
+        }
+
+        if(auth.user.role === "member"){
+            return false;
         }
 
         return true;
@@ -220,14 +228,13 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
                         pinnedMessages={pinnedMessages}
                         isLocked={isLocked}
                         isAdmin={isAdmin}
-                        online={online}
+                        online={selectedConversation?.receiver_id ? isUserOnline(selectedConversation?.receiver_id) : false}
                         setSearchOpen={setSearchOpen}
 
                         className="flex-none bg-white/80 dark:bg-slate-800/80 
                                 backdrop-blur-md border-b border-gray-200 dark:border-slate-700 
                                 shadow-sm transition-colors"
                     />
-
                     
                     <div
                         className="flex-1 min-w-0 overflow-y-auto max-w-full overflow-x-hidden custom-scrollbar p-5 
@@ -264,6 +271,7 @@ function Home({ selectedConversation = null, messages = null, online = null, pin
                                 <div ref={loadMoreIntersect}></div>
                                 {localMessages.map((message, index) => (
                                     <MessageItem
+                                        online={message?.sender_id ? isUserOnline(message?.sender_id) : false}
                                         handleViewOriginal={handleViewOriginal}
                                         key={`${message.id}-${index}`}
                                         message={message}

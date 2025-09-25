@@ -9,6 +9,10 @@ export default defineConfig({
             refresh: true,
         }),
         react(),
+        legacy({
+            targets: ['defaults', 'not IE 11'],
+            additionalLegacyPolyfills: ['regenerator-runtime/runtime'],
+        }),
     ],
     build: {
         target: ['es2018', 'safari12'],

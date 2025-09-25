@@ -8,7 +8,7 @@ import MessageOptionsDropdown from './MessageOptionsDropdown';
 import MessageReply from './MessageReply';
 import remarkGfm from 'remark-gfm';
 
-const MessageItem = ({message, attachmentClick, setReplyingTo, setPinnedMessages, handleViewOriginal, isAdmin}) => {
+const MessageItem = ({message, attachmentClick, setReplyingTo, setPinnedMessages, handleViewOriginal, isAdmin, online}) => {
     const currentUser = usePage().props.auth.user;
 
     const isSender = () => {
@@ -32,7 +32,7 @@ const MessageItem = ({message, attachmentClick, setReplyingTo, setPinnedMessages
     <div  className={"chat " + 
         (isSender() ? "chat-end" : "chat-start")
     }>
-        {parseInt(message.sender_id) !== parseInt(currentUser.id) && (<UserAvatar user={message.sender} />)}
+        {parseInt(message.sender_id) !== parseInt(currentUser.id) && (<UserAvatar online={online} user={message.sender} />)}
         <div className='chat-header'>
             <span className=' font-medium'>{parseInt(message.sender_id) !== parseInt(currentUser.id) ? message.sender.name : ""}</span>
             <time className='text-xs opacity-50 ml-2'>

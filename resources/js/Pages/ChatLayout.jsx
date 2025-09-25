@@ -2,6 +2,7 @@
 import ConversationItem from "@/Components/App/ConversationItem";
 import TextInput from "@/Components/TextInput";
 import { useEventBus } from "@/EventBus";
+import useOnlineStore from "@/store/useOnlineStore";
 import { ChatBubbleLeftRightIcon, PlusCircleIcon } from "@heroicons/react/24/solid";
 import { Head, Link, usePage } from "@inertiajs/react";
 import { useEffect, useState } from "react";
@@ -12,6 +13,7 @@ const ChatLayout = ({ children }) => {
     const page = usePage();
 
     const auth = page.props.auth;
+    const { setOnlineUsers, addOnlineUser, removeOnlineUser, isUserOnline } = useOnlineStore();
     const conversations = page.props.conversations;
     const selectedConversation = page.props.selectedConversation;
     const [localConversations, setLocalConversations] = useState([]);
@@ -19,9 +21,7 @@ const ChatLayout = ({ children }) => {
 
     const {on} = useEventBus();
 
-    const [onlineUsers, setOnlineUsers] = useState({});
 
-    const isUserOnline = (userId) => onlineUsers[userId];
 
     useEffect(() => {
         setLocalConversations(conversations);
@@ -129,23 +129,13 @@ const ChatLayout = ({ children }) => {
                     users.map((user) => [user.id, user])
                 );
 
-                setOnlineUsers((prevOnlineUsers) => {
-                    return { ...prevOnlineUsers, ...onlineUsersObject };
-                });
+                setOnlineUsers(onlineUsersObject);
             })
-            .joining((users) => {
-                setOnlineUsers((prevOnlineUsers) => {
-                    const updatedUsers = { ...prevOnlineUsers };
-                    updatedUsers[users.id] = users;
-                    return updatedUsers;
-                });
+            .joining((user) => {
+                addOnlineUser(user);
             })
-            .leaving((users) => {
-                setOnlineUsers((prevOnlineUsers) => {
-                    const updatedUsers = { ...prevOnlineUsers };
-                    delete updatedUsers[users.id];
-                    return updatedUsers;
-                });
+            .leaving((user) => {
+                removeOnlineUser(user.id);
             })
             .error((error) => {
                 // console.log("errors", error);
@@ -225,7 +215,7 @@ const ChatLayout = ({ children }) => {
                                     key={`${conversation.is_group ? "group_" : "chat_"}${conversation.id}`}
                                     conversation={conversation}
                                     selectedConversation={selectedConversation}
-                                    online={!!isUserOnline(conversation.id)}
+                                    online={isUserOnline(conversation.receiver_id)}
                                 />
                             ))}
                         {sortedConversations.length === 0 && (

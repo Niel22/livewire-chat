@@ -6,6 +6,7 @@ import GroupAvatar from './GroupAvatar';
 import UserAvatar from './UserAvatar';
 
 const ConversationItem = ({conversation, selectedConversation = null, online = null}) => {
+
   const page = usePage();
   const currentUser = page.props.auth.user;
   let classes = " border-transparent";
