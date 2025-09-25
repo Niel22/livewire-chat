@@ -88,12 +88,12 @@ const MessageOptionsDropdown = ({isSubAccount, message, currentUser, setReplying
                             {({ active }) => (
                             <button
                                 onClick={() => setReplyingTo(message)}
-                                className={`group flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm 
+                                className={`group  flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm 
                                             ${active ? "bg-gray-100 dark:bg-gray-700" : ""} 
                                             text-gray-800 dark:text-gray-200`}
                             >
                                 <ArrowUturnLeftIcon className="size-4 text-gray-500 dark:text-gray-300" />
-                                {t('replyTo')}
+                                <span className='truncate'>{t('replyTo')}</span>
                                 <kbd className="ml-auto hidden font-sans text-xs text-gray-500 dark:text-gray-400 group-data-focus:inline">
                                 ⌘E
                                 </kbd>
@@ -109,12 +109,12 @@ const MessageOptionsDropdown = ({isSubAccount, message, currentUser, setReplying
                                 {({ active }) => (
                                 <button
                                     onClick={() => router.post(route('chat.create', message.sender))}
-                                    className={`group flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm 
+                                    className={` group flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm 
                                                 ${active ? "bg-gray-100 dark:bg-gray-700" : ""} 
                                                 text-gray-800 dark:text-gray-200`}
                                 >
                                     <InboxArrowDownIcon className="size-4 text-gray-500 dark:text-gray-300" />
-                                    {t('messagePrivately')}
+                                    <span className='truncate'>{t('messagePrivately')}</span>
                                     <kbd className="ml-auto hidden font-sans text-xs text-gray-500 dark:text-gray-400 group-data-focus:inline">
                                     ⌘E
                                     </kbd>

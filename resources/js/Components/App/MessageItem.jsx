@@ -15,13 +15,19 @@ const MessageItem = ({message, attachmentClick, setReplyingTo, setPinnedMessages
         return parseInt(message.sender_id) === parseInt(currentUser.id);
     }
 
+    console.log(message)
     const isSubAccount = () => {
+
+        if(message.group_id === null){
+            return false;
+        }
 
         if(parseInt(message.sender_id) === parseInt(currentUser.id)){
             return false;
         }
 
-        if(parseInt(message.sender.staff_id) || message.sender.sub_account.length > 0){
+
+        if(message.sender.staff_id){
             return true;
         }
 
