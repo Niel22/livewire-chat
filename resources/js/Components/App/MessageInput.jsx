@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 
 const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isLocked = false}) => {
   const { t } = useTranslation('convo');
-  const [focusClass, setFocusClass] = useState("mb-14");
+  const [focusClass, setFocusClass] = useState("mb-20");
   const isGroupLocked = () => {
     if(conversation?.is_group && isLocked){
       if (user.role !== "admin" && user.id !== conversation.admin.id) {

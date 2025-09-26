@@ -15,7 +15,6 @@ const MessageItem = ({message, attachmentClick, setReplyingTo, setPinnedMessages
         return parseInt(message.sender_id) === parseInt(currentUser.id);
     }
 
-    console.log(message)
     const isSubAccount = () => {
 
         if(message.group_id === null){

@@ -14,12 +14,14 @@ import useMessageEvents from "@/hooks/useMessageEvents";
 import MessageSearchModal from "@/Components/App/MessageSearchModal";
 import { useTranslation } from "react-i18next";
 import useOnlineStore from "@/store/useOnlineStore";
+import useOnline from "@/hooks/useOnline";
 
 function Home({ selectedConversation = null, messages = null, pins }) {
     
     const { t } = useTranslation('convo');
 
     const { isUserOnline } = useOnlineStore();
+    const {userIsOnline} = useOnline();
     
     const [pinnedMessages, setPinnedMessages] = useState([]);
     const [localMessages, setLocalMessages] = useState([]);
@@ -271,7 +273,7 @@ function Home({ selectedConversation = null, messages = null, pins }) {
                                 <div ref={loadMoreIntersect}></div>
                                 {localMessages.map((message, index) => (
                                     <MessageItem
-                                        online={message?.sender_id ? isUserOnline(message?.sender_id) : false}
+                                        online={message?.sender_id ? userIsOnline(message?.sender) : false}
                                         handleViewOriginal={handleViewOriginal}
                                         key={`${message.id}-${index}`}
                                         message={message}
