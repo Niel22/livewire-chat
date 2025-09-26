@@ -8,11 +8,11 @@ export default function GuestLayout({ children }) {
     const { t } = useTranslation();
     return (
         <div className="flex min-h-screen flex-col items-center bg-gray-100 dark:bg-gray-900 pt-6 sm:justify-center sm:pt-0">
-            <div>
+            <div className='flex flex-col  gap-3 items-center'>
                 <Link href="/">
-                    <ApplicationLogo className="h-20 md:h-40 w-auto fill-current text-gray-500 dark:text-gray-400" />
+                    <ApplicationLogo className="h-auto w-[290px]  fill-current text-gray-500 dark:text-gray-400" />
                 </Link>
-                <div className='flex items-center justify-between'>
+                <div className='flex items-center w-full justify-between'>
                     <DarkModeToggle />
                     <TranslationWidget />
                 </div>
