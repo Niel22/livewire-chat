@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])->group(function(){
     Route::get('/', [HomeController::class, 'home'])->name('dashboard');
-
+    
     Route::get('/switch-account/{account}', [HomeController::class, 'switch'])->name('switch');
     
     Route::get('/groups', [GroupController::class, 'index'])->name('group.list');
