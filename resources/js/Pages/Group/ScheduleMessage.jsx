@@ -169,7 +169,7 @@ const ScheduleMessage = ({group, scheduled_messages}) => {
                     </section>
                 </div>
             
-                <div className="mt-10">
+                <div className="max-w-[90%] mx-auto md:max-w-full mt-10">
                     <h3 className="text-lg font-medium text-gray-900 dark:text-gray-200 mb-4">
                         Scheduled Messages
                     </h3>
