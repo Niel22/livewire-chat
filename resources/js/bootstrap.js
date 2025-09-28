@@ -3,10 +3,10 @@ window.axios = axios;
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
-import Echo from 'laravel-echo';
+// import Echo from 'laravel-echo';
  
-import Pusher from 'pusher-js';
-window.Pusher = Pusher;
+// import Pusher from 'pusher-js';
+// window.Pusher = Pusher;
  
 // window.Echo = new Echo({
 //     broadcaster: 'reverb',
@@ -18,23 +18,14 @@ window.Pusher = Pusher;
 //     enabledTransports: ['ws', 'wss'],
 // });
 
+import Echo from 'laravel-echo';
+ 
+import Pusher from 'pusher-js';
+window.Pusher = Pusher;
+ 
 window.Echo = new Echo({
-    broadcaster: 'reverb',
-    key: import.meta.env.VITE_REVERB_APP_KEY,
-    wsHost: 'taskwin-workstation.com',  
-    wsPort: 443,                       
-    forceTLS: true,                    
-    enabledTransports: ['ws','wss'],
+    broadcaster: 'pusher',
+    key: import.meta.env.VITE_PUSHER_APP_KEY,
+    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
+    forceTLS: true
 });
-
-// import Echo from 'laravel-echo';
- 
-// import Pusher from 'pusher-js';
-// window.Pusher = Pusher;
- 
-// window.Echo = new Echo({
-//     broadcaster: 'pusher',
-//     key: import.meta.env.VITE_PUSHER_APP_KEY,
-//     cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
-//     forceTLS: true
-// });
