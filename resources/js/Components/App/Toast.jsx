@@ -29,7 +29,7 @@ const Toast = ({message}) => {
   return (
     <div className='toast toast-top toast-center min-w-[280px]'>
         {toasts?.map((toast, index) => (
-            <div key={toast.uuid} className="alert alert-success px-4 py-3 text-gray-100 rounded-md  ">
+            <div key={toast.uuid} className="alert alert-success truncate px-4 py-3 text-gray-100 rounded-md  ">
                 <span>{toast.message}</span>
             </div>
         ))}

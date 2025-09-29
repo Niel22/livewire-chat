@@ -79,7 +79,7 @@ textarea {
 button {
   cursor: pointer;
 }
-
+/* 
 .chat-message-content > blockquote,
 .chat-message-content > dl,
 .chat-message-content > dd,
@@ -94,7 +94,6 @@ button {
 .chat-message-content > p,
 .chat-message-content > pre { 
   margin-top: 0;
-  /* margin-bottom: 5px; */
 }
 
 .chat-message-content > ol,
@@ -161,7 +160,7 @@ button {
 
 .chat-message-content pre code {
   background-color: transparent;
-}
+} */
 
 .EmojiPickerReact.epr-dark-theme {
   background-color: theme('colors.gray.800');

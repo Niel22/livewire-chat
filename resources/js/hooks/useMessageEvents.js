@@ -77,6 +77,12 @@ export default function useMessageEvents({selectedConversation, auth, setLocalMe
                 return prevMessages.filter((m) => m.id !== message.id)
             });
         }
+
+        const scrollHeight = messageCtrRef.current.scrollHeight;
+        const scrollTop = messageCtrRef.current.scrollTop;
+        const clientHeight = messageCtrRef.current.clientHeight;
+        const tmpScrollFromBottom = scrollHeight - scrollTop - clientHeight;
+        setScrollFromBottom(scrollHeight - scrollTop - clientHeight);
     }
 
     const messagePinned = (message) => {
