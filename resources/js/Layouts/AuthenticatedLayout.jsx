@@ -156,7 +156,27 @@ export default function AuthenticatedLayout({ header, children }) {
                                                     : 'border-b-4 border-transparent'
                                             }`}
                                         >
-                                            <UserAvatar user={account} />
+                                            {account.avatar && (
+                                                <div className={`chat-image avatar `}>
+                                                    <div className={`rounded-full`}>
+                                                    <img src={`/storage/${account.avatar}`} />
+                                                    </div>
+                                                </div>
+                                            )}
+                                            {!account.avatar && (
+                                                <div className={`chat-image avatar avatar-placeholder `}>
+                                                    <div
+                                                    className={`rounded-full
+                                                        bg-gray-400 text-gray-800 
+                                                        dark:bg-gray-700 dark:text-gray-100`}
+                                                    >
+                                                    <span className='text-xl'>
+                                                        {account.name.substring(0,1)}
+                                                    </span>
+                                                    </div>
+                                                </div>
+                                            )}
+                                            {/* <UserAvatar user={account} /> */}
                                         </Link>
                                     ))}
                                 </div>
