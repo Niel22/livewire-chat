@@ -56,7 +56,7 @@ function Home({ selectedConversation = null, messages = null, pins }) {
         return true;
     }
 
-    useMessageEvents({selectedConversation, auth, setLocalMessages, setPinnedMessages, setIsLocked});
+    useMessageEvents({selectedConversation, auth, setLocalMessages, setPinnedMessages, setIsLocked, setScrollFromBottom, messageCtrRef});
 
     const onAttchmentClick = (attachments, index) => {
         setPreviewAttachment({

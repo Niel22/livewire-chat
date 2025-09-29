@@ -1,7 +1,7 @@
 import { useEventBus } from "@/EventBus";
 import { useEffect } from "react";
 
-export default function useMessageEvents({selectedConversation, auth, setLocalMessages, setPinnedMessages, setIsLocked}){
+export default function useMessageEvents({selectedConversation, auth, setLocalMessages, setPinnedMessages, setIsLocked, setScrollFromBottom, messageCtrRef}){
     const { on } = useEventBus();
 
     const messageCreated = (message) => {
@@ -51,6 +51,12 @@ export default function useMessageEvents({selectedConversation, auth, setLocalMe
                 return [...prevMessages, message];
             });
         }
+
+        const scrollHeight = messageCtrRef.current.scrollHeight;
+        const scrollTop = messageCtrRef.current.scrollTop;
+        const clientHeight = messageCtrRef.current.clientHeight;
+        const tmpScrollFromBottom = scrollHeight - scrollTop - clientHeight;
+        setScrollFromBottom(scrollHeight - scrollTop - clientHeight);
     }
 
     const messageUpdated = (message) => {
