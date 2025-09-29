@@ -158,15 +158,15 @@ export default function AuthenticatedLayout({ header, children }) {
                                         >
                                             {account.avatar && (
                                                 <div className={`chat-image avatar `}>
-                                                    <div className={`rounded-full`}>
-                                                    <img src={`/storage/${account.avatar}`} />
+                                                    <div className={`w-32 h-32 rounded-full overflow-hidden`}>
+                                                        <img src={`/storage/${account.avatar}`} />
                                                     </div>
                                                 </div>
                                             )}
                                             {!account.avatar && (
                                                 <div className={`chat-image avatar avatar-placeholder `}>
                                                     <div
-                                                    className={`rounded-full
+                                                    className={`rounded-full w-32 h-32 
                                                         bg-gray-400 text-gray-800 
                                                         dark:bg-gray-700 dark:text-gray-100`}
                                                     >
