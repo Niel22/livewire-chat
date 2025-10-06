@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Action\Group\FetchAllGroup;
 use App\Models\User;
 use App\Models\Group;
 use Illuminate\Support\Str;
@@ -13,18 +14,32 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreGroupRequest;
 use App\Http\Requests\UpdateGroupRequest;
 use App\Http\Requests\ScheduleMessageRequest;
+use App\Http\Resources\GroupCollection;
 use App\Http\Resources\GroupResource;
 use App\Jobs\SendScheduledMessage;
 use App\Models\GroupMember;
 use App\Models\ScheduleMessageAttachment;
+use App\Traits\ApiResponse;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
 class GroupController extends Controller
 {
-    public function index(){
+    use ApiResponse;
+
+    public function index(FetchAllGroup $action){
+
+        if($group = $action->execute()){
+            
+            return $this->success(new GroupCollection($group), "All Groups");
+        }
+
+        return $this->success([], "No Group Found");
+    }
+
+    public function seeAll(){
         return inertia('Group/List', [
-            'groups' => Group::with('admin')->latest()->get()
+            'groups' => []
         ]);
     }
 

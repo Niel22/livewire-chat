@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Action\User\FetchAllUser;
 use App\Http\Requests\StoreSubAccountRequest;
 use App\Http\Requests\StoreUserDetailsRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Models\UserDetails;
+use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\Hash;
@@ -16,9 +19,19 @@ use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
-    public function index(){
+    use ApiResponse;
+
+    public function index(FetchAllUser $action){
+        if($user = $action->execute()){
+            return $this->success(new UserCollection($user), "All Users");
+        }
+
+        return $this->success([], "No User Found");
+    }
+
+    public function seeAll(){
         return inertia('User/List', [
-            'users' => UserResource::collection(User::whereNot('role', 'admin')->latest()->get())
+            'users' => []
         ]);
     }
 
@@ -104,6 +117,7 @@ class UserController extends Controller
 
     public function destroy(User $user){
         if($user->role === "support") return;
+        if($user->role === "admin") return;
         
         if($user->delete()){
             return redirect()->route('user.list')->with('success', 'Account Deleted successfully!');

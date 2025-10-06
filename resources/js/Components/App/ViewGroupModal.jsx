@@ -46,7 +46,7 @@ const ViewGroupModal = ({ isOpen, closeViewModal, group }) => {
                     <span className="font-semibold">Admin:</span> {group.admin?.name || 'N/A'}
                     </p>
                     <p className="text-gray-800 dark:text-gray-200">
-                    <span className="font-semibold">Total Members:</span> {group.member}
+                    <span className="font-semibold">Total Members:</span> {group.members_count}
                     </p>
                 </div>
             </div>

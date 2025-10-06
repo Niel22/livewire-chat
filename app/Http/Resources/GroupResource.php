@@ -21,7 +21,8 @@ class GroupResource extends JsonResource
             'avatar' => $this->avatar ? Storage::url($this->avatar) : null,
             'name' => $this->name,
             'description' => $this->description,
-            'admin' => $this->admin
+            'admin' => $this->admin,
+            'members_count' => $this->members_count
         ];
     }
 }

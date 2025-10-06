@@ -6,8 +6,10 @@ import TextInput from '@/Components/TextInput'
 import { Transition } from '@headlessui/react'
 import { Head, Link, useForm } from '@inertiajs/react'
 import React from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 
 const CreateSubAccount = ({ staffs }) => {
+  const queryClient = useQueryClient();
   const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
     name: '',
     staff_id: ''
@@ -16,6 +18,7 @@ const CreateSubAccount = ({ staffs }) => {
   const submit = (e) => {
     e.preventDefault();
     post(route('user.store-sub'));
+    queryClient.invalidateQueries(['users']);
   };
 
   return (

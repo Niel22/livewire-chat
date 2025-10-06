@@ -8,6 +8,7 @@ import Dropdown from "@/Components/Dropdown";
 import NavLink from "@/Components/NavLink";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import { useEventBus } from "@/EventBus";
+import { useChatStore } from "@/store/chatStore";
 import { Link, usePage } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -21,11 +22,10 @@ export default function AuthenticatedLayout({ header, children }) {
         }
     }, []);
 
-    
+    const conversations = useChatStore((state) => state.conversations);
 
     const page = usePage();
     const user = page.props.auth.user;
-    const conversations = page.props.conversations;
     const selectedConversation = page.props.selectedConversation;
     const sub_account = page.props.sub_account;
 

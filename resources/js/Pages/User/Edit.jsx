@@ -5,9 +5,11 @@ import TextInput from '@/Components/TextInput'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
 import { Transition } from '@headlessui/react'
 import { Head, Link, useForm } from '@inertiajs/react'
+import { useQueryClient } from '@tanstack/react-query'
 import React from 'react'
 
 const Edit = ({ user }) => {
+    const queryClient = useQueryClient();
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
         name: user.name,
         email: user.email,
@@ -28,7 +30,8 @@ const Edit = ({ user }) => {
 
     const submitUser = (e) => {
         e.preventDefault()
-        patch(route('user.update', user))
+        queryClient.invalidateQueries(['users']);
+        patch(route('user.update', user));
     }
 
     const submitUserDetails = (e) => {

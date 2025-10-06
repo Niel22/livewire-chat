@@ -54,8 +54,7 @@ class HandleInertiaRequests extends Middleware
                     ->get()
                     ->unique('id')
                     ->values()
-                : [],
-            'conversations' => Auth::check() ? Conversation::getConversationForSidebar(Auth::user()) : []
+                : []
         ];
     }
 }

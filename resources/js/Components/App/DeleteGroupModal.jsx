@@ -2,12 +2,15 @@ import { Dialog, DialogPanel, DialogTitle, Transition } from '@headlessui/react'
 import { router } from '@inertiajs/react'
 import { Fragment } from 'react'
 
-const DeleteGroupModal = ({ isOpen, closeModal, group }) => {
+const DeleteGroupModal = ({ isOpen, closeModal, group, refetch }) => {
   if (!group) return null
 
   const onDelete = () => {
     router.delete(route('group.destroy', group.id), {
-      onSuccess: () => closeModal(),
+      onSuccess: () => {
+        refetch();
+        closeModal();
+      }
     })
 
   }

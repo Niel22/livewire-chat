@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MessageController;
@@ -9,10 +10,16 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])->group(function(){
     Route::get('/', [HomeController::class, 'home'])->name('dashboard');
+
+    Route::prefix('api')->group(function(){
+        Route::apiResource('conversations', ConversationController::class);
+        Route::apiResource('groups', GroupController::class);
+        Route::apiResource('users', UserController::class);
+    });
     
     Route::get('/switch-account/{account}', [HomeController::class, 'switch'])->name('switch');
     
-    Route::get('/groups', [GroupController::class, 'index'])->name('group.list');
+    Route::get('/groups', [GroupController::class, 'seeAll'])->name('group.list');
     Route::get('/groups/create', [GroupController::class, 'create'])->name('group.create');
     Route::post('/groups', [GroupController::class, 'store'])->name('group.store');
     Route::get('/groups/{group}', [MessageController::class, 'byGroup'])->name('chat.group');
@@ -40,7 +47,7 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::get('/messages/older/{message}', [MessageController::class, 'loadOlder'])->name('message.loadOlder');
     Route::get('/messsages/search', [MessageController::class, 'search'])->name('message.search');
 
-    Route::get('/users', [UserController::class, 'index'])->name('user.list');
+    Route::get('/users', [UserController::class, 'seeAll'])->name('user.list');
     Route::get('/users/create', [UserController::class, 'create'])->name('user.create');
     Route::post('/users', [UserController::class, 'store'])->name('user.store');
     Route::get('/users/create-sub', [UserController::class, 'createSubAccount'])->name('user.create-sub');

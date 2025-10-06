@@ -6,9 +6,11 @@ import TextInput from '@/Components/TextInput'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
 import { Transition } from '@headlessui/react'
 import { Head, Link, useForm } from '@inertiajs/react'
+import { QueryClient, useQueryClient } from '@tanstack/react-query'
 import React from 'react'
 
 const Create = ({staffs}) => {
+    const queryClient = useQueryClient();
 
     const { data, setData, post, errors, processing, recentlySuccessful } =
         useForm({
@@ -21,7 +23,7 @@ const Create = ({staffs}) => {
 
     const submit = (e) => {
         e.preventDefault();
-
+        queryClient.invalidateQueries(['groups']);
         post(route('group.store'));
     };
 
