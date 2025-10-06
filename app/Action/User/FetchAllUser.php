@@ -11,7 +11,7 @@ class FetchAllUser{
         $query = User::whereNot('role', 'admin')->latest();
 
         if(request()->search){
-            $query->where('name', 'like', '%' . request()->search . '%')->orWhere('role', 'like', '%' . request()->search . '%');
+            $query->where('name', 'like', '%' . request()->search . '%')->orWhere('role', 'like', '%' . request()->search . '%')->orWhere('email', 'like', '%' . request()->search . '%');
         }
 
         $user = $query->paginate(10);
