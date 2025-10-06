@@ -62,7 +62,7 @@ export default function AuthenticatedLayout({ header, children }) {
     const { emit } = useEventBus();
 
     useEffect(() => {
-        conversations.forEach((conversation) => {
+        conversations?.forEach((conversation) => {
             let channel = `message.group.${conversation.id}`;
 
             if (!conversation.is_group) {
@@ -121,7 +121,7 @@ export default function AuthenticatedLayout({ header, children }) {
         });
 
         return () => {
-            conversations.forEach((conversation) => {
+            conversations?.forEach((conversation) => {
                 let channel = `message.group.${conversation.id}`;
 
                 if (!conversation.is_group) {

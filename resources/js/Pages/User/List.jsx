@@ -55,12 +55,14 @@ const List = () => {
 
                     {isLoading ? (
                         [1, 2, 3, 4].map((i) => (<UserItemSkeleton key={i} />))
-                    ) : users?.data?.map((user) => (
+                    ) : users?.data?.length > 0 ? users?.data?.map((user) => (
                         <UserItem user={user} key={user.id} handleCreate={handleCreate} openDeleteModal={openDeleteModal} />
-                    ))}
+                    )) : (
+                        <UserEmpty />
+                    )}
                 </div>
 
-                {(!isLoading && users.data.length > 0) && <Pagination setPage={setPage} meta={users?.meta} links={users?.links} />}
+                {(!isLoading && users?.data?.length > 0) && <Pagination setPage={setPage} meta={users?.meta} links={users?.links} />}
             </div>
 
             <DeleteUserModal isOpen={deleteModalOpen} closeModal={closeDeleteModal} user={user} refetch={refetch} />
@@ -186,6 +188,22 @@ const UserItemSkeleton = () => {
                 <div className="w-8 h-8 bg-gray-300 dark:bg-gray-700 rounded"></div>
                 <div className="w-8 h-8 bg-gray-300 dark:bg-gray-700 rounded"></div>
             </div>
+        </div>
+    )
+}
+
+const UserEmpty = () => {
+    return (
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+            <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-full mb-4">
+                <UserIcon className="w-12 h-12 text-gray-400 dark:text-gray-500" />
+            </div>
+            <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+                No Users Found
+            </h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                There are no users available at the moment.
+            </p>
         </div>
     )
 }
