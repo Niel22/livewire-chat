@@ -30,9 +30,7 @@ class UserController extends Controller
     }
 
     public function seeAll(){
-        return inertia('User/List', [
-            'users' => []
-        ]);
+        return inertia('User/List');
     }
 
     public function create(){

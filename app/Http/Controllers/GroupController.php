@@ -38,9 +38,7 @@ class GroupController extends Controller
     }
 
     public function seeAll(){
-        return inertia('Group/List', [
-            'groups' => []
-        ]);
+        return inertia('Group/List');
     }
 
     public function create(){
