@@ -61,7 +61,7 @@ class User extends Authenticatable
 
     public function visibleGroups()
     {
-        if ($this->role === 'admin' || $this->role === 'staff' || $this->staff_id !== null) {
+        if ($this->role === 'admin' || $this->role === 'staff' || $this->role === "support" || $this->staff_id !== null) {
             return Group::latest('updated_at');
         }
 
