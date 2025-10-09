@@ -168,7 +168,8 @@ const MessageOptionsDropdown = ({isSubAccount, message, currentUser, setReplying
                             
                         </>
                     )}
-
+        
+        
                     {(isSender() || isAdmin()) && (
                         <>
                             <div className="p-1">
