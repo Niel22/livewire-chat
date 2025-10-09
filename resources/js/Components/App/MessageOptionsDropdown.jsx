@@ -124,6 +124,27 @@ const MessageOptionsDropdown = ({isSubAccount, message, currentUser, setReplying
                         </div>
                     )}
 
+                    {(isSubAccount() || isAdmin()) && (
+                        <div className="p-1">
+                            <MenuItem>
+                                {({ active }) => (
+                                <button
+                                    onClick={handleEdit}
+                                    className={`group flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm 
+                                                ${active ? "bg-gray-100 dark:bg-gray-700" : ""} 
+                                                text-gray-800 dark:text-gray-200`}
+                                >
+                                    <PencilIcon className="size-4 text-gray-500 dark:text-gray-300" />
+                                    {t('edit')}
+                                    <kbd className="ml-auto hidden font-sans text-xs text-gray-500 dark:text-gray-400 group-data-focus:inline">
+                                    ⌘E
+                                    </kbd>
+                                </button>
+                                )}
+                            </MenuItem>
+                        </div>
+                    )}
+
                     {isAdmin() && (
                         <>
                             <div className="p-1">
@@ -144,24 +165,7 @@ const MessageOptionsDropdown = ({isSubAccount, message, currentUser, setReplying
                                     )}
                                 </MenuItem>
                             </div>
-                            <div className="p-1">
-                                <MenuItem>
-                                    {({ active }) => (
-                                    <button
-                                        onClick={handleEdit}
-                                        className={`group flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm 
-                                                    ${active ? "bg-gray-100 dark:bg-gray-700" : ""} 
-                                                    text-gray-800 dark:text-gray-200`}
-                                    >
-                                        <PencilIcon className="size-4 text-gray-500 dark:text-gray-300" />
-                                        {t('edit')}
-                                        <kbd className="ml-auto hidden font-sans text-xs text-gray-500 dark:text-gray-400 group-data-focus:inline">
-                                        ⌘E
-                                        </kbd>
-                                    </button>
-                                    )}
-                                </MenuItem>
-                            </div>
+                            
                         </>
                     )}
 
