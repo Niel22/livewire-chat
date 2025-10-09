@@ -13,6 +13,10 @@ class ScheduleMessage extends Model
         'scheduled_at'
     ];
 
+    // protected $casts = [
+    //     'scheduled_at' => 'datetime',
+    // ];
+
     public function attachments(){
         return $this->hasMany(ScheduleMessageAttachment::class, 'schedule_message_id');
     }

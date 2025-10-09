@@ -59,7 +59,11 @@ class SendScheduledMessage implements ShouldQueue
 
         }
 
-        SocketMessage::dispatch($message);
+        try {
+            SocketMessage::dispatch($message);
+        } catch (\Throwable $e) {
+            Log::warning('SocketMessage dispatch failed: '.$e->getMessage());
+        }
 
         $this->scheduledMessage->delete();
 

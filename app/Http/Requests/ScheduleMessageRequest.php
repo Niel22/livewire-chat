@@ -26,6 +26,7 @@ class ScheduleMessageRequest extends FormRequest
             'attachments' => 'nullable|array|max:10',
             'attachments.*' => 'file|max:1024000',
             'scheduled_at' => 'required|date|after:now',
+            'timezone' => 'required|string'
         ];
     }
 }

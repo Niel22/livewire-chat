@@ -22,6 +22,7 @@ use App\Models\ScheduleMessageAttachment;
 use App\Traits\ApiResponse;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class GroupController extends Controller
 {
@@ -144,7 +145,19 @@ class GroupController extends Controller
         $data['sender_id'] = Auth::id();
         $data['group_id'] = $group->id;
 
-        
+        $timezone = $request->input('timezone', 'UTC');
+
+        $userTime = Carbon::parse($data['scheduled_at'], $timezone);
+
+        $now = Carbon::now($timezone);
+
+        if ($userTime->lessThanOrEqualTo($now)) {
+            throw ValidationException::withMessages([
+                'scheduled_at' => ['Scheduled time cannot be in the past.'],
+            ]);
+        }
+
+        // $data['scheduled_at'] = $userTime->clone()->setTimezone('UTC');
 
         $files = $data['attachments'] ?? null;
 
@@ -174,11 +187,11 @@ class GroupController extends Controller
         
 
         SendScheduledMessage::dispatch($message)->delay(
-            Carbon::parse($data['scheduled_at'])
+            Carbon::parse($userTime->clone()->setTimezone('UTC'))
         );
 
         if($message){
-            return redirect()->route('group.message.schedule', $group->id)->with('success', 'Message Scheduled Successfully!');
+            return back()->with('success', 'Message Scheduled Successfully!');
         }
 
         return response()->json(['error' => 'Problem Occured'], 400);

@@ -8,7 +8,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
 import { Transition } from '@headlessui/react'
 import { EyeIcon, TrashIcon } from '@heroicons/react/24/solid'
 import { Head, Link, router, useForm } from '@inertiajs/react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 const ScheduleMessage = ({group, scheduled_messages}) => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -26,10 +26,14 @@ const ScheduleMessage = ({group, scheduled_messages}) => {
         });
     }
 
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+
     const { data, setData, post, processing, errors, recentlySuccessful, reset } = useForm({
         message: "",
         attachments: [],
-        scheduled_at: ""
+        scheduled_at: "",
+        timezone: timezone
     });
 
     const [previewImages, setPreviewImages] = useState([]);
@@ -67,6 +71,11 @@ const ScheduleMessage = ({group, scheduled_messages}) => {
             },
         });
     };
+
+    useEffect(() => {
+        reset();
+        setPreviewImages([]);
+    }, []);
 
 
   return (
