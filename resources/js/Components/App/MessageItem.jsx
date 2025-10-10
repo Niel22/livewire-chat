@@ -10,6 +10,7 @@ import remarkGfm from 'remark-gfm';
 
 const MessageItem = ({message, attachmentClick, setReplyingTo, setPinnedMessages, handleViewOriginal, isAdmin, online}) => {
     const currentUser = usePage().props.auth.user;
+    console.log(currentUser);
 
     const isSender = () => {
         return parseInt(message.sender_id) === parseInt(currentUser.id);
@@ -25,8 +26,16 @@ const MessageItem = ({message, attachmentClick, setReplyingTo, setPinnedMessages
             return false;
         }
 
-
         if(message.sender.staff_id){
+            return true;
+        }
+
+        return false;
+    }
+
+    const isStaff = () => {
+        
+        if(currentUser.staff_id || currentUser.sub_account?.length > 0){
             return true;
         }
 
@@ -50,7 +59,7 @@ const MessageItem = ({message, attachmentClick, setReplyingTo, setPinnedMessages
                 isSender() ? " chat-bubble-info" : " bg-gray-700 "
             ) + ( message.attachments.length > 0 ? " max-w-[90%] sm:max-w-[55%] md:max-w-[45%] lg:max-w-[40%] " : " max-w-[95%] sm:max-w-[70%] md:max-w-[60%] lg:max-w-[55%]" )
         }>
-            <MessageOptionsDropdown isSubAccount={isSubAccount} isAdmin={isAdmin} isSender={isSender} setPinnedMessages={setPinnedMessages} setReplyingTo={setReplyingTo} message={message} currentUser={currentUser} />
+            <MessageOptionsDropdown isStaff={isStaff} isSubAccount={isSubAccount} isAdmin={isAdmin} isSender={isSender} setPinnedMessages={setPinnedMessages} setReplyingTo={setReplyingTo} message={message} currentUser={currentUser} />
             {message.replyTo && (<MessageReply handleViewOriginal={handleViewOriginal} message={message.replyTo} />)}
             {message.attachments.length > 0 && (<MessageAttachments attachments={message.attachments} attachmentClick={attachmentClick} />)}
             <div className='chat-message'>

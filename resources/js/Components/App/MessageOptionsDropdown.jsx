@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { router } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 
-const MessageOptionsDropdown = ({isSubAccount, message, currentUser, setReplyingTo, setPinnedMessages, isSender, isAdmin}) => {
+const MessageOptionsDropdown = ({isSubAccount, message, currentUser, setReplyingTo, setPinnedMessages, isSender, isAdmin, isStaff}) => {
     const { t } = useTranslation('convo');
     const {emit} = useEventBus();
     const [isOpen, setIsOpen] = useState(false);
@@ -124,7 +124,7 @@ const MessageOptionsDropdown = ({isSubAccount, message, currentUser, setReplying
                         </div>
                     )}
 
-                    {(isSubAccount() || isAdmin()) && (
+                    {(isStaff() || isAdmin()) && (
                         <div className="p-1">
                             <MenuItem>
                                 {({ active }) => (
