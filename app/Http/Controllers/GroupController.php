@@ -135,7 +135,7 @@ class GroupController extends Controller
 
         return inertia('Group/ScheduleMessage', [
             'group' => $group,
-            'scheduled_messages' => ScheduleMessage::with('attachments')->where('group_id', $group->id)->latest()->get()
+            'scheduled_messages' => ScheduleMessage::with('attachments')->where('group_id', $group->id)->where('sender_id', Auth::id())->latest()->get()
         ]);
     }
 
