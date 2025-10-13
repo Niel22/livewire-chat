@@ -14,7 +14,6 @@ const GroupInfoSidebar = ({ sidebarOpen, setSidebarOpen, group, isAdmin }) => {
     }
     
     const handleExitGroup = () => {
-        console.log("in")
         router.patch(route('group.member.exit', group));
     }
 

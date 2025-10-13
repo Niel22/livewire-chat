@@ -5,7 +5,6 @@ import React from "react";
 const ShowScheduleModal = ({ isOpen, setIsOpen, message = null }) => {
   if (!isOpen) return null;
 
-  console.log(message);
 
   return (
     <div

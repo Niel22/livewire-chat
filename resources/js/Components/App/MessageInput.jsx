@@ -71,7 +71,7 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
     e.target.value = null;
 
     setChosenFiles((prevFiles) => {
-      console.log(prevFiles);
+      
       const nextFiles = [...prevFiles, ...updatedFiles];
       return nextFiles;
     });

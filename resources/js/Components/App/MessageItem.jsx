@@ -10,7 +10,6 @@ import remarkGfm from 'remark-gfm';
 
 const MessageItem = ({message, attachmentClick, setReplyingTo, setPinnedMessages, handleViewOriginal, isAdmin, online}) => {
     const currentUser = usePage().props.auth.user;
-    console.log(currentUser);
 
     const isSender = () => {
         return parseInt(message.sender_id) === parseInt(currentUser.id);

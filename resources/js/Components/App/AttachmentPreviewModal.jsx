@@ -9,7 +9,7 @@ const AttachmentPreviewModal = ({
   show = false,
   onClose = () => {}
 }) => {
-  console.log(attachments);
+  
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const attachment = useMemo(() => {

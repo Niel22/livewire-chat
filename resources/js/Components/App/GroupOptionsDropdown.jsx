@@ -18,7 +18,7 @@ const GroupOptionsDropdown = ({selectedConversation, isLocked, isAdmin}) => {
                 }
             })
             .catch((err) => {
-                console.log(err);
+              
             })
     }
 
