@@ -35,7 +35,7 @@ const MessageOptionsDropdown = ({isSubAccount, message, currentUser, setReplying
     };
 
     const onMessageDelete = () => {
-        if(parseInt(currentUser.id) !== parseInt(message.sender_id) && currentUser.role !== "admin" && currentUser.role !== "staff") return;
+        if(parseInt(currentUser.id) !== parseInt(message.sender_id) && currentUser.role !== "admin") return;
         
         axios.delete(route('message.destroy', message.id))
             .then((res) => {

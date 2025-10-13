@@ -158,7 +158,7 @@ class MessageController extends Controller
     }
 
     public function destroy(Message $message){
-        if ((int)$message->sender_id !== (int)Auth::id() && Auth::user()->role !== "admin" && Auth::user()->role !== "staff") {
+        if ((int)$message->sender_id !== (int)Auth::id() && Auth::user()->role !== "admin") {
             return response()->json([
                 'message' => 'Forbidden'
             ], 403);
