@@ -173,6 +173,14 @@ class MessageController extends Controller
             $conversation = Conversation::where('id', $message->conversation_id)->first();
         }
 
+        // if($group){
+        //     if($group?->admin?->id !== Auth::id()){
+        //         return response()->json([
+        //             'message' => 'Forbidden'
+        //         ], 403);
+        //     }
+        // }
+
         $deletedMessage = $message;
 
         $message->delete();
@@ -200,7 +208,7 @@ class MessageController extends Controller
         $user = Auth::user();
 
         if ($message->group_id) {
-            $group = $message->group; 
+            $group = Group::find($message->group_id); 
             if (!in_array($user->role, ['admin']) && (int)$group->admin_id !== (int)$user->id) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
@@ -229,7 +237,7 @@ class MessageController extends Controller
         $user = Auth::user();
 
         if ((int)$message->group_id) {
-            $group = $message->group; 
+            $group = Group::find($message->group_id); 
             if (!in_array($user->role, ['admin']) && $group->admin_id !== $user->id) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
