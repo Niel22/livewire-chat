@@ -124,7 +124,7 @@ const MessageOptionsDropdown = ({isSubAccount, message, currentUser, setReplying
                         </div>
                     )}
 
-                    {(isStaff() || isAdmin()) && (
+                    {(isSender() || isAdmin()) && (
                         <div className="p-1">
                             <MenuItem>
                                 {({ active }) => (
