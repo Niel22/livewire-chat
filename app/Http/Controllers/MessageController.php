@@ -158,28 +158,25 @@ class MessageController extends Controller
     }
 
     public function destroy(Message $message){
-        if ((int)$message->sender_id !== (int)Auth::id() && Auth::user()->role !== "admin") {
-            return response()->json([
-                'message' => 'Forbidden'
-            ], 403);
-        }
+        // if ((int)$message->sender_id !== (int)Auth::id() && Auth::user()->role !== "admin") {
+        //     return response()->json([
+        //         'message' => 'Forbidden'
+        //     ], 403);
+        // }
+
+        $user = Auth::user();
 
         $group = null;
         $conversation = null;
 
         if($message->group_id){
-            $group = Group::where('id', $message->group_id)->first();
+            $group = Group::find($message->group_id); 
+            if (!in_array($user->role, ['admin']) && $group->admin_id !== $user->id) {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
         }else{
             $conversation = Conversation::where('id', $message->conversation_id)->first();
         }
-
-        // if($group){
-        //     if($group?->admin?->id !== Auth::id()){
-        //         return response()->json([
-        //             'message' => 'Forbidden'
-        //         ], 403);
-        //     }
-        // }
 
         $deletedMessage = $message;
 
