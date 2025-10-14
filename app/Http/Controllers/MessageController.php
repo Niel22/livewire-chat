@@ -201,7 +201,7 @@ class MessageController extends Controller
 
         if ($message->group_id) {
             $group = $message->group; 
-            if (!in_array($user->role, ['admin', 'staff']) && (int)$group->admin_id !== (int)$user->id) {
+            if (!in_array($user->role, ['admin']) && (int)$group->admin_id !== (int)$user->id) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
@@ -230,7 +230,7 @@ class MessageController extends Controller
 
         if ((int)$message->group_id) {
             $group = $message->group; 
-            if (!in_array($user->role, ['admin', 'staff']) && $group->admin_id !== $user->id) {
+            if (!in_array($user->role, ['admin']) && $group->admin_id !== $user->id) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
