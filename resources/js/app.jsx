@@ -11,6 +11,7 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { EventBusProvider } from './EventBus';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import Toast from './Components/Toast';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ createInertiaApp({
             <EventBusProvider>
                 <QueryClientProvider client={queryClient}>
                     <App {...props} />
+                    <Toast />
                 </QueryClientProvider>
             </EventBusProvider>
         );

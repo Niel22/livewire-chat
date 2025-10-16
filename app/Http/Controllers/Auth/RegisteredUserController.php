@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Action\Auth\RegisterAction;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RegisterRequest;
 use App\Models\User;
+use App\Traits\ApiResponse;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,6 +19,7 @@ use Inertia\Response;
 
 class RegisteredUserController extends Controller
 {
+    use ApiResponse;
     /**
      * Display the registration view.
      */
@@ -28,32 +33,12 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(RegisterRequest $request, RegisterAction $action): JsonResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'pdata' => $request->password,
-            'role' => 'member'
-        ]);
-
-        event(new Registered($user));
-
-        Auth::login($user);
-
-        $conversation = $user->conversations()->first();
-
-        if($conversation){
-            return redirect(route('chat.user', $conversation->id));
+        if($conversation = $action->execute($request)){
+            return $this->success($conversation, 'User Registered Successfully');
         }
 
-        return redirect(route('dashboard', absolute: false));
+        return $this->error('Problem Registering User');
     }
 }

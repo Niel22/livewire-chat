@@ -5,23 +5,23 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { useLogin } from '@/query/useAuthQuery';
+import { loginSchema } from '@/request/authRequest';
+import { joiResolver } from '@hookform/resolvers/joi';
+import { Head, Link } from '@inertiajs/react';
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 export default function Login({ status, canResetPassword }) {
     const { t } = useTranslation("login");
-    const { data, setData, post, processing, errors, reset } = useForm({
-        email: '',
-        password: '',
-        remember: false,
+
+    const loginMutation = useLogin();
+    
+    const { register, handleSubmit, formState: { errors } } = useForm({
+        resolver: joiResolver(loginSchema),
     });
 
-    const submit = (e) => {
-        e.preventDefault();
-        post(route('login'), {
-            onFinish: () => reset('password'),
-        });
-    };
+    const handleRegister = (data) => loginMutation.mutate(data);
 
     return (
         <GuestLayout>
@@ -33,20 +33,19 @@ export default function Login({ status, canResetPassword }) {
                 </div>
             )}
 
-            <form onSubmit={submit}>
+            <form onSubmit={handleSubmit(handleRegister)}>
                 <div>
                     <InputLabel htmlFor="email" value={t("email")} className="dark:text-gray-200" />
                     <TextInput
                         id="email"
                         type="email"
                         name="email"
-                        value={data.email}
+                        {...register("email")}
                         className="mt-1 block w-full bg-white dark:bg-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600"
                         autoComplete="username"
                         isFocused={true}
-                        onChange={(e) => setData('email', e.target.value)}
                     />
-                    <InputError message={errors.email} className="mt-2 dark:text-red-400" />
+                    <InputError message={errors.email?.message} className="mt-2 dark:text-red-400" />
                 </div>
 
                 <div className="mt-4">
@@ -55,26 +54,13 @@ export default function Login({ status, canResetPassword }) {
                         id="password"
                         type="password"
                         name="password"
-                        value={data.password}
+                        {...register("password")}
                         className="mt-1 block w-full bg-white dark:bg-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600"
                         autoComplete="current-password"
-                        onChange={(e) => setData('password', e.target.value)}
                     />
-                    <InputError message={errors.password} className="mt-2 dark:text-red-400" />
+                    <InputError message={errors.password?.message} className="mt-2 dark:text-red-400" />
                 </div>
 
-                <div className="mt-4 block">
-                    <label className="flex items-center">
-                        <Checkbox
-                            name="remember"
-                            checked={data.remember}
-                            onChange={(e) => setData('remember', e.target.checked)}
-                        />
-                        <span className="ms-2 text-sm text-gray-600 dark:text-gray-300">
-                            {t("remember")}
-                        </span>
-                    </label>
-                </div>
 
                 <div className="mt-4 flex items-center justify-end">
                     {canResetPassword && (
@@ -86,7 +72,7 @@ export default function Login({ status, canResetPassword }) {
                         </Link>
                     )}
 
-                    <PrimaryButton className="ms-4" disabled={processing}>
+                    <PrimaryButton className="ms-4" disabled={loginMutation.isPending}>
                         {t("login")}
                     </PrimaryButton>
                 </div>

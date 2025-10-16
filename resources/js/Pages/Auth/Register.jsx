@@ -3,43 +3,42 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { useRegister } from '@/query/useAuthQuery';
+import { registerSchema } from '@/request/authRequest';
+import { Head, Link } from '@inertiajs/react';
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { joiResolver } from "@hookform/resolvers/joi";
 
 export default function Register() {
     const { t } = useTranslation("register");
-    const { data, setData, post, processing, errors, reset } = useForm({
-        name: '',
-        email: '',
-        password: '',
-        password_confirmation: '',
+
+    const registerMutation = useRegister();
+
+    const { register, handleSubmit, formState: { errors } } = useForm({
+        resolver: joiResolver(registerSchema),
     });
 
-    const submit = (e) => {
-        e.preventDefault();
-        post(route('register'), {
-            onFinish: () => reset('password', 'password_confirmation'),
-        });
-    };
+
+    const handleRegister = (data) => registerMutation.mutate(data);
 
     return (
         <GuestLayout>
             <Head title={t("title")} />
 
-            <form onSubmit={submit}>
+            <form onSubmit={handleSubmit(handleRegister)} noValidate>
                 <div>
                     <InputLabel htmlFor="name" value={t("name")} className="dark:text-gray-200" />
                     <TextInput
                         id="name"
                         name="name"
-                        value={data.name}
+                        {...register("name")}
                         className="mt-1 block w-full bg-white dark:bg-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600"
                         autoComplete="name"
                         isFocused={true}
-                        onChange={(e) => setData('name', e.target.value)}
                         required
                     />
-                    <InputError message={errors.name} className="mt-2 dark:text-red-400" />
+                    <InputError message={errors.name?.message} className="mt-2 dark:text-red-400" />
                 </div>
 
                 <div className="mt-4">
@@ -48,13 +47,12 @@ export default function Register() {
                         id="email"
                         type="email"
                         name="email"
-                        value={data.email}
+                        {...register("email")}
                         className="mt-1 block w-full bg-white dark:bg-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600"
                         autoComplete="username"
-                        onChange={(e) => setData('email', e.target.value)}
                         required
                     />
-                    <InputError message={errors.email} className="mt-2 dark:text-red-400" />
+                    <InputError message={errors.email?.message} className="mt-2 dark:text-red-400" />
                 </div>
 
                 <div className="mt-4">
@@ -63,13 +61,12 @@ export default function Register() {
                         id="password"
                         type="password"
                         name="password"
-                        value={data.password}
+                        {...register("password")}
                         className="mt-1 block w-full bg-white dark:bg-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600"
                         autoComplete="new-password"
-                        onChange={(e) => setData('password', e.target.value)}
                         required
                     />
-                    <InputError message={errors.password} className="mt-2 dark:text-red-400" />
+                    <InputError message={errors.password?.message} className="mt-2 dark:text-red-400" />
                 </div>
 
                 <div className="mt-4">
@@ -82,13 +79,12 @@ export default function Register() {
                         id="password_confirmation"
                         type="password"
                         name="password_confirmation"
-                        value={data.password_confirmation}
+                        {...register("password_confirmation")}
                         className="mt-1 block w-full bg-white dark:bg-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600"
                         autoComplete="new-password"
-                        onChange={(e) => setData('password_confirmation', e.target.value)}
                         required
                     />
-                    <InputError message={errors.password_confirmation} className="mt-2 dark:text-red-400" />
+                    <InputError message={errors.password_confirmation?.message} className="mt-2 dark:text-red-400" />
                 </div>
 
                 <div className="mt-4 flex items-center justify-end">
@@ -99,7 +95,7 @@ export default function Register() {
                         {t("already_registered")}
                     </Link>
 
-                    <PrimaryButton className="ms-4" disabled={processing}>
+                    <PrimaryButton type="submit" className="ms-4" disabled={registerMutation.isPending}>
                         {t("register")}
                     </PrimaryButton>
                 </div>

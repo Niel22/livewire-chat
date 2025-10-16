@@ -8,6 +8,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
+
+require __DIR__.'/auth.php';
+
 Route::middleware(['auth', 'verified'])->group(function(){
     Route::get('/', [HomeController::class, 'home'])->name('dashboard');
 
@@ -67,4 +70,3 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';

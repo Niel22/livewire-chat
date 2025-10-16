@@ -2,12 +2,12 @@ import axios from "axios";
 import { router } from "@inertiajs/react";
 
 const api = axios.create({
-  // baseURL: "http://localhost:8000/api",
-  baseURL: "https://taskwin-workstation.com/api",
+  baseURL: "http://localhost:8000/api",
+  // baseURL: "https://taskwin-workstation.com/api",
   timeout: 60000,
   headers: {
     "Content-Type": "application/json",
-    Accept: "application/json",
+    "Accept": "application/json",
   },
 });
 

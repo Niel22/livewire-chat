@@ -8,6 +8,7 @@ import Dropdown from "@/Components/Dropdown";
 import NavLink from "@/Components/NavLink";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import { useEventBus } from "@/EventBus";
+import { useLogout } from "@/query/useAuthQuery";
 import { useChatStore } from "@/store/chatStore";
 import { Link, usePage } from "@inertiajs/react";
 import { useEffect, useState } from "react";
@@ -21,6 +22,10 @@ export default function AuthenticatedLayout({ header, children }) {
             Notification.requestPermission();
         }
     }, []);
+
+    const logoutMutation = useLogout();
+
+    const handleLogout = () => logoutMutation.mutate();
 
     const conversations = useChatStore((state) => state.conversations);
 
@@ -263,13 +268,12 @@ export default function AuthenticatedLayout({ header, children }) {
                                             >
                                                 {t("profile")}
                                             </Dropdown.Link>
-                                            <Dropdown.Link
-                                                href={route("logout")}
-                                                method="post"
-                                                as="button"
+                                            <button
+                                                onClick={handleLogout}
+                                                className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600"
                                             >
                                                 {t("logout")}
-                                            </Dropdown.Link>
+                                            </button>
                                         </Dropdown.Content>
                                     </Dropdown>
                                 </div>
@@ -382,8 +386,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                             {t("profile")}
                                         </ResponsiveNavLink>
                                     <ResponsiveNavLink
-                                        method="post"
-                                        href={route("logout")}
+                                        onClick={handleLogout}
                                         as="button"
                                         className="block text-gray-700 hover:bg-red-300 dark:hover:bg-red-500 dark:text-gray-200"
                                     >
