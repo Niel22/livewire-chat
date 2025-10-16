@@ -3,24 +3,24 @@ import InputLabel from '@/Components/InputLabel'
 import PrimaryButton from '@/Components/PrimaryButton'
 import TextInput from '@/Components/TextInput'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
+import { useCreateStaff } from '@/query/useUserQuery'
+import { staffSchema } from '@/request/userRequest'
 import { Transition } from '@headlessui/react'
-import { Head, Link, useForm } from '@inertiajs/react'
+import { joiResolver } from '@hookform/resolvers/joi'
+import { Head, Link } from '@inertiajs/react'
 import { useQueryClient } from '@tanstack/react-query'
 import React from 'react'
+import { useForm } from 'react-hook-form'
 
 const Create = () => {
-  const queryClient = useQueryClient();
-  const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
-    name: '',
-    email: '',
-    password: ''
+  
+  const createStaffMutation = useCreateStaff();
+      
+  const { register, handleSubmit, formState: { errors } } = useForm({
+      resolver: joiResolver(staffSchema),
   });
 
-  const submit = (e) => {
-    e.preventDefault();
-    post(route('user.store'));
-    queryClient.invalidateQueries(['users']);
-  };
+  const handleCreateStaff = (data) => createStaffMutation.mutate(data);
 
   return (
     <>
@@ -38,18 +38,17 @@ const Create = () => {
                 </p>
               </header>
 
-              <form onSubmit={submit} className="mt-6 space-y-6">
+              <form onSubmit={handleSubmit(handleCreateStaff)} className="mt-6 space-y-6">
                 <div>
                   <InputLabel htmlFor="name" value="Name" />
                   <TextInput
                     id="name"
                     className="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
-                    value={data.name}
-                    onChange={(e) => setData('name', e.target.value)}
+                    {...register("name")}
                     required
                     autoComplete="off"
                   />
-                  <InputError className="mt-2 dark:text-red-400" message={errors.name} />
+                  <InputError className="mt-2 dark:text-red-400" message={errors.name?.message} />
                 </div>
 
                 <div>
@@ -58,12 +57,11 @@ const Create = () => {
                     id="email"
                     type="email"
                     className="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
-                    value={data.email}
-                    onChange={(e) => setData('email', e.target.value)}
+                    {...register("email")}
                     required
                     autoComplete="off"
                   />
-                  <InputError className="mt-2 dark:text-red-400" message={errors.email} />
+                  <InputError className="mt-2 dark:text-red-400" message={errors.email?.message} />
                 </div>
 
                 <div>
@@ -72,25 +70,15 @@ const Create = () => {
                     id="password"
                     type="password"
                     className="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
-                    value={data.password}
-                    onChange={(e) => setData('password', e.target.value)}
+                    {...register("password")}
                     required
                     autoComplete="new-password"
                   />
-                  <InputError className="mt-2 dark:text-red-400" message={errors.password} />
+                  <InputError className="mt-2 dark:text-red-400" message={errors.password?.message} />
                 </div>
 
                 <div className="flex items-center gap-4">
-                  <PrimaryButton disabled={processing}>Create User</PrimaryButton>
-                  <Transition
-                    show={recentlySuccessful}
-                    enter="transition ease-in-out"
-                    enterFrom="opacity-0"
-                    leave="transition ease-in-out"
-                    leaveTo="opacity-0"
-                  >
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Saved.</p>
-                  </Transition>
+                  <PrimaryButton disabled={createStaffMutation.isPending}>Create User</PrimaryButton>
                 </div>
               </form>
             </section>

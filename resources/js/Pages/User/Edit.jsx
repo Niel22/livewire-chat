@@ -3,46 +3,57 @@ import InputLabel from '@/Components/InputLabel'
 import PrimaryButton from '@/Components/PrimaryButton'
 import TextInput from '@/Components/TextInput'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
+import { useUpdateUser, useUpdateUserDetails, useUpdateUserPassword } from '@/query/useUserQuery'
+import { passwordSchema, userDetailsSchema, userSchema } from '@/request/userRequest'
 import { Transition } from '@headlessui/react'
-import { Head, Link, useForm } from '@inertiajs/react'
-import { useQueryClient } from '@tanstack/react-query'
-import React from 'react'
+import { joiResolver } from '@hookform/resolvers/joi'
+import { Head, Link } from '@inertiajs/react'
+import { useForm } from 'react-hook-form'
 
 const Edit = ({ user }) => {
-    const queryClient = useQueryClient();
-    const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
-        name: user.name,
-        email: user.email,
-        role: user.role,
-    })
 
-    const userDetailsForm = useForm({
-        name: user.details?.name ?? '',
-        date_joined: user.details?.date_joined ?? '',
-        payment_method: user.details?.payment_method ?? '',
-        email: user.details?.email ?? '',
-    });
+    const updateUserMutation = useUpdateUser();
     
-    const userPasswordForm = useForm({
-        password: "",
-        password_confirmation: ""
+    const { register: userRegister, handleSubmit: handleSubmitUpdateUser, formState: { errors: userErrors } } = useForm({
+        resolver: joiResolver(userSchema),
+        defaultValues: {
+            name: user.name,
+            email: user.email,
+            role: user.role,
+        }
     });
 
-    const submitUser = (e) => {
-        e.preventDefault()
-        queryClient.invalidateQueries(['users']);
-        patch(route('user.update', user));
-    }
+    const handleUpdateUser = (data) => updateUserMutation.mutate({
+        id: user.id,
+        payload: data
+    });
 
-    const submitUserDetails = (e) => {
-        e.preventDefault()
-        userDetailsForm.patch(route('user.user-details', user))
-    }
-    
-    const submitPasswordDetails = (e) => {
-        e.preventDefault();
-        userPasswordForm.patch(route('user.password', user))
-    }
+    const { register: passwordRegister, handleSubmit: handleSubmitUpdatePassword, reset, formState: { errors: passwordErrors } } = useForm({
+        resolver: joiResolver(passwordSchema),
+    });
+
+    const updateUserPasswordMutation = useUpdateUserPassword(reset);
+    const handleUpdatePassword = (data) => updateUserPasswordMutation.mutate({
+        id: user.id,
+        payload: data
+    });
+
+    const { register: userDetailsRegister, handleSubmit: handleSubmitUpdateUserDetails, formState: { errors: userDetailsErrors } } = useForm({
+        resolver: joiResolver(userDetailsSchema),
+        defaultValues: {
+            name: user.details?.name,
+            email: user.details?.email,
+            date_joined: user.details?.date_joined,
+            payment_method: user.details?.payment_method,
+        }
+    });
+
+    const updateUserDetailsMutation = useUpdateUserDetails();
+    const handleUpdateUserDetails = (data) => updateUserDetailsMutation.mutate({
+        id: user.id,
+        payload: data
+    });
+
 
     return (
         <>
@@ -62,29 +73,28 @@ const Edit = ({ user }) => {
                                 </p>
                             </header>
 
-                            <form onSubmit={submitUser} className="mt-6 space-y-6">
+                            <form onSubmit={handleSubmitUpdateUser(handleUpdateUser)} className="mt-6 space-y-6">
                                 <div>
                                     <InputLabel htmlFor="name" value="Name" />
                                     <TextInput
                                         id="name"
                                         className="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
-                                        value={data.name}
-                                        onChange={(e) => setData('name', e.target.value)}
+                                        {...userRegister("name")}
                                         required
                                     />
-                                    <InputError className="mt-2 dark:text-red-400" message={errors.name} />
+                                    <InputError className="mt-2 dark:text-red-400" message={userErrors.name?.message} />
                                 </div>
 
                                 <div>
                                     <InputLabel htmlFor="email" value="Email (readonly)" />
                                     <TextInput
-                                        id="email"
+                                        id="user-email"
                                         type="email"
                                         className="mt-1 block w-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 border-gray-300 dark:border-gray-600"
-                                        value={data.email}
+                                        {...userRegister("email")}
                                         readOnly
                                     />
-                                    <InputError className="mt-2 dark:text-red-400" message={errors.email} />
+                                    <InputError className="mt-2 dark:text-red-400" message={userErrors.email?.message} />
                                 </div>
 
                                 <div>
@@ -92,27 +102,18 @@ const Edit = ({ user }) => {
                                     <select
                                         id="role" readOnly disabled
                                         className="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 border-gray-300 rounded-md"
-                                        value={data.role}
-                                        onChange={(e) => setData('role', e.target.value)}
+                                        {...userRegister("role")}
                                     >
                                         <option value="admin">Admin</option>
                                         <option value="staff">Staff</option>
                                         <option value="sub_account">Sub Account</option>
+                                        <option value="member">Member</option>
                                     </select>
-                                    <InputError className="mt-2 dark:text-red-400" message={errors.role} />
+                                    <InputError className="mt-2 dark:text-red-400" message={userErrors.role?.message} />
                                 </div>
 
                                 <div className="flex items-center gap-4">
-                                    <PrimaryButton disabled={processing}>Save Changes</PrimaryButton>
-                                    <Transition
-                                        show={recentlySuccessful}
-                                        enter="transition ease-in-out"
-                                        enterFrom="opacity-0"
-                                        leave="transition ease-in-out"
-                                        leaveTo="opacity-0"
-                                    >
-                                        <p className="text-sm text-gray-600 dark:text-gray-400">Saved.</p>
-                                    </Transition>
+                                    <PrimaryButton disabled={updateUserMutation.isPending}>Save Changes</PrimaryButton>
                                 </div>
                             </form>
                         </section>
@@ -131,16 +132,15 @@ const Edit = ({ user }) => {
                                     </p>
                                 </header>
 
-                                <form onSubmit={submitUserDetails} className="mt-6 space-y-6">
+                                <form onSubmit={handleSubmitUpdateUserDetails(handleUpdateUserDetails)} className="mt-6 space-y-6">
                                     <div>
                                         <InputLabel htmlFor="name" value="Name" />
                                         <TextInput
-                                            id="name"
+                                            id="user_name"
                                             className="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
-                                            value={userDetailsForm.data.name}
-                                            onChange={(e) => userDetailsForm.setData('name', e.target.value)}
+                                            {...userDetailsRegister("name")}
                                         />
-                                        <InputError className="mt-2 dark:text-red-400" message={userDetailsForm.errors.name} />
+                                        <InputError className="mt-2 dark:text-red-400" message={userDetailsErrors.name?.message} />
                                     </div>
 
                                     <div>
@@ -149,10 +149,9 @@ const Edit = ({ user }) => {
                                             id="date_joined"
                                             type="date"
                                             className="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
-                                            value={userDetailsForm.data.date_joined}
-                                            onChange={(e) => userDetailsForm.setData('date_joined', e.target.value)}
+                                            {...userDetailsRegister("date_joined")}
                                         />
-                                        <InputError className="mt-2 dark:text-red-400" message={userDetailsForm.errors.date_joined} />
+                                        <InputError className="mt-2 dark:text-red-400" message={userDetailsErrors.date_joined?.message} />
                                     </div>
 
                                     <div>
@@ -160,10 +159,9 @@ const Edit = ({ user }) => {
                                         <TextInput
                                             id="payment_method"
                                             className="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
-                                            value={userDetailsForm.data.payment_method}
-                                            onChange={(e) => userDetailsForm.setData('payment_method', e.target.value)}
+                                            {...userDetailsRegister("payment_method")}
                                         />
-                                        <InputError className="mt-2 dark:text-red-400" message={userDetailsForm.errors.payment_method} />
+                                        <InputError className="mt-2 dark:text-red-400" message={userDetailsErrors.payment_method?.message} />
                                     </div>
 
                                     <div>
@@ -172,23 +170,13 @@ const Edit = ({ user }) => {
                                             id="email"
                                             type="email"
                                             className="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
-                                            value={userDetailsForm.data.email}
-                                            onChange={(e) => userDetailsForm.setData('email', e.target.value)}
+                                            {...userDetailsRegister("email")}
                                         />
-                                        <InputError className="mt-2 dark:text-red-400" message={userDetailsForm.errors.email} />
+                                        <InputError className="mt-2 dark:text-red-400" message={userDetailsErrors.email?.message} />
                                     </div>
 
                                     <div className="flex items-center gap-4">
-                                        <PrimaryButton disabled={userDetailsForm.processing}>Save Details</PrimaryButton>
-                                        <Transition
-                                            show={userDetailsForm.recentlySuccessful}
-                                            enter="transition ease-in-out"
-                                            enterFrom="opacity-0"
-                                            leave="transition ease-in-out"
-                                            leaveTo="opacity-0"
-                                        >
-                                            <p className="text-sm text-gray-600 dark:text-gray-400">Saved.</p>
-                                        </Transition>
+                                        <PrimaryButton disabled={updateUserMutation.isPending}>Save Details</PrimaryButton>
                                     </div>
                                 </form>
                             </section>
@@ -206,40 +194,29 @@ const Edit = ({ user }) => {
                                 </p>
                             </header>
 
-                            <form onSubmit={submitPasswordDetails} className="mt-6 space-y-6">
+                            <form onSubmit={handleSubmitUpdatePassword(handleUpdatePassword)} className="mt-6 space-y-6">
                                 <div>
                                     <InputLabel htmlFor="Password" value="Password" />
                                     <TextInput
-                                        id="name"
+                                        id="password"
                                         className="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
-                                        value={userPasswordForm.password}
-                                        onChange={(e) => userPasswordForm.setData('password', e.target.value)}
+                                        {...passwordRegister("password")}
                                     />
-                                    <InputError className="mt-2 dark:text-red-400" message={userPasswordForm.errors.password} />
+                                    <InputError className="mt-2 dark:text-red-400" message={passwordErrors.password?.message} />
                                 </div>
 
                                 <div>
                                     <InputLabel htmlFor="Comfirm Password" value="Comfirm Password" />
                                     <TextInput
-                                        id="payment_method"
+                                        id="password_confirmation"
                                         className="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
-                                        value={userPasswordForm.password_confirmation}
-                                        onChange={(e) => userPasswordForm.setData('password_confirmation', e.target.value)}
+                                        {...passwordRegister("password_confirmation")}
                                     />
-                                    <InputError className="mt-2 dark:text-red-400" message={userPasswordForm.errors.password_confirmation} />
+                                    <InputError className="mt-2 dark:text-red-400" message={passwordErrors.password_confirmation?.message} />
                                 </div>
 
                                 <div className="flex items-center gap-4">
-                                    <PrimaryButton disabled={userPasswordForm.processing}>Save Details</PrimaryButton>
-                                    <Transition
-                                        show={userPasswordForm.recentlySuccessful}
-                                        enter="transition ease-in-out"
-                                        enterFrom="opacity-0"
-                                        leave="transition ease-in-out"
-                                        leaveTo="opacity-0"
-                                    >
-                                        <p className="text-sm text-gray-600 dark:text-gray-400">Saved.</p>
-                                    </Transition>
+                                    <PrimaryButton disabled={updateUserPasswordMutation.isPending}>Save Details</PrimaryButton>
                                 </div>
                             </form>
                         </section>

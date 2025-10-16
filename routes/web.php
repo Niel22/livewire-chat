@@ -18,6 +18,9 @@ Route::middleware(['auth', 'verified'])->group(function(){
         Route::apiResource('conversations', ConversationController::class);
         Route::apiResource('groups', GroupController::class);
         Route::apiResource('users', UserController::class);
+        Route::patch('/users/{user}/change-password', [UserController::class, 'password']);
+        Route::patch('/users/{user}/user-details', [UserController::class, 'storeUserDetails']);
+        Route::post('/users/create-sub', [UserController::class, 'storeSubAccount']);
     });
     
     Route::get('/switch-account/{account}', [HomeController::class, 'switch'])->name('switch');
@@ -54,12 +57,12 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::get('/users/create', [UserController::class, 'create'])->name('user.create');
     Route::post('/users', [UserController::class, 'store'])->name('user.store');
     Route::get('/users/create-sub', [UserController::class, 'createSubAccount'])->name('user.create-sub');
-    Route::post('/users/create-sub', [UserController::class, 'storeSubAccount'])->name('user.store-sub');
+    
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('user.edit');
     Route::get('/users/{user}', [UserController::class, 'show'])->name('user.show');
     Route::patch('/users/{user}', [UserController::class, 'update'])->name('user.update');
-    Route::patch('/users/{user}/change-password', [UserController::class, 'password'])->name('user.password');
-    Route::patch('/users/{user}/user-details', [UserController::class, 'storeUserDetails'])->name('user.user-details');
+    
+    
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('user.destroy');
 
 });

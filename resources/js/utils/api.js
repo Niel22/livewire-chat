@@ -26,9 +26,6 @@ api.interceptors.response.use(
         router.visit("/forbidden");
       }
 
-      if (error.response.status === 404) {
-        router.visit("/not-found");
-      }
     }
 
     return Promise.reject(error);

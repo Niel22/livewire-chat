@@ -13,4 +13,11 @@ class UserDetails extends Model
         'payment_method',
         'email'
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'date_joined' => 'datetime'
+        ];
+    }
 }

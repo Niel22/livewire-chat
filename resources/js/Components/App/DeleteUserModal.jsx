@@ -2,16 +2,9 @@ import { Dialog, DialogPanel, DialogTitle, Transition } from '@headlessui/react'
 import { router } from '@inertiajs/react'
 import { Fragment } from 'react'
 
-const DeleteUserModal = ({ isOpen, closeModal, user, refetch }) => {
-  if (!user) return null
-
-  const onDelete = () => {
-    router.delete(route('user.destroy', user), {
-      onSuccess: () => {
-        refetch();
-        closeModal();
-      }
-    })
+const DeleteUserModal = ({ isOpen, closeModal, onConfirm, isLoading, user }) => {
+  if(!user){
+    return null;
   }
 
   return (
@@ -44,10 +37,11 @@ const DeleteUserModal = ({ isOpen, closeModal, user, refetch }) => {
               </button>
 
               <button
-                onClick={onDelete}
+                onClick={onConfirm}
+                disabled={isLoading}
                 className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg"
               >
-                Delete
+                {isLoading ? "Deleting User..." : "Delete"}
               </button>
             </div>
           </DialogPanel>

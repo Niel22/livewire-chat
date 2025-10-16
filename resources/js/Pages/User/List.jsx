@@ -3,7 +3,7 @@ import Pagination from "@/Components/App/Pagination";
 import UserAvatar from "@/Components/App/UserAvatar";
 import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { useFetchAllUsers } from "@/query/useUserQuery";
+import { useDeleteUser, useFetchAllUsers } from "@/query/useUserQuery";
 import { ChatBubbleLeftIcon, EyeIcon, PencilIcon, TrashIcon, UserIcon } from "@heroicons/react/24/solid";
 import { Head, Link, router } from "@inertiajs/react";
 import React, { useEffect, useState } from "react";
@@ -12,17 +12,8 @@ const List = () => {
 
     const [page, setPage] = useState(1);
     const [search, setSearch] = useState('');
-    
-    const {data: users, isLoading, refetch} = useFetchAllUsers({page, search});
-    
-
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [user, setUser] = useState(null);
-
-    const handleCreate = (user) => {
-        router.post(route('chat.create', user))
-    }
-
     const openDeleteModal = (user) => {
         setUser(user);
         setDeleteModalOpen(true);
@@ -31,6 +22,15 @@ const List = () => {
     const closeDeleteModal = () => {
         setUser(null);
         setDeleteModalOpen(false);
+    }
+    
+    const {data: users, isLoading, refetch} = useFetchAllUsers({page, search});
+
+    const deleteUserMutation = useDeleteUser(refetch, closeDeleteModal);
+    const handleDeleteUser = () => deleteUserMutation.mutate({id : user.id});
+    
+    const handleCreateChat = (user) => {
+        router.post(route('chat.create', user))
     }
 
     useEffect(() => {
@@ -56,7 +56,7 @@ const List = () => {
                     {isLoading ? (
                         [1, 2, 3, 4].map((i) => (<UserItemSkeleton key={i} />))
                     ) : users?.data?.length > 0 ? users?.data?.map((user) => (
-                        <UserItem user={user} key={user.id} handleCreate={handleCreate} openDeleteModal={openDeleteModal} />
+                        <UserItem user={user} key={user.id} handleCreate={handleCreateChat} openDeleteModal={openDeleteModal} />
                     )) : (
                         <UserEmpty />
                     )}
@@ -65,7 +65,7 @@ const List = () => {
                 {(!isLoading && users?.data?.length > 0) && <Pagination setPage={setPage} meta={users?.meta} links={users?.links} />}
             </div>
 
-            <DeleteUserModal isOpen={deleteModalOpen} closeModal={closeDeleteModal} user={user} refetch={refetch} />
+            <DeleteUserModal isOpen={deleteModalOpen} closeModal={closeDeleteModal} onConfirm={handleDeleteUser} isLoading={deleteUserMutation.isPending} user={user} />
         </>
     );
 };

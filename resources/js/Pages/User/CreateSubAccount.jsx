@@ -4,22 +4,22 @@ import InputLabel from '@/Components/InputLabel'
 import PrimaryButton from '@/Components/PrimaryButton'
 import TextInput from '@/Components/TextInput'
 import { Transition } from '@headlessui/react'
-import { Head, Link, useForm } from '@inertiajs/react'
+import { Head, Link } from '@inertiajs/react'
 import React from 'react'
 import { useQueryClient } from '@tanstack/react-query'
+import { useCreateSubAccount } from '@/query/useUserQuery'
+import { subAccountSchema } from '@/request/userRequest'
+import { useForm } from 'react-hook-form'
+import { joiResolver } from '@hookform/resolvers/joi'
 
 const CreateSubAccount = ({ staffs }) => {
-  const queryClient = useQueryClient();
-  const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
-    name: '',
-    staff_id: ''
+  const createSubAccountMutation = useCreateSubAccount();
+        
+  const { register, handleSubmit, formState: { errors } } = useForm({
+      resolver: joiResolver(subAccountSchema),
   });
 
-  const submit = (e) => {
-    e.preventDefault();
-    post(route('user.store-sub'));
-    queryClient.invalidateQueries(['users']);
-  };
+  const handleCreateSubAccount = (data) => createSubAccountMutation.mutate(data);
 
   return (
     <>
@@ -37,26 +37,24 @@ const CreateSubAccount = ({ staffs }) => {
                 </p>
               </header>
 
-              <form onSubmit={submit} className="mt-6 space-y-6">
+              <form onSubmit={handleSubmit(handleCreateSubAccount)} className="mt-6 space-y-6">
                 <div>
                   <InputLabel htmlFor="name" value="Name" />
                   <TextInput
                     id="name"
                     className="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
-                    value={data.name}
-                    onChange={(e) => setData('name', e.target.value)}
+                    {...register("name")}
                     required
                     autoComplete="off"
                   />
-                  <InputError className="mt-2 dark:text-red-400" message={errors.name} />
+                  <InputError className="mt-2 dark:text-red-400" message={errors.name?.message} />
                 </div>
 
                 <div>
                   <InputLabel htmlFor="staff_id" value="Select Staff" />
                   <select
                     id="staff_id"
-                    value={data.staff_id}
-                    onChange={(e) => setData('staff_id', e.target.value)}
+                    {...register("staff_id")}
                     className="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 rounded-md border-gray-300 focus:ring focus:ring-indigo-500 focus:border-indigo-500"
                     required
                   >
@@ -67,20 +65,11 @@ const CreateSubAccount = ({ staffs }) => {
                       </option>
                     ))}
                   </select>
-                  <InputError className="mt-2 dark:text-red-400" message={errors.staff_id} />
+                  <InputError className="mt-2 dark:text-red-400" message={errors.staff_id?.message} />
                 </div>
 
                 <div className="flex items-center gap-4">
-                  <PrimaryButton disabled={processing}>Create Sub Account</PrimaryButton>
-                  <Transition
-                    show={recentlySuccessful}
-                    enter="transition ease-in-out"
-                    enterFrom="opacity-0"
-                    leave="transition ease-in-out"
-                    leaveTo="opacity-0"
-                  >
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Saved.</p>
-                  </Transition>
+                  <PrimaryButton disabled={createSubAccountMutation.isPending}>Create Sub Account</PrimaryButton>
                 </div>
               </form>
             </section>

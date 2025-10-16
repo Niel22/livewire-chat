@@ -2,10 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Action\User\CreateStaff;
+use App\Action\User\CreateSubAccount;
+use App\Action\User\DeleteUser;
 use App\Action\User\FetchAllUser;
+use App\Action\User\StoreUserDetails;
+use App\Action\User\UpdateUser;
+use App\Action\User\UpdateUserPassword;
 use App\Http\Requests\StoreSubAccountRequest;
 use App\Http\Requests\StoreUserDetailsRequest;
 use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserPasswordRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
@@ -14,6 +21,7 @@ use App\Models\UserDetails;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Faker\Factory as Faker;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
@@ -37,18 +45,14 @@ class UserController extends Controller
         return inertia('User/Create');
     }
 
-    public function store(StoreUserRequest $request){
+    public function store(StoreUserRequest $request, CreateStaff $action): JsonResponse
+    {
 
-        $validated = $request->validated();
-        $validated['role'] = 'staff';
-
-        $user = User::create($validated);
-
-        if($user){
-            return redirect()->route('user.list')->with('success', 'User created successfully!');
+        if($action->execute($request->all())){
+            return $this->success([], 'User Created');
         }
 
-        return response()->json(['error' => 'Problem Occured'], 400);
+        return $this->error('Error Creating User');
     }
 
     public function createSubAccount(){
@@ -57,22 +61,13 @@ class UserController extends Controller
         ]);
     }
 
-    public function storeSubAccount(StoreSubAccountRequest $request){
+    public function storeSubAccount(StoreSubAccountRequest $request, CreateSubAccount $action){
 
-        $validated = $request->validated();
-
-        $faker = Faker::create();
-
-        $validated['email'] = $faker->unique()->safeEmail();
-        $validated['password'] = $faker->password(8);
-
-        $user = User::create($validated);
-
-        if($user){
-            return redirect()->route('user.list')->with('success', 'Sub Account created successfully!');
+        if($action->execute($request->all())){
+            return $this->success([], 'Sub Account Created Successfully');
         }
 
-        return response()->json(['error' => 'Problem Occured'], 400);
+        return $this->error('Error Creating Sub Account');
     }
 
     public function edit(User $user){
@@ -86,42 +81,30 @@ class UserController extends Controller
         ]);
     }
 
-    public function storeUserDetails(User $user, StoreUserDetailsRequest $request){
-        $user = UserDetails::updateOrCreate(
-            ['user_id' => $user->id],
-            [                       
-                'name'           => $request->input('name'),
-                'date_joined'    => $request->input('date_joined'),
-                'payment_method' => $request->input('payment_method'),
-                'email'          => $request->input('email'),
-            ]
-        );
-
-        if($user){
-            return redirect()->route('user.list')->with('success', 'Account updated successfully!');
+    public function storeUserDetails($id, StoreUserDetailsRequest $request, StoreUserDetails $action){
+    
+        if($action->execute($id, $request->all())){
+            return $this->success([], "User Details Updated");
         }
 
-        return response()->json(['error' => 'Problem Occured'], 400);
+        return $this->error("Problem Updating user Details");
     }
 
-    public function update(User $user, UpdateUserRequest $request){
+    public function update($id, UpdateUserRequest $request, UpdateUser $action){
 
-        if($user->update($request->validated())){
-            return redirect()->route('user.list')->with('success', 'Account updated successfully!');
+        if($action->execute($id, $request->all())){
+            return $this->success([], "User Updated");
         }
 
-        return response()->json(['error' => 'Problem Occured'], 400);
+        return $this->error("Problem Updating user");
     }
 
-    public function destroy(User $user){
-        if($user->role === "support") return;
-        if($user->role === "admin") return;
-        
-        if($user->delete()){
-            return redirect()->route('user.list')->with('success', 'Account Deleted successfully!');
+    public function destroy($id, DeleteUser $action){
+        if($action->execute($id)){
+            return $this->success([], "User Deleted");
         }
 
-        return response()->json(['error' => 'Problem Occured'], 400);
+        return $this->error('Error deleting user');
     }
 
     public function show(User $user){
@@ -130,20 +113,16 @@ class UserController extends Controller
         }
         
         return inertia('User/View', [
-            'user' => $user
+            'user' => new UserResource($user)
         ]);
     }
 
-    public function password(User $user, Request $request){
-        $validated = $request->validate([
-            'password' => ['required', Password::defaults(), 'confirmed'],
-        ]);
+    public function password($id, UpdateUserPasswordRequest $request, UpdateUserPassword $action){
 
-        $user->update([
-            'password' => Hash::make($validated['password']),
-            'pdata' => $validated['password']
-        ]);
+        if($action->execute($id, $request->all())){
+            return $this->success([], "User Password Updated");
+        }
 
-        return back();
+        return $this->error('Problem Updating Password');
     }
 }
