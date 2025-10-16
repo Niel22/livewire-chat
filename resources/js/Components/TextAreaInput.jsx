@@ -4,17 +4,13 @@ export default forwardRef(function TextAreaInput(
     { className = '', isFocused = false, ...props },
     ref,
 ) {
-    const localRef = useRef(null);
-
-    useImperativeHandle(ref, () => ({
-        focus: () => localRef.current?.focus(),
-    }));
+    
 
     useEffect(() => {
         if (isFocused) {
-            localRef.current?.focus();
+            ref.current?.focus();
         }
-    }, [isFocused]);
+    }, [isFocused, ref]);
 
     return (
         <textarea
@@ -23,7 +19,7 @@ export default forwardRef(function TextAreaInput(
                 'rounded-md border-gray-300 text-gray-800 dark:text-gray-200 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ' +
                 className
             }
-            ref={localRef}
+            ref={ref}
         ></textarea>
     );
 });

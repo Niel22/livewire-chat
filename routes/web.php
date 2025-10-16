@@ -8,7 +8,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-
 require __DIR__.'/auth.php';
 
 Route::middleware(['auth', 'verified'])->group(function(){
@@ -16,7 +15,11 @@ Route::middleware(['auth', 'verified'])->group(function(){
 
     Route::prefix('api')->group(function(){
         Route::apiResource('conversations', ConversationController::class);
+
+        // Group Management
         Route::apiResource('groups', GroupController::class);
+
+        // User Management
         Route::apiResource('users', UserController::class);
         Route::patch('/users/{user}/change-password', [UserController::class, 'password']);
         Route::patch('/users/{user}/user-details', [UserController::class, 'storeUserDetails']);
@@ -27,10 +30,8 @@ Route::middleware(['auth', 'verified'])->group(function(){
     
     Route::get('/groups', [GroupController::class, 'seeAll'])->name('group.list');
     Route::get('/groups/create', [GroupController::class, 'create'])->name('group.create');
-    Route::post('/groups', [GroupController::class, 'store'])->name('group.store');
     Route::get('/groups/{group}', [MessageController::class, 'byGroup'])->name('chat.group');
     Route::get('/groups/{group}/edit', [GroupController::class, 'edit'])->name('group.edit');
-    Route::patch('/groups/{group}', [GroupController::class, 'update'])->name('group.update');
     Route::delete('/groups/{group}', [GroupController::class, 'destroy'])->name('group.destroy');
     Route::patch('/groups/{group}/lock', [GroupController::class, 'lockGroup'])->name('group.lock');
     Route::get('/groups/{group}/schedule-message', [GroupController::class, 'scheduleMessage'])->name('group.message.schedule');

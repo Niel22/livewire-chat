@@ -22,15 +22,14 @@ const ViewGroupModal = ({ isOpen, closeViewModal, group }) => {
 
             <div className="flex flex-col items-center space-y-4">
                 <div className="avatar avatar-placeholder">
-                    <div className="
-                        bg-gray-400 text-gray-800 rounded-full w-20
-                        dark:bg-gray-700 dark:text-gray-100
-                    ">
-                        <span className="text-xl">
-                        <UserGroupIcon className="w-10" />
-                        
-                        </span>
-                    </div>
+                    {group.avatar && (<div className="bg-gray-400 dark:bg-gray-700 rounded-full overflow-hidden w-20 h-20 flex items-center justify-center text-gray-800 dark:text-gray-100">
+                        <img src={`${group.avatar}`} className="w-full" />
+                    </div>)}
+                    {!group.avatar && (
+                        <div className="bg-gray-400 dark:bg-gray-700 rounded-full w-12 h-12 flex items-center justify-center text-gray-800 dark:text-gray-100">
+                            <UserGroupIcon className="w-6 h-6" />
+                        </div>
+                    )}
                 </div>
                 <DialogTitle className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
                     {group.name}

@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Action\Group\CreateGroup;
+use App\Action\Group\DeleteGroup;
 use App\Action\Group\FetchAllGroup;
+use App\Action\Group\UpdateGroup;
 use App\Models\User;
 use App\Models\Group;
 use Illuminate\Support\Str;
@@ -48,31 +51,6 @@ class GroupController extends Controller
         ]);
     }
 
-    public function store(StoreGroupRequest $request){
-        $avatar = $request->file('avatar');
-        
-        $validated = $request->validated();
-
-        if($avatar){
-            $avatarName = uniqid('avatar_') . '.' . $avatar->getClientOriginalExtension();
-
-            $validated['avatar'] = $avatar->storeAs('group_avatars', $avatarName, 'public');
-        }
-
-        if(empty($avatar)){
-            unset($validated['avatar']);
-        }
-        
-
-        $group = Group::create($validated);
-
-        if($group){
-            return redirect()->route('group.list')->with('success', 'Group created successfully!');
-        }
-
-        return response()->json(['error' => 'Problem Occured'], 400);
-    }
-
     public function edit(Group $group){
         return inertia('Group/Edit', [
             'group' => $group,
@@ -80,39 +58,32 @@ class GroupController extends Controller
         ]);
     }
 
-    public function update(Group $group, UpdateGroupRequest $request){
+    public function store(StoreGroupRequest $request, CreateGroup $action){
         
-        $avatar = $request->file('avatar');
-        
-        $validated = $request->validated();
-
-        if(!empty($avatar)){
-            if($group->avatar) Storage::disk('public')->delete($group->avatar);
-
-            $avatarName = uniqid('avatar_') . '.' . $avatar->getClientOriginalExtension();
-
-            $validated['avatar'] = $avatar->storeAs('group_avatars', $avatarName, 'public');
+        if($action->execute($request)){
+            return $this->success([], "Group Created");
         }
 
-        if(empty($avatar)){
-            unset($validated['avatar']);
-        }
-
-        if($group->update($validated)){
-            return redirect()->route('group.list')->with('success', 'Group Updated successfully!');
-        }
-
-        return response()->json(['error' => 'Problem Occured'], 400);
+        return $this->error("Problem Creating Group");
     }
 
-    public function destroy(Group $group){
 
-        $group->messages()->delete();
-        if($group->delete()){
-            return redirect()->route('group.list')->with('success', 'Group Deleted successfully!');
+    public function update($id, UpdateGroupRequest $request, UpdateGroup $action){
+
+        if($action->execute($id, $request)){
+            return $this->success([], "Group Updated");
         }
 
-        return response()->json(['error' => 'Problem Occured'], 400);
+        return $this->error("Problem Updating Group");
+    }
+
+    public function destroy($id, DeleteGroup $action){
+
+        if($action->execute($id)){
+            return $this->success([], "Group Deleted");
+        }
+
+        return $this->error("Problem Deleting Group");
     }
 
     public function lockGroup(Group $group){

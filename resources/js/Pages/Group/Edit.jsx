@@ -4,31 +4,64 @@ import PrimaryButton from '@/Components/PrimaryButton'
 import TextAreaInput from '@/Components/TextAreaInput'
 import TextInput from '@/Components/TextInput'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
+import { useUpdateGroup } from '@/query/useGroupQuery'
+import { groupSchema } from '@/request/groupRequest'
 import { Transition } from '@headlessui/react'
-import { Head, Link, useForm } from '@inertiajs/react'
-import { useQueryClient } from '@tanstack/react-query'
-import React from 'react'
+import { joiResolver } from '@hookform/resolvers/joi'
+import { Head, Link } from '@inertiajs/react'
+import { useForm } from 'react-hook-form'
 
 const Edit = ({group, staffs}) => {
     
-    const queryClient = useQueryClient();
-
-    const { data, setData, post, errors, processing, recentlySuccessful } =
-        useForm({
+    const updateGroupMutation = useUpdateGroup();
+        
+    const { register, handleSubmit, formState: { errors } } = useForm({
+        resolver: joiResolver(groupSchema),
+        defaultValues: {
             name: group.name,
             description: group.description,
             admin_id: group.admin_id,
             avatar: null,
             member: group.member,
-            _method: "PATCH"
+        }
+    });
+
+    const handleUpdateGroup = (data) => {
+
+        const formData = new FormData();
+        formData.append('name', data.name);
+        formData.append('description', data.description);
+        formData.append('member', data.member);
+        formData.append('admin_id', data.admin_id);
+        formData.append('_method', "PATCH");
+        
+        if (data.avatar && data.avatar.length > 0) {
+            formData.append('avatar', data.avatar[0]);
+        }
+
+        updateGroupMutation.mutate({
+            id: group.id,
+            payload: formData
         });
+    }
 
-    const submit = (e) => {
-        e.preventDefault();
-        post(route('group.update', group));
-        queryClient.invalidateQueries(['groups']);
+    // const { data, setData, post, errors, processing, recentlySuccessful } =
+    //     useForm({
+    //         name: group.name,
+    //         description: group.description,
+    //         admin_id: group.admin_id,
+    //         avatar: null,
+    //         member: group.member,
+    //         _method: "PATCH"
+    //     });
 
-    };
+    // const submit = (e) => {
+    //     e.preventDefault();
+    //     post(route('group.update', group));
+    //     queryClient.invalidateQueries(['groups']);
+
+    // };
+
   return (
     <>
         <Head title="Edit Group" />
@@ -47,7 +80,7 @@ const Edit = ({group, staffs}) => {
                             </p>
                         </header>
 
-                        <form onSubmit={submit} className="mt-6 space-y-6">
+                        <form onSubmit={handleSubmit(handleUpdateGroup)} className="mt-6 space-y-6">
 
                             <div className="relative">
                                 <div className="w-32 h-32 rounded-full overflow-hidden ring-4 ring-gray-200 dark:ring-slate-700 shadow-md">
@@ -70,14 +103,14 @@ const Edit = ({group, staffs}) => {
                                     type="file"
                                     accept="image/*"
                                     className="hidden"
-                                    onChange={(e) => setData('avatar', e.target.files[0])}
+                                    {...register("avatar")}
                                 />
         
                                 <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
                                     Please upload a square picture (1:1 ratio works best)
                                 </p>
         
-                                <InputError className="mt-2 dark:text-red-400" message={errors.avatar} />
+                                <InputError className="mt-2 dark:text-red-400" message={errors.avatar?.message} />
                             </div>
                             
                             <div>
@@ -86,13 +119,12 @@ const Edit = ({group, staffs}) => {
                                 <TextInput
                                     id="name"
                                     className="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
-                                    value={data.name}
-                                    onChange={(e) => setData('name', e.target.value)}
+                                    {...register("name")}
                                     required
                                     autoComplete="off"
                                 />
 
-                                <InputError className="mt-2 dark:text-red-400" message={errors.name} />
+                                <InputError className="mt-2 dark:text-red-400" message={errors.name?.message} />
                             </div>
 
                             {/* Description */}
@@ -102,13 +134,12 @@ const Edit = ({group, staffs}) => {
                                 <TextAreaInput
                                     id="description"
                                     className="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
-                                    value={data.description}
-                                    onChange={(e) => setData('description', e.target.value)}
+                                    {...register("description")}
                                     required
                                     rows={4}
                                 />
 
-                                <InputError className="mt-2 dark:text-red-400" message={errors.description} />
+                                <InputError className="mt-2 dark:text-red-400" message={errors.description?.message} />
                             </div>
 
                             {/* Admin Select */}
@@ -116,8 +147,7 @@ const Edit = ({group, staffs}) => {
                                 <InputLabel htmlFor="admin" value="Select Admin" />
                                 <select
                                     id="admin"
-                                    value={data.admin_id}
-                                    onChange={(e) => setData('admin_id', e.target.value)}
+                                    {...register("admin_id")}
                                     className="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 rounded-md border-gray-300 focus:ring focus:ring-indigo-500 focus:border-indigo-500"
                                     required
                                 >
@@ -137,8 +167,7 @@ const Edit = ({group, staffs}) => {
                                 <TextInput
                                     id="member"
                                     className="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
-                                    value={data.member}
-                                    onChange={(e) => setData('member', e.target.value)}
+                                    {...register("member")}
                                     required
                                     type="number"
                                     autoComplete="off"
@@ -148,17 +177,7 @@ const Edit = ({group, staffs}) => {
                             </div>
 
                             <div className="flex items-center gap-4">
-                                <PrimaryButton disabled={processing}>Update Group</PrimaryButton>
-
-                                <Transition
-                                    show={recentlySuccessful}
-                                    enter="transition ease-in-out"
-                                    enterFrom="opacity-0"
-                                    leave="transition ease-in-out"
-                                    leaveTo="opacity-0"
-                                >
-                                    <p className="text-sm text-gray-600 dark:text-gray-400">Saved.</p>
-                                </Transition>
+                                <PrimaryButton disabled={updateGroupMutation.isPending}>Update Group</PrimaryButton>
                             </div>
                         </form>
                     </section>

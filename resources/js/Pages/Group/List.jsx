@@ -3,7 +3,7 @@ import Pagination from '@/Components/App/Pagination'
 import ViewGroupModal from '@/Components/App/ViewGroupModal'
 import TextInput from '@/Components/TextInput'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
-import { useFetchAllGroups } from '@/query/useGroupQuery'
+import { useDeleteGroup, useFetchAllGroups } from '@/query/useGroupQuery'
 import { EyeIcon, PencilIcon, PlusCircleIcon, TrashIcon, UserGroupIcon } from '@heroicons/react/24/solid'
 import { Head, Link } from '@inertiajs/react'
 import { useEffect, useState } from 'react'
@@ -13,12 +13,12 @@ const List = () => {
 
     const [page, setPage] = useState(1);
     const [search, setSearch] = useState('');
-    const {data: groups, isLoading, refetch} = useFetchAllGroups({page, search});
-
     const [isOpen, setIsOpen] = useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [group, setGroup] = useState(null);
+    const {data: groups, isLoading, refetch} = useFetchAllGroups({page, search});
 
+    
     const openViewModal = (group) => {
         setGroup(group);
         setIsOpen(true);
@@ -38,6 +38,9 @@ const List = () => {
         setGroup(null);
         setDeleteModalOpen(false);
     }
+    
+    const deleteGroupMutation = useDeleteGroup(refetch, closeDeleteModal);
+    const handleDeleteGroup = () => deleteGroupMutation.mutate({id : group.id});
 
     useEffect(() => {
         setIsOpen(false);
@@ -76,7 +79,7 @@ const List = () => {
 
 
         <ViewGroupModal isOpen={isOpen} closeViewModal={closeViewModal} group={group} />
-        <DeleteGroupModal isOpen={deleteModalOpen} closeModal={closeDeleteModal} group={group} refetch={refetch} />
+        <DeleteGroupModal isOpen={deleteModalOpen} closeModal={closeDeleteModal} group={group} onConfirm={handleDeleteGroup} isLoading={deleteGroupMutation.isPending} />
     </>
   )
 }

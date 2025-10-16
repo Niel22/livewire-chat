@@ -13,7 +13,7 @@ import { EventBusProvider } from './EventBus';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Toast from './Components/Toast';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = import.meta.env.VITE_APP_NAME || 'Taskwin Workstation';
 const queryClient = new QueryClient();
 
 createInertiaApp({

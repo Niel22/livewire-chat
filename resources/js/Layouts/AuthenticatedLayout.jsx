@@ -270,7 +270,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                             </Dropdown.Link>
                                             <button
                                                 onClick={handleLogout}
-                                                className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600"
+                                                className="w-full text-sm text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600"
                                             >
                                                 {t("logout")}
                                             </button>
@@ -388,7 +388,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                     <ResponsiveNavLink
                                         onClick={handleLogout}
                                         as="button"
-                                        className="block text-gray-700 hover:bg-red-300 dark:hover:bg-red-500 dark:text-gray-200"
+                                        className="block text-sm text-gray-700 hover:bg-red-300 dark:hover:bg-red-500 dark:text-gray-200"
                                     >
                                         {t("logout")}
                                     </ResponsiveNavLink>

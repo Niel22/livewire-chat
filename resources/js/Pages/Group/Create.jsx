@@ -4,27 +4,35 @@ import PrimaryButton from '@/Components/PrimaryButton'
 import TextAreaInput from '@/Components/TextAreaInput'
 import TextInput from '@/Components/TextInput'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
+import { useCreateGroup } from '@/query/useGroupQuery'
+import { groupSchema } from '@/request/groupRequest'
 import { Transition } from '@headlessui/react'
-import { Head, Link, useForm } from '@inertiajs/react'
+import { joiResolver } from '@hookform/resolvers/joi'
+import { Head, Link } from '@inertiajs/react'
 import { QueryClient, useQueryClient } from '@tanstack/react-query'
 import React from 'react'
+import { useForm } from 'react-hook-form'
 
 const Create = ({staffs}) => {
-    const queryClient = useQueryClient();
 
-    const { data, setData, post, errors, processing, recentlySuccessful } =
-        useForm({
-            name: '',
-            description: '',
-            member: '',
-            admin_id: staffs.length > 0 ? staffs[0].id : null,
-            avatar: null
-        });
+    const createGroupMutation = useCreateGroup();
+          
+    const { register, handleSubmit, formState: { errors } } = useForm({
+        resolver: joiResolver(groupSchema),
+    });
 
-    const submit = (e) => {
-        e.preventDefault();
-        queryClient.invalidateQueries(['groups']);
-        post(route('group.store'));
+    const handleCreateGroup = (data) => {
+        const formData = new FormData();
+        formData.append('name', data.name);
+        formData.append('description', data.description);
+        formData.append('member', data.member);
+        formData.append('admin_id', data.admin_id);
+        
+        if (data.avatar && data.avatar.length > 0) {
+            formData.append('avatar', data.avatar[0]);
+        }
+
+        createGroupMutation.mutate(formData);
     };
 
   return (
@@ -45,7 +53,7 @@ const Create = ({staffs}) => {
                             </p>
                         </header>
 
-                        <form onSubmit={submit} className="mt-6 space-y-6">        
+                        <form onSubmit={handleSubmit(handleCreateGroup)} className="mt-6 space-y-6">        
                             <div className="flex-1">
                                 <InputLabel htmlFor="avatar" value="Group Picture" className="text-gray-700 dark:text-gray-200 font-medium" />
         
@@ -61,14 +69,14 @@ const Create = ({staffs}) => {
                                     type="file"
                                     accept="image/*"
                                     className="hidden"
-                                    onChange={(e) => setData('avatar', e.target.files[0])}
+                                    {...register("avatar")}
                                 />
         
                                 <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
                                     Please upload a square picture (1:1 ratio works best)
                                 </p>
         
-                                <InputError className="mt-2 dark:text-red-400" message={errors.avatar} />
+                                <InputError className="mt-2 dark:text-red-400" message={errors.avatar?.messages} />
                             </div>
                             
                             <div>
@@ -77,13 +85,12 @@ const Create = ({staffs}) => {
                                 <TextInput
                                     id="name"
                                     className="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
-                                    value={data.name}
-                                    onChange={(e) => setData('name', e.target.value)}
+                                    {...register("name")}
                                     required
                                     autoComplete="off"
                                 />
 
-                                <InputError className="mt-2 dark:text-red-400" message={errors.name} />
+                                <InputError className="mt-2 dark:text-red-400" message={errors.name?.message} />
                             </div>
 
                             {/* Description */}
@@ -93,13 +100,12 @@ const Create = ({staffs}) => {
                                 <TextAreaInput
                                     id="description"
                                     className="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
-                                    value={data.description}
-                                    onChange={(e) => setData('description', e.target.value)}
+                                    {...register("description")}
                                     required
                                     rows={4}
                                 />
 
-                                <InputError className="mt-2 dark:text-red-400" message={errors.description} />
+                                <InputError className="mt-2 dark:text-red-400" message={errors.description?.message} />
                             </div>
 
                             {/* Admin Select */}
@@ -107,8 +113,7 @@ const Create = ({staffs}) => {
                                 <InputLabel htmlFor="admin" value="Select Admin" />
                                 <select
                                     id="admin"
-                                    value={data.admin_id}
-                                    onChange={(e) => setData('admin_id', e.target.value)}
+                                    {...register("admin_id")}
                                     className="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 rounded-md border-gray-300 focus:ring focus:ring-indigo-500 focus:border-indigo-500"
                                     required
                                 >
@@ -128,8 +133,7 @@ const Create = ({staffs}) => {
                                 <TextInput
                                     id="member"
                                     className="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
-                                    value={data.member}
-                                    onChange={(e) => setData('member', e.target.value)}
+                                    {...register("member")}
                                     required
                                     type="number"
                                     autoComplete="off"
@@ -139,17 +143,7 @@ const Create = ({staffs}) => {
                             </div>
 
                             <div className="flex items-center gap-4">
-                                <PrimaryButton disabled={processing}>Create Group</PrimaryButton>
-
-                                <Transition
-                                    show={recentlySuccessful}
-                                    enter="transition ease-in-out"
-                                    enterFrom="opacity-0"
-                                    leave="transition ease-in-out"
-                                    leaveTo="opacity-0"
-                                >
-                                    <p className="text-sm text-gray-600 dark:text-gray-400">Saved.</p>
-                                </Transition>
+                                <PrimaryButton disabled={createGroupMutation.isPending}>Create Group</PrimaryButton>
                             </div>
                         </form>
                     </section>

@@ -21,7 +21,7 @@ class UpdateGroupRequest extends FormRequest
      */
     public function rules(): array
     {
-        $id = request()->route('group')->id;
+        $id = request()->route('group');
         return [
             'name' => 'nullable|string|unique:groups,name,'. $id,
             'description' => 'nullable|string',

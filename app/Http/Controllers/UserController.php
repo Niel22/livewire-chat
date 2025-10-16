@@ -29,6 +29,20 @@ class UserController extends Controller
 {
     use ApiResponse;
 
+    public function seeAll(){
+        return inertia('User/List');
+    }
+
+    public function create(){
+        return inertia('User/Create');
+    }
+    
+    public function createSubAccount(){
+        return inertia('User/CreateSubAccount', [
+            'staffs' => User::where('role', 'staff')->get()
+        ]);
+    }
+
     public function index(FetchAllUser $action){
         if($user = $action->execute()){
             return $this->success(new UserCollection($user), "All Users");
@@ -36,13 +50,26 @@ class UserController extends Controller
 
         return $this->success([], "No User Found");
     }
-
-    public function seeAll(){
-        return inertia('User/List');
+    
+    public function show(User $user){
+        if($user->role === 'member'){
+            $user->load('details');
+        }
+        
+        return inertia('User/View', [
+            'user' => new UserResource($user)
+        ]);
     }
 
-    public function create(){
-        return inertia('User/Create');
+    public function edit(User $user){
+
+        if($user->role === 'member'){
+            $user->load('details');
+        }
+
+        return inertia('User/Edit', [
+            'user' => $user
+        ]);
     }
 
     public function store(StoreUserRequest $request, CreateStaff $action): JsonResponse
@@ -55,12 +82,6 @@ class UserController extends Controller
         return $this->error('Error Creating User');
     }
 
-    public function createSubAccount(){
-        return inertia('User/CreateSubAccount', [
-            'staffs' => User::where('role', 'staff')->get()
-        ]);
-    }
-
     public function storeSubAccount(StoreSubAccountRequest $request, CreateSubAccount $action){
 
         if($action->execute($request->all())){
@@ -68,17 +89,6 @@ class UserController extends Controller
         }
 
         return $this->error('Error Creating Sub Account');
-    }
-
-    public function edit(User $user){
-
-        if($user->role === 'member'){
-            $user->load('details');
-        }
-
-        return inertia('User/Edit', [
-            'user' => $user
-        ]);
     }
 
     public function storeUserDetails($id, StoreUserDetailsRequest $request, StoreUserDetails $action){
@@ -105,16 +115,6 @@ class UserController extends Controller
         }
 
         return $this->error('Error deleting user');
-    }
-
-    public function show(User $user){
-        if($user->role === 'member'){
-            $user->load('details');
-        }
-        
-        return inertia('User/View', [
-            'user' => new UserResource($user)
-        ]);
     }
 
     public function password($id, UpdateUserPasswordRequest $request, UpdateUserPassword $action){
