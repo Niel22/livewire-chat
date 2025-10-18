@@ -6,14 +6,14 @@ import { ChatBubbleLeftRightIcon, PlusCircleIcon } from "@heroicons/react/24/sol
 import { Head, Link } from "@inertiajs/react";
 
 const ChatLayout = ({ children }) => {
-    const { t, isUserOnline, selectedConversation, sortedConversations, onSearch, auth, isLoading } = useConversation();
+    const { t, isUserOnline, selectedConversation, conversations, sortedConversations, onSearch, auth, isLoading, loadMoreRef, isFetchingNextPage, hasNextPage } = useConversation();
 
     return (
         <>
             <Head title="All Chats" />
 
             <div className="flex-1 flex overflow-hidden">
-                
+            
                 <div
                     className={`transition-all 
                                     w-full sm:w-[300px] 
@@ -59,23 +59,21 @@ const ChatLayout = ({ children }) => {
                     {isLoading ? (
                         [1, 2, 3, 4].map((i) => (<ConversationItemSkeleton key={i} />))
                     ) : (
-                        <ConversationList sortedConversations={sortedConversations} t={t} selectedConversation={selectedConversation} isUserOnline={isUserOnline} />
+                        <ConversationList sortedConversations={conversations} t={t} selectedConversation={selectedConversation} isUserOnline={isUserOnline} loadMoreRef={loadMoreRef} hasNextPage={hasNextPage} isFetchingNextPage={isFetchingNextPage} />
                     )}
                 </div>
 
-                {/* Main chat area */}
                 <div className="w-full flex-1 mx-auto flex flex-col overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-gray-100">
                     {children}
                 </div>
             </div>
-
         </>
     );
 };
 
 export default ChatLayout;
 
-const ConversationList = ({ sortedConversations, t, selectedConversation, isUserOnline }) => {
+const ConversationList = ({ sortedConversations, t, selectedConversation, isUserOnline, loadMoreRef, isFetchingNextPage, hasNextPage }) => {
     return (
         <div className="hide-scrollbar flex-1 overflow-y-auto px-2 pt-1 pb-5 space-y-1">
             {sortedConversations &&
@@ -89,7 +87,13 @@ const ConversationList = ({ sortedConversations, t, selectedConversation, isUser
                 ))
             }
 
-            {sortedConversations.length === 0 && (
+            {hasNextPage && <div ref={loadMoreRef} className="h-6" />}
+
+            {isFetchingNextPage && (
+                <div className="text-center text-sm text-gray-500 py-2">Loading more...</div>
+            )}
+
+            {sortedConversations?.length === 0 && (
                 <div className="flex flex-col items-center justify-center h-full text-center p-6">
                     <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-full mb-4">
                         <ChatBubbleLeftRightIcon className="h-12 w-12 text-gray-400" />

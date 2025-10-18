@@ -201,8 +201,6 @@ function Home({ selectedConversation = null, messages = null, pins }) {
         };
     }, []);
 
-
-
     return (
         <>
             <Head title={selectedConversation?.is_group ? selectedConversation?.name : selectedConversation?.name} />
@@ -288,7 +286,6 @@ function Home({ selectedConversation = null, messages = null, pins }) {
                         )}
                     </div>
 
-                    
                     <MessageInput isLocked={isLocked} conversation={selectedConversation} setReplyingTo={setReplyingTo} replyingTo={replyingTo} user={auth.user} />
                 </div>
             )}

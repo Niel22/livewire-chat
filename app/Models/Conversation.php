@@ -43,22 +43,14 @@ class Conversation extends Model
         ->latestOfMany();
     }
 
-    public static function getConversationForSidebar(){
-        $user = Auth::user();
+    public function userOne()
+    {
+        return $this->belongsTo(User::class, 'user_id1');
+    }
 
-        $conversations = $user->conversations;
-        $conversations->load('last_message');
-
-        $groups = $user->visibleGroups()->get();
-        $groups->load('last_message');
-        $groups->load('admin');
-        $groups->load('members');
-
-        $conversations = collect($conversations);
-        $groups = collect($groups);
-
-
-        return $conversations?->map->toConversationArray()->merge($groups?->map->toConversationArray());
+    public function userTwo()
+    {
+        return $this->belongsTo(User::class, 'user_id2');
     }
 
     public function toConversationArray(){

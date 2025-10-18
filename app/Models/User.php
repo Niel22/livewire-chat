@@ -65,8 +65,7 @@ class User extends Authenticatable
             return Group::latest('updated_at');
         }
 
-        return $this->belongsToMany(Group::class, 'group_members', 'member_id', 'group_id')
-                    ->latest('updated_at');
+        return $this->groups();
     }
 
 

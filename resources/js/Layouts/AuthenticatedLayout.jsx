@@ -1,7 +1,6 @@
 import NewMessageNotification from "@/Components/App/NewMessageNotification";
 import Toast from "@/Components/App/Toast";
 import TranslationWidget from "@/Components/App/TranslationWidget";
-import UserAvatar from "@/Components/App/UserAvatar";
 import ApplicationLogo from "@/Components/ApplicationLogo";
 import DarkModeToggle from "@/Components/DarkModeToggle";
 import Dropdown from "@/Components/Dropdown";
@@ -11,7 +10,7 @@ import { useEventBus } from "@/EventBus";
 import { useLogout } from "@/query/useAuthQuery";
 import { useChatStore } from "@/store/chatStore";
 import { Link, usePage } from "@inertiajs/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export default function AuthenticatedLayout({ header, children }) {
@@ -41,6 +40,7 @@ export default function AuthenticatedLayout({ header, children }) {
 
         return false;
     }
+
     const isAdmin = () => {
         
         if (user.role === "admin") {
@@ -62,10 +62,10 @@ export default function AuthenticatedLayout({ header, children }) {
         return false;
     }
 
-    const [showingNavigationDropdown, setShowingNavigationDropdown] =
-        useState(false);
+    const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
     const { emit } = useEventBus();
 
+    
     useEffect(() => {
         conversations?.forEach((conversation) => {
             let channel = `message.group.${conversation.id}`;
