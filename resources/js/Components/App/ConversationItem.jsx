@@ -66,7 +66,7 @@ const ConversationItem = ({conversation, selectedConversation = null, online = n
             {formatMessageDateShort(conversation.last_message_date)}
           </span>
         )}
-        {conversation.unread_count > 0 && <span className='py-1 px-2 rounded-full bg-blue-500 dark:text-black text-white'>{conversation.unread_count}</span>}
+        {conversation.unread_count > 0 && <span className='py-1 px-2 rounded-full bg-blue-500 dark:text-black text-white'>{conversation.unread_count > 99 ? "99+" : conversation.unread_count}</span>}
       </div>
 
       {/* {currentUser.role === "admin" && (
