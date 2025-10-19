@@ -20,11 +20,17 @@ class Message extends Model
         'conversation_id',
         'is_pinned',
         'reply_to_id',
-        'is_forwarded'
+        'is_forwarded',
+        'read_at'
     ];
 
     public function sender(){
         return $this->belongsTo(User::class, 'sender_id');
+    }
+
+    public function reads()
+    {
+        return $this->hasMany(MessageRead::class);
     }
     
     public function receiver(){

@@ -28,12 +28,14 @@ export const useChatStore = create((set, get) => ({
 
         const isPrivateMatch = message.conversation_id && !convo.is_group && convo.id === +message.conversation_id;
         const isGroupMatch = message.group_id && convo.is_group && convo.id === +message.group_id;
+        const isSender = parseInt(message.sender_id) === parseInt(authUserId);
         
         if (isPrivateMatch) {
           return {
             ...convo,
             last_message: message.message,
             last_message_date: message.created_at,
+            unread_count: isSender ? 0 : ((convo.unread_count ?? 0) + 1)
           };
         }
 
@@ -42,6 +44,7 @@ export const useChatStore = create((set, get) => ({
             ...convo,
             last_message: message.message,
             last_message_date: message.created_at,
+            unread_count: isSender ? 0 : ((convo.unread_count ?? 0) + 1)
           };
         }
 
@@ -132,5 +135,20 @@ export const useChatStore = create((set, get) => ({
     set({ conversations: filtered });
   },
 
+  resetUnreadCount: (conversationId, isGroup = false) => {
+    set((state) => ({
+      conversations: state.conversations.map((convo) => {
+        const match = isGroup
+          ? convo.is_group && convo.id === +conversationId
+          : !convo.is_group && convo.id === +conversationId;
+
+        if (match) {
+          return { ...convo, unread_count: 0 };
+        }
+
+        return convo;
+      }),
+    }));
+  },
 
 }));

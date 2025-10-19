@@ -15,6 +15,7 @@ import MessageSearchModal from "@/Components/App/MessageSearchModal";
 import { useTranslation } from "react-i18next";
 import useOnlineStore from "@/store/useOnlineStore";
 import useOnline from "@/hooks/useOnline";
+import { useChatStore } from "@/store/chatStore";
 
 function Home({ selectedConversation = null, messages = null, pins }) {
     
@@ -22,6 +23,7 @@ function Home({ selectedConversation = null, messages = null, pins }) {
 
     const { isUserOnline } = useOnlineStore();
     const {userIsOnline} = useOnline();
+    const { resetUnreadCount } = useChatStore();
     
     const [pinnedMessages, setPinnedMessages] = useState([]);
     const [localMessages, setLocalMessages] = useState([]);
@@ -191,6 +193,10 @@ function Home({ selectedConversation = null, messages = null, pins }) {
             emit('toast.show', 'Unable to retrieve message');
         }
     }
+
+    useEffect(() => {
+        resetUnreadCount(selectedConversation.id, selectedConversation.is_group);
+    }, [selectedConversation]);
 
     useEffect(() => {
         return () => {

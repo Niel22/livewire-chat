@@ -46,11 +46,7 @@ const ConversationItem = ({conversation, selectedConversation = null, online = n
           <h3 className="text-sm font-semibold truncate">
             {conversation.name}
           </h3>
-          {conversation.last_message_date && (
-            <span className="text-nowrap text-gray-500 dark:text-gray-400">
-              {formatMessageDateShort(conversation.last_message_date)}
-            </span>
-          )}
+          
         </div>
         {(conversation.last_message_date) && (
           conversation.last_message ? (
@@ -63,6 +59,14 @@ const ConversationItem = ({conversation, selectedConversation = null, online = n
             </p>
           )
         )}
+      </div>
+      <div className='flex text-xs flex-col items-center justify-center gap-1'>
+        {conversation.last_message_date && (
+          <span className="text-nowrap  text-gray-500 dark:text-gray-400">
+            {formatMessageDateShort(conversation.last_message_date)}
+          </span>
+        )}
+        {conversation.unread_count > 0 && <span className='py-1 px-2 rounded-full bg-blue-500 dark:text-black text-white'>{conversation.unread_count}</span>}
       </div>
 
       {/* {currentUser.role === "admin" && (

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class Group extends Model
@@ -29,6 +30,16 @@ class Group extends Model
 
     public function admin(){
         return $this->belongsTo(User::class, 'admin_id');
+    }
+
+    public function unreadCount()
+    {
+        return $this->messages()
+            ->whereDoesntHave('reads', function ($query) {
+                $query->where('user_id', Auth::id());
+            })
+            ->where('sender_id', '!=', Auth::id())
+            ->count();
     }
 
     public function last_message()

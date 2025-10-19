@@ -27,6 +27,14 @@ class Conversation extends Model
         return $this->hasMany(Message::class);
     }
 
+    public function unreadCount()
+    {
+        return $this->messages()
+            ->whereNull('read_at')
+            ->where('receiver_id', Auth::id())
+            ->count();
+    }
+
 
     public function isLastMessageRead(){
         $userId = Auth::id();

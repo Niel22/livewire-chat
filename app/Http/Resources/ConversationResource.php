@@ -30,6 +30,7 @@ class ConversationResource extends JsonResource
                 'updated_at' => $this->updated_at,
                 'admin' => $this->admin,
                 'member' => $this->member,
+                'unread_count' => $this->unreadCount(),
                 'last_message' => $this->last_message?->message,
                 'last_message_date' => $this->last_message?->created_at,
             ];
@@ -43,7 +44,8 @@ class ConversationResource extends JsonResource
             'is_group' => false,
             'last_message' => $this->last_message?->message,
             'last_message_date' => $this->last_message?->updated_at,
-            'updated_at' => $this->updated_at
+            'updated_at' => $this->updated_at,
+            'unread_count' => $this->unreadCount(),
         ];
     }
 }

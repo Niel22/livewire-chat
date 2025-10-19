@@ -1,4 +1,4 @@
-import { TrashIcon, UserGroupIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import { SpeakerXMarkIcon, TrashIcon, UserGroupIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import React from "react";
 import UserAvatar from "./UserAvatar";
 import { router } from "@inertiajs/react";
@@ -124,9 +124,14 @@ const GroupInfoSidebar = ({ sidebarOpen, setSidebarOpen, group, isAdmin }) => {
                                                     </h6>
                                                 </div>
                                             </div>
-                                            <button onClick={() => handleRemoveMember(member)} className="p-3 hover:bg-red-50/20 rounded-full">
-                                                <TrashIcon className="w-4 text-red-500" />
-                                            </button>
+                                            <div>
+                                                <button onClick={() => handleRemoveMember(member)} className="p-3 hover:bg-red-50/20 rounded-full">
+                                                    <SpeakerXMarkIcon className="w-4 text-blue-500" />
+                                                </button>
+                                                <button onClick={() => handleRemoveMember(member)} className="p-3 hover:bg-red-50/20 rounded-full">
+                                                    <TrashIcon className="w-4 text-red-500" />
+                                                </button>
+                                            </div>
                                         </div>
                                     )
                                 )}

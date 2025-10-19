@@ -91,6 +91,7 @@ class UserObserver
                     Message::create([
                         'conversation_id' => $existing->id,
                         'sender_id'       => $support->id,
+                        'receiver_id'       => $user->id,
                         'message'         => $autoMessage,
                         'is_automated'    => true,
                     ]);
@@ -107,6 +108,7 @@ class UserObserver
                 $message = Message::create([
                     'conversation_id' => $conversation->id,
                     'sender_id'       => $support->id,
+                    'receiver_id'       => $user->id,
                     'message'         => $autoMessage,
                 ]);
 

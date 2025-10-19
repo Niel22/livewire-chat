@@ -43,6 +43,17 @@ const List = () => {
 
             <div className="py-12 overflow-auto">
                 <div className="mx-auto max-w-[80%] md:max-w-5xl space-y-4">
+                    <div className="w-full flex items-center justify-end gap-2 text-sm font-medium 
+                                    text-gray-700 dark:text-gray-300">
+                        <span>Toggle Staff Active Status:</span>
+                        <input
+                            type="checkbox"
+                            defaultChecked
+                            className="toggle border-0 bg-gray-300 dark:bg-gray-700 
+                                    checked:bg-emerald-600 dark:checked:bg-emerald-500
+                                    transition-all duration-300 rounded-full"
+                        />
+                    </div>
                     <TextInput
                         id="name"
                         className="mt-1 block w-full dark:bg-transparent dark:text-white dark:border-gray-600"
@@ -139,6 +150,7 @@ const UserItem = ({user, handleCreate, openDeleteModal}) => {
             </div>
 
             <div className="flex flex-wrap gap-2 text-sm justify-center">
+                {['staff', 'support'].includes(user.role) && <input type="checkbox" defaultChecked className="toggle bg-gray-300 dark:bg-gray-700 border-0 checked:bg-emerald-700 dark:checked:bg-emerald-700" />}
                 <Link 
                     href={route('user.show', user)} 
                     className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"

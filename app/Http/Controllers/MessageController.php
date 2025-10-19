@@ -17,6 +17,7 @@ use App\Http\Resources\MessageResource;
 use App\Http\Requests\StoreMessageRequest;
 use App\Http\Requests\UpdateMessageRequest;
 use App\Models\MessageAttachment;
+use App\Models\MessageRead;
 use Illuminate\Support\Facades\Storage;
 
 class MessageController extends Controller
@@ -25,6 +26,11 @@ class MessageController extends Controller
         if(!Auth::user()->conversations->contains('id', $conversation->id)){
             return redirect()->route('dashboard');
         }
+
+        Message::where('conversation_id', $conversation->id)
+            ->where('receiver_id', Auth::id())
+            ->whereNull('read_at')
+            ->update(['read_at' => now()]);
 
         $total = Message::where('conversation_id', $conversation->id)->count();
         $perPage = 10;
@@ -36,6 +42,8 @@ class MessageController extends Controller
             ->get();
         
         $pins = Message::where('conversation_id', $conversation->id)->where('is_pinned', true)->latest('updated_at')->get();
+
+
         
 
         return inertia('Home', [
@@ -55,6 +63,19 @@ class MessageController extends Controller
         }
 
         $group->load('members');
+
+        $unreadMessages = Message::where('group_id', $group->id)
+            ->whereDoesntHave('reads', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })
+            ->pluck('id');
+
+        foreach ($unreadMessages as $messageId) {
+            MessageRead::create([
+                'message_id' => $messageId,
+                'user_id' => $user->id,
+            ]);
+        }
 
         $total = Message::where('group_id', $group->id)->count();
         $perPage = 10;
@@ -140,9 +161,11 @@ class MessageController extends Controller
         }
 
         if($receiver_id){
+            
             Conversation::where('id', $conversation_id)->update([
                 'updated_at' => now()
             ]);
+
         }
         
         if($group_id){
