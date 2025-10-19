@@ -5,7 +5,7 @@ export default function useOnline(){
 
     const userIsOnline = (user) => {
         if(user.staff_id || user.role === "staff" || user.role === "admin"){
-            return true;
+            return user.active_status ? true : false;
         }
 
         return isUserOnline(user.id);

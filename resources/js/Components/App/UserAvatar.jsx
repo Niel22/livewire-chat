@@ -6,9 +6,11 @@ const UserAvatar = ({user, online = null, profile = false}) => {
     let OnlineClasses = "";
 
     if (online === true) {
-    OnlineClasses = "avatar-online";
+        OnlineClasses = "avatar-online";
+        
     } else if (online === false) {
-    OnlineClasses = "avatar-offline";
+        
+        OnlineClasses = "avatar-offline";
     }
 
 

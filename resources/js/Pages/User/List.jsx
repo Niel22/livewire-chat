@@ -3,7 +3,7 @@ import Pagination from "@/Components/App/Pagination";
 import UserAvatar from "@/Components/App/UserAvatar";
 import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { useDeleteUser, useFetchAllUsers } from "@/query/useUserQuery";
+import { useDeleteUser, useFetchAllUsers, useUpdateAllUserStatus, useUpdateUserStatus } from "@/query/useUserQuery";
 import { ChatBubbleLeftIcon, EyeIcon, PencilIcon, TrashIcon, UserIcon } from "@heroicons/react/24/solid";
 import { Head, Link, router } from "@inertiajs/react";
 import React, { useEffect, useState } from "react";
@@ -29,6 +29,12 @@ const List = () => {
     const deleteUserMutation = useDeleteUser(refetch, closeDeleteModal);
     const handleDeleteUser = () => deleteUserMutation.mutate({id : user.id});
     
+    const toggleUserStatusMutation = useUpdateUserStatus();
+    const handleToggleUserStatus = (userData) => toggleUserStatusMutation.mutate({id : userData.id});
+    
+    const toggleAllUserStatusMutation = useUpdateAllUserStatus(refetch);
+    const handleToggleAllUserStatus = () => toggleAllUserStatusMutation.mutate();
+    
     const handleCreateChat = (user) => {
         router.post(route('chat.create', user))
     }
@@ -44,15 +50,17 @@ const List = () => {
             <div className="py-12 overflow-auto">
                 <div className="mx-auto max-w-[80%] md:max-w-5xl space-y-4">
                     <div className="w-full flex items-center justify-end gap-2 text-sm font-medium 
-                                    text-gray-700 dark:text-gray-300">
-                        <span>Toggle Staff Active Status:</span>
-                        <input
-                            type="checkbox"
-                            defaultChecked
-                            className="toggle border-0 bg-gray-300 dark:bg-gray-700 
-                                    checked:bg-emerald-600 dark:checked:bg-emerald-500
-                                    transition-all duration-300 rounded-full"
-                        />
+                                        text-gray-700 dark:text-gray-300">
+                        <button
+                            onClick={handleToggleAllUserStatus}
+                            disabled={toggleAllUserStatusMutation.isPending}
+                            className="px-4 py-2.5 rounded-md text-white 
+                                    bg-emerald-600 hover:bg-emerald-700 
+                                    dark:bg-emerald-500 dark:hover:bg-emerald-600 
+                                    transition-all duration-300"
+                        >
+                            {toggleAllUserStatusMutation.isPending ? "Updating..." : "Update Active Status"}
+                        </button>
                     </div>
                     <TextInput
                         id="name"
@@ -67,7 +75,7 @@ const List = () => {
                     {isLoading ? (
                         [1, 2, 3, 4].map((i) => (<UserItemSkeleton key={i} />))
                     ) : users?.data?.length > 0 ? users?.data?.map((user) => (
-                        <UserItem user={user} key={user.id} handleCreate={handleCreateChat} openDeleteModal={openDeleteModal} />
+                        <UserItem toggle={() => handleToggleUserStatus(user)} user={user} key={user.id} handleCreate={handleCreateChat} openDeleteModal={openDeleteModal} />
                     )) : (
                         <UserEmpty />
                     )}
@@ -112,7 +120,7 @@ List.layout = (page) => {
 
 export default List;
 
-const UserItem = ({user, handleCreate, openDeleteModal}) => {
+const UserItem = ({user, toggle, handleCreate, openDeleteModal}) => {
     return (
         <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between hover:bg-gray-50 dark:hover:bg-gray-800 transition-all gap-3">
             
@@ -150,7 +158,7 @@ const UserItem = ({user, handleCreate, openDeleteModal}) => {
             </div>
 
             <div className="flex flex-wrap gap-2 text-sm justify-center">
-                {['staff', 'support'].includes(user.role) && <input type="checkbox" defaultChecked className="toggle bg-gray-300 dark:bg-gray-700 border-0 checked:bg-emerald-700 dark:checked:bg-emerald-700" />}
+                {['staff', 'support', 'admin'].includes(user.role) && <input type="checkbox" onChange={toggle} defaultChecked={user.active_status} className="toggle bg-gray-300 dark:bg-gray-700 border-0 checked:bg-emerald-700 dark:checked:bg-emerald-700" />}
                 <Link 
                     href={route('user.show', user)} 
                     className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"

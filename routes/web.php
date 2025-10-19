@@ -24,6 +24,9 @@ Route::middleware(['auth', 'verified'])->group(function(){
         Route::patch('/users/{user}/change-password', [UserController::class, 'password']);
         Route::patch('/users/{user}/user-details', [UserController::class, 'storeUserDetails']);
         Route::post('/users/create-sub', [UserController::class, 'storeSubAccount']);
+
+        Route::patch('users/{id}/active-status', [UserController::class, 'toggleUserStatus']);
+        Route::patch('users-active-status', [UserController::class, 'toggleAllUserStatus']);
     });
     
     Route::get('/switch-account/{account}', [HomeController::class, 'switch'])->name('switch');

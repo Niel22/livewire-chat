@@ -1,4 +1,4 @@
-import { createStaff, createSubAccount, deleteUser, fetchAllUsers, updateUser, updateUserDetails, updateUserPassword } from "@/service/userService";
+import { createStaff, createSubAccount, deleteUser, fetchAllUsers, updateAllUserStatus, updateUser, updateUserDetails, updateUserPassword, updateUserStatus } from "@/service/userService";
 import { toastStore } from "@/store/toastStore";
 import { router } from "@inertiajs/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -74,6 +74,37 @@ export const useUpdateUserDetails = () => {
         mutationFn: updateUserDetails,
         onSuccess: (data) => {
             setToast(data.message, "success");
+        },
+        onError: (error) => {
+            setToast(error?.response?.data?.message ?? "A Problem Occured, Please try again", "error");
+        }
+    })
+}
+
+export const useUpdateUserStatus = () => {
+    
+    const { setToast } = toastStore.getState();
+
+    return useMutation({
+        mutationFn: updateUserStatus,
+        onSuccess: (data) => {
+            setToast(data.message, "success");
+        },
+        onError: (error) => {
+            setToast(error?.response?.data?.message ?? "A Problem Occured, Please try again", "error");
+        }
+    })
+}
+
+export const useUpdateAllUserStatus = (refetch) => {
+    
+    const { setToast } = toastStore.getState();
+
+    return useMutation({
+        mutationFn: updateAllUserStatus,
+        onSuccess: (data) => {
+            setToast(data.message, "success");
+            refetch();
         },
         onError: (error) => {
             setToast(error?.response?.data?.message ?? "A Problem Occured, Please try again", "error");

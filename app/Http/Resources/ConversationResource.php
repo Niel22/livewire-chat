@@ -39,6 +39,7 @@ class ConversationResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->getReceiver()->name,
+            'active_status' => $this->getReceiver()->active_status,
             'receiver_id' => $this->getReceiver()->id,
             'avatar' => $this->getReceiver()->avatar ? Storage::url($this->getReceiver()->avatar) : null,
             'is_group' => false,

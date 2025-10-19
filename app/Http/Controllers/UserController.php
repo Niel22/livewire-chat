@@ -7,6 +7,8 @@ use App\Action\User\CreateSubAccount;
 use App\Action\User\DeleteUser;
 use App\Action\User\FetchAllUser;
 use App\Action\User\StoreUserDetails;
+use App\Action\User\UpdateAllUserStatus;
+use App\Action\User\UpdateSingleUserActiveStatus;
 use App\Action\User\UpdateUser;
 use App\Action\User\UpdateUserPassword;
 use App\Http\Requests\StoreSubAccountRequest;
@@ -124,5 +126,23 @@ class UserController extends Controller
         }
 
         return $this->error('Problem Updating Password');
+    }
+
+    public function toggleUserStatus($id, UpdateSingleUserActiveStatus $action){
+        
+        if($action->execute($id)){
+            return $this->success([], 'Active Status Updated');
+        }
+
+        return $this->error('Error Updating Active Status');
+    }
+    
+    public function toggleAllUserStatus(UpdateAllUserStatus $action){
+
+        if($action->execute()){
+            return $this->success([], 'All Users Active Status Updated');
+        }
+
+        return $this->error('Error Updating Active Status');
     }
 }

@@ -25,6 +25,16 @@ export const updateUserDetails = async ({id, payload}) => {
     return data || null;
 }
 
+export const updateUserStatus = async ({id}) => {
+    const { data } = await api.patch(`/users/${id}/active-status`);
+    return data || null;
+}
+
+export const updateAllUserStatus = async () => {
+    const { data } = await api.patch(`users-active-status`);
+    return data || null;
+}
+
 export const updateUserPassword = async ({id, payload}) => {
     const { data } = await api.patch(`/users/${id}/change-password`, payload);
     return data || null;
