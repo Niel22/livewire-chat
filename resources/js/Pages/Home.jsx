@@ -195,7 +195,7 @@ function Home({ selectedConversation = null, messages = null, pins }) {
     }
 
     useEffect(() => {
-        resetUnreadCount(selectedConversation.id, selectedConversation.is_group);
+        resetUnreadCount(selectedConversation?.id, selectedConversation?.is_group);
     }, [selectedConversation]);
 
     useEffect(() => {
