@@ -8,7 +8,9 @@ class UpdateAllUserStatus{
 
     public function execute(){
         
-        $users = User::where('role', '!=', 'member')->get();
+        $users = User::whereIn('role', ['admin', 'staff', 'support'])
+            ->orWhereNotNull('staff_id')
+            ->get();
 
         foreach ($users as $user) {
             $user->update([
