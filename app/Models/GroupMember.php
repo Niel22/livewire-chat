@@ -10,5 +10,6 @@ class GroupMember extends Model
         'group_id',
         'member_id',
         'is_banned',
+        'is_muted'
     ];
 }

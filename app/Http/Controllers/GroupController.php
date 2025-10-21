@@ -6,12 +6,14 @@ use App\Action\Group\CreateGroup;
 use App\Action\Group\DeleteGroup;
 use App\Action\Group\FetchAllGroup;
 use App\Action\Group\UpdateGroup;
+use App\Action\Member\MuteMember;
 use App\Models\User;
 use App\Models\Group;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\ScheduleMessage;
 use App\Events\SocketGroupLocked;
+use App\Events\SocketMemberMuted;
 use App\Http\Requests\AddGroupMemberRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreGroupRequest;
@@ -232,6 +234,18 @@ class GroupController extends Controller
 
         return response()->json(['error' => 'Problem Occured'], 400);
 
+    }
+
+    public function muteMember($groupId, $memberId, MuteMember $action){
+        
+        if($member = $action->execute($groupId, $memberId)){
+
+            SocketMemberMuted::dispatch($member);
+
+            return $this->success([], "Member Mute Status Updated");
+        }
+
+        return $this->error("Problem Updating member mute status");
     }
 
 }

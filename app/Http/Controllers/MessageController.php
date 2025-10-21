@@ -62,7 +62,22 @@ class MessageController extends Controller
             }
         }
 
-        $group->load('members');
+        if ($user->role === 'member') {
+            
+            $group->load(['members' => function ($q) use ($user) {
+                $q->where('users.id', $user->id)
+                ->select('users.id', 'users.name');
+            }]);
+        } else {
+            
+            $group->load(['members' => function ($q) {
+                $q->select('users.id', 'users.name');
+            }]);
+        }
+
+        $member = $group->members->firstWhere('id', $user->id);
+
+        $isMuted = $member ? $member->pivot->is_muted : false;
 
         $unreadMessages = Message::where('group_id', $group->id)
             ->whereDoesntHave('reads', function ($query) use ($user) {
@@ -88,11 +103,11 @@ class MessageController extends Controller
         
         $pins = Message::where('group_id', $group->id)->where('is_pinned', true)->latest('updated_at')->get();
 
-
         return inertia('Home', [
             'selectedConversation' => $group->toConversationArray(),
             'messages' => MessageResource::collection($messages),
-            'pins' => $pins ? MessageResource::collection($pins) : null
+            'pins' => $pins ? MessageResource::collection($pins) : null,
+            'muted' => $isMuted ? true : false,
         ]);
     }
 

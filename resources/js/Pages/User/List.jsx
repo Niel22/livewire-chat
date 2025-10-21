@@ -158,7 +158,7 @@ const UserItem = ({user, toggle, handleCreate, openDeleteModal}) => {
             </div>
 
             <div className="flex flex-wrap gap-2 text-sm justify-center">
-                {['staff', 'support', 'admin'].includes(user.role) && <input type="checkbox" onChange={toggle} defaultChecked={user.active_status} className="toggle bg-gray-300 dark:bg-gray-700 border-0 checked:bg-emerald-700 dark:checked:bg-emerald-700" />}
+                {(['staff', 'support', 'admin'].includes(user.role) || user.staff_id) && <input type="checkbox" onChange={toggle} defaultChecked={user.active_status} className="toggle bg-gray-300 dark:bg-gray-700 border-0 checked:bg-emerald-700 dark:checked:bg-emerald-700" />}
                 <Link 
                     href={route('user.show', user)} 
                     className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"

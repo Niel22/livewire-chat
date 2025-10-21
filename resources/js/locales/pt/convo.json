@@ -22,6 +22,7 @@
     "unlockGroup": "Destrancar Grupo",
     "addMember": "Adicionar Membro",
     "groupLocked": "Grupo Trancado",
+    "groupMuted": "Você não pode enviar mensagens agora até que o administrador aprove você.",
     "groupUnlocked": "Grupo Destrancado",
     "messageSent": "Mensagem enviada com sucesso",
     "messageError": "Ocorreu um erro ao enviar a mensagem",

@@ -22,6 +22,7 @@
     "unlockGroup": "Unlock Group",
     "addMember": "Add Member",
     "groupLocked": "Group Locked",
+    "groupMuted": "You cannot send a message right now until the admin approve you to.",
     "groupUnlocked": "Group Unlocked",
     "messageSent": "Message sent successfully",
     "messageError": "An error occurred while sending message",

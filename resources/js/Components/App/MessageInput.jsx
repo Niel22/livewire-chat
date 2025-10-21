@@ -1,4 +1,4 @@
-import { FaceSmileIcon, HandThumbUpIcon, LockClosedIcon, PaperAirplaneIcon, PaperClipIcon, PhotoIcon, XCircleIcon } from '@heroicons/react/24/solid';
+import { FaceSmileIcon, HandThumbUpIcon, LockClosedIcon, PaperAirplaneIcon, PaperClipIcon, PhotoIcon, SpeakerXMarkIcon, XCircleIcon } from '@heroicons/react/24/solid';
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
 import React, { useEffect, useState } from 'react'
 import NewMessageInput from './NewMessageInput';
@@ -11,15 +11,28 @@ import { useEventBus } from '@/EventBus';
 import ReplyToMessage from './ReplyToMessage';
 import { useTranslation } from 'react-i18next';
 
-const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isLocked = false}) => {
+const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isLocked = false, isMuted}) => {
   const { t } = useTranslation('convo');
   const [focusClass, setFocusClass] = useState("mb-20");
+
+
   const isGroupLocked = () => {
     if(conversation?.is_group && isLocked){
       if (user.role !== "admin" && user.id !== conversation.admin.id) {
         return true;
       }
     }
+    return false;
+  }
+
+  const isGroupMuted = () => {
+    
+    if(conversation?.is_group){
+      if (user.role !== "admin" && user.id !== conversation.admin.id) {
+        return isMuted ? true : false;
+      }
+    }
+
     return false;
   }
 
@@ -221,7 +234,24 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
                   ))}
               </div>)}
 
-              {!isGroupLocked() && (
+              {isGroupMuted() ? (
+                  
+                  <div className="border dark:border-slate-700 border-slate-300 shadow-md mx-2 rounded-lg flex items-center gap-2 px-4 py-3 bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-300">
+                      <SpeakerXMarkIcon className="w-6 h-6 text-gray-500 dark:text-gray-400" />
+                      <span className="text-sm">
+                          {t('groupMuted')}
+                      </span>
+                  </div>
+              ) : isGroupLocked() ? (
+                  
+                  <div className="border dark:border-slate-700 border-slate-300 shadow-md mx-2 rounded-lg flex items-center gap-2 px-4 py-3 bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-300">
+                      <LockClosedIcon className="w-6 h-6 text-gray-500 dark:text-gray-400" />
+                      <span className="text-sm">
+                          {t('groupLocked')}
+                      </span>
+                  </div>
+              ) : (
+                  
                   <div className="border dark:border-slate-700 border-slate-300 shadow-md mx-0.5 md:mx-2 rounded-md md:rounded-full flex gap-1 items-center px-2 md:px-4 py-1 md:py-2">
                       <button className="p-1 text-gray-400 overflow-hidden hover:text-gray-300 relative">
                           <PaperClipIcon className="hidden md:block w-6" />
@@ -244,7 +274,6 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
                               className="absolute left-0 top-0 right-0 bottom-0 z-20 opacity-0 cursor-pointer"
                           />
                       </button>
-                      
 
                       <NewMessageInput
                           value={newMessage}
@@ -255,12 +284,15 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
                       />
 
                       <Popover className="relative">
-                            <PopoverButton className="p-1 focus:outline-none focus:border-none text-gray-400 hover:text-gray-300">
-                              <FaceSmileIcon className='md:w-6 h-6' />
-                            </PopoverButton>
-                            <PopoverPanel className="absolute -right-[75px] bottom-14">
-                              <EmojiPicker theme='dark' onEmojiClick={e => setNewMessage(newMessage + e.emoji)} />
-                            </PopoverPanel>
+                          <PopoverButton className="p-1 focus:outline-none focus:border-none text-gray-400 hover:text-gray-300">
+                              <FaceSmileIcon className="md:w-6 h-6" />
+                          </PopoverButton>
+                          <PopoverPanel className="absolute -right-[75px] bottom-14">
+                              <EmojiPicker
+                                  theme="dark"
+                                  onEmojiClick={(e) => setNewMessage(newMessage + e.emoji)}
+                              />
+                          </PopoverPanel>
                       </Popover>
 
                       {newMessage || chosenFiles?.length > 0 ? (
@@ -278,25 +310,14 @@ const MessageInput = ({conversation = null, setReplyingTo, replyingTo, user, isL
                       ) : (
                           <button
                               disabled={messageSending}
-                              className=" py-2 px-3 rounded-md bg-blue-500 p-2"
+                              className="py-2 px-3 rounded-md bg-blue-500 p-2"
                           >
-                              <HandThumbUpIcon
-                                  onClick={onLikeClick}
-                                  className="w-6 h-6"
-                              />
+                              <HandThumbUpIcon onClick={onLikeClick} className="w-6 h-6" />
                           </button>
                       )}
                   </div>
               )}
 
-              {isGroupLocked() && (
-                  <div className="border dark:border-slate-700 border-slate-300 shadow-md mx-2 rounded-lg flex items-center gap-2 px-4 py-3 bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-300">
-                      <LockClosedIcon className="w-6 h-6 text-gray-500 dark:text-gray-400" />
-                      <span className="text-sm">
-                          {t('groupLocked')}
-                      </span>
-                  </div>
-              )}
 
               {/* {inputErrorMessage && (
           <p className='text-xs text-center text-red-400'>{inputErrorMessage}</p>

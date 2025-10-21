@@ -17,7 +17,7 @@ import useOnlineStore from "@/store/useOnlineStore";
 import useOnline from "@/hooks/useOnline";
 import { useChatStore } from "@/store/chatStore";
 
-function Home({ selectedConversation = null, messages = null, pins }) {
+function Home({ selectedConversation = null, messages = null, pins, muted }) {
     
     const { t } = useTranslation('convo');
 
@@ -31,6 +31,7 @@ function Home({ selectedConversation = null, messages = null, pins }) {
     const [scrollFromBottom, setScrollFromBottom] = useState(null);
     const [replyingTo, setReplyingTo] = useState(null);
     const [isLocked, setIsLocked] = useState(parseInt(selectedConversation?.is_locked) || false);
+    const [isMuted, setIsMuted] = useState(muted || false);
     const messageCtrRef = useRef(null);
     const [showAttachmentPreview, setShowAttachmentPreview] = useState(false);
     const [previewAttachment, setPreviewAttachment] = useState({});
@@ -39,6 +40,9 @@ function Home({ selectedConversation = null, messages = null, pins }) {
     const highlightTimerRef = useRef(null);
     const {on, emit} = useEventBus();
     const { auth } = usePage().props;
+
+    // console.log(isMuted);
+
 
 
     const isAdmin = () => {
@@ -58,7 +62,7 @@ function Home({ selectedConversation = null, messages = null, pins }) {
         return true;
     }
 
-    useMessageEvents({selectedConversation, auth, setLocalMessages, setPinnedMessages, setIsLocked, setScrollFromBottom, messageCtrRef});
+    useMessageEvents({selectedConversation, auth, setLocalMessages, setPinnedMessages, setIsLocked, setIsMuted, setScrollFromBottom, messageCtrRef});
 
     const onAttchmentClick = (attachments, index) => {
         setPreviewAttachment({
@@ -292,7 +296,7 @@ function Home({ selectedConversation = null, messages = null, pins }) {
                         )}
                     </div>
 
-                    <MessageInput isLocked={isLocked} conversation={selectedConversation} setReplyingTo={setReplyingTo} replyingTo={replyingTo} user={auth.user} />
+                    <MessageInput isMuted={isMuted} isLocked={isLocked} conversation={selectedConversation} setReplyingTo={setReplyingTo} replyingTo={replyingTo} user={auth.user} />
                 </div>
             )}
 

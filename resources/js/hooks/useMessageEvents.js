@@ -1,7 +1,8 @@
 import { useEventBus } from "@/EventBus";
 import { useEffect } from "react";
 
-export default function useMessageEvents({selectedConversation, auth, setLocalMessages, setPinnedMessages, setIsLocked, setScrollFromBottom, messageCtrRef}){
+export default function useMessageEvents({selectedConversation, auth, setLocalMessages, setPinnedMessages, setIsLocked, setScrollFromBottom, messageCtrRef, setIsMuted}){
+    
     const { on } = useEventBus();
 
     const messageCreated = (message) => {
@@ -107,16 +108,28 @@ export default function useMessageEvents({selectedConversation, auth, setLocalMe
         });
     };
 
-
     const groupLocked = (group) => {
         setIsLocked(group.is_locked);
     }
+
+    const memberMuted = (member) => {
+        const isInList = selectedConversation.membersList.some(
+            (m) => m.id === member.member_id
+        );
+
+        if (isInList) {
+            setIsMuted(member.is_muted);
+        } else {
+            setIsMuted((prev) => prev);
+        }
+    };
 
     useEffect(() => {
         const offCreated = on('message.created', messageCreated);
         const offDeleted = on('message.deleted', messageDeleted);
         const offPinned = on('message.pinned', messagePinned);
         const offGroupLocked = on('group.locked', groupLocked);
+        const offMemberMuted = on('member.muted', memberMuted);
         const offMessageUpdated = on('message.updated', messageUpdated);
 
         return () => {
@@ -125,6 +138,7 @@ export default function useMessageEvents({selectedConversation, auth, setLocalMe
             offPinned();
             offGroupLocked();
             offMessageUpdated();
+            offMemberMuted();
         };
     }, [selectedConversation, auth]);
 }

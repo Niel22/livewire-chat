@@ -21,7 +21,7 @@ class Group extends Model
     ];
 
     public function members(){
-        return $this->belongsToMany(User::class, 'group_members', 'group_id', 'member_id');
+        return $this->belongsToMany(User::class, 'group_members', 'group_id', 'member_id')->withPivot('is_muted');
     }
 
     public function messages(){

@@ -18,6 +18,7 @@ Route::middleware(['auth', 'verified'])->group(function(){
 
         // Group Management
         Route::apiResource('groups', GroupController::class);
+        Route::patch('groups/{group}/members/{member}/mute', [GroupController::class, 'muteMember']);
 
         // User Management
         Route::apiResource('users', UserController::class);

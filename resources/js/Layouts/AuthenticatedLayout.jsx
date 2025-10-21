@@ -116,10 +116,16 @@ export default function AuthenticatedLayout({ header, children }) {
                 });
             
             if(conversation.is_group){
-                Echo.private(`group.${conversation.id}`).listen(
+                Echo.private(`group.${conversation.id}`)
+                .listen(
                     "SocketGroupLocked",
                     (e) => {
                         emit("group.locked", e.group);
+                    }
+                ).listen(
+                    "SocketMemberMuted",
+                    (e) => {
+                        emit("member.muted", e.member)
                     }
                 );
             }

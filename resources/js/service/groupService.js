@@ -23,6 +23,11 @@ export const updateGroup = async ({id, payload}) => {
     return data || null;
 }
 
+export const muteMember = async ({groupId, memberId}) => {
+    const { data } = await api.patch(`/groups/${groupId}/members/${memberId}/mute`);
+    return data || null;
+}
+
 export const deleteGroup = async ({id}) => {
     const { data } = await api.delete(`/groups/${id}`);
     return data || null;

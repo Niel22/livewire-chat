@@ -1,10 +1,11 @@
-import { SpeakerXMarkIcon, TrashIcon, UserGroupIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import { SpeakerWaveIcon, SpeakerXMarkIcon, TrashIcon, UserGroupIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import React from "react";
 import UserAvatar from "./UserAvatar";
 import { router } from "@inertiajs/react";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from "remark-gfm";
 import { useTranslation } from "react-i18next";
+import { useMuteMember } from "@/query/useGroupQuery";
 
 const GroupInfoSidebar = ({ sidebarOpen, setSidebarOpen, group, isAdmin }) => {
     const { t } = useTranslation('convo');
@@ -12,6 +13,10 @@ const GroupInfoSidebar = ({ sidebarOpen, setSidebarOpen, group, isAdmin }) => {
     const handleRemoveMember = (member) => {
         router.patch(route('group.member.remove', {group: group, user: member}));
     }
+
+    const muteMemberMutation = useMuteMember();
+    const handleMuteMember = (member) => muteMemberMutation.mutate({groupId: group.id, memberId : member.id});
+
     
     const handleExitGroup = () => {
         router.patch(route('group.member.exit', group));
@@ -125,8 +130,8 @@ const GroupInfoSidebar = ({ sidebarOpen, setSidebarOpen, group, isAdmin }) => {
                                                 </div>
                                             </div>
                                             <div>
-                                                <button onClick={() => handleRemoveMember(member)} className="p-3 hover:bg-red-50/20 rounded-full">
-                                                    <SpeakerXMarkIcon className="w-4 text-blue-500" />
+                                                <button onClick={() => handleMuteMember(member)} className="p-3 hover:bg-red-50/20 rounded-full">
+                                                    {member.pivot.is_muted ? <SpeakerWaveIcon className="w-4 text-blue-500" /> : <SpeakerXMarkIcon className="w-4 text-blue-500" />}
                                                 </button>
                                                 <button onClick={() => handleRemoveMember(member)} className="p-3 hover:bg-red-50/20 rounded-full">
                                                     <TrashIcon className="w-4 text-red-500" />
