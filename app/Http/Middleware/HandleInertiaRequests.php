@@ -35,6 +35,8 @@ class HandleInertiaRequests extends Middleware
     {
         $user = $request->user();
 
+        $subAccounts = collect();
+
         if ($user) {
             if ($user->role === 'staff') {
                 $subAccounts = User::where('staff_id', $user->id)
