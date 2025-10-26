@@ -23,7 +23,9 @@ use App\Http\Resources\GroupCollection;
 use App\Http\Resources\GroupResource;
 use App\Jobs\SendScheduledMessage;
 use App\Models\GroupMember;
+use App\Models\MessageAttachment;
 use App\Models\ScheduleMessageAttachment;
+use App\Services\CloudinaryUploadService;
 use App\Traits\ApiResponse;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -112,7 +114,7 @@ class GroupController extends Controller
         ]);
     }
 
-    public function schedule(Group $group, ScheduleMessageRequest $request){
+    public function schedule(Group $group, ScheduleMessageRequest $request, CloudinaryUploadService $cloudinary){
 
         $data = $request->validated();
         $data['sender_id'] = Auth::id();
@@ -137,23 +139,20 @@ class GroupController extends Controller
         $message = ScheduleMessage::create($data);
         $attachments = [];
 
-        if($files){
-            foreach($files as $file){
-                $directory = 'attachments/'. Str::random(32);
-                Storage::makeDirectory($directory);
-
-                $model = [
+        if ($files) {
+            $uploads = $cloudinary->uploadFiles($files, $message->id);
+            foreach ($uploads as $upload) {
+                $attachment = ScheduleMessageAttachment::create([
                     'schedule_message_id' => $message->id,
-                    'name' => $file->getClientOriginalName(),
-                    'mime' => $file->getClientMimeType(),
-                    'size' => $file->getSize(),
-                    'path' => $file->store($directory, 'public')
-                ];
-                
-                $attachment = ScheduleMessageAttachment::create($model);
+                    'name' => $upload['name'],
+                    'mime' => $upload['mime'],
+                    'size' => $upload['size'],
+                    'path' => $upload['path'],
+                    'public_id' => $upload['public_id'],
+                ]);
+
                 $attachments[] = $attachment;
             }
-
             $message->attachments = $attachments;
         }
 

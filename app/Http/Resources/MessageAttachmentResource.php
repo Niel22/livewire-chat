@@ -22,9 +22,16 @@ class MessageAttachmentResource extends JsonResource
             'name' => $this->name,
             'mime' => $this->mime,
             'size' => $this->size,
-            'url' => Storage::url($this->path),
+            'url' => $this->isCloudinaryUrl($this->path) 
+                ? $this->path 
+                : Storage::url($this->path),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
+    }
+
+    private function isCloudinaryUrl($path)
+    {
+        return str_contains($path, 'res.cloudinary.com');
     }
 }

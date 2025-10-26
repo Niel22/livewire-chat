@@ -54,14 +54,14 @@ const MessageItem = ({message, attachmentClick, setReplyingTo, setPinnedMessages
         </div>
 
         <div id={`message-${message.id}`} className={
-            "chat-bubble relative rounded-xl break-all whitespace-pre-wrap text-white" + (
+            "chat-bubble px-1 relative rounded-xl break-all whitespace-pre-wrap text-white" + (
                 isSender() ? " chat-bubble-info" : " bg-gray-700 "
             ) + ( message.attachments.length > 0 ? " max-w-[90%] sm:max-w-[55%] md:max-w-[45%] lg:max-w-[40%] " : " max-w-[95%] sm:max-w-[70%] md:max-w-[60%] lg:max-w-[55%]" )
         }>
             <MessageOptionsDropdown isStaff={isStaff} isSubAccount={isSubAccount} isAdmin={isAdmin} isSender={isSender} setPinnedMessages={setPinnedMessages} setReplyingTo={setReplyingTo} message={message} currentUser={currentUser} />
             {message.replyTo && (<MessageReply handleViewOriginal={handleViewOriginal} message={message.replyTo} />)}
             {message.attachments.length > 0 && (<MessageAttachments attachments={message.attachments} attachmentClick={attachmentClick} />)}
-            <div className='chat-message'>
+            {message.message && (<div className='chat-message px-3 py-1'>
                 <div className='chat-message-content space-y-0 text-xs md:text-base text-white'>
                     <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
@@ -77,7 +77,7 @@ const MessageItem = ({message, attachmentClick, setReplyingTo, setPinnedMessages
                         }}
                     >{message.message}</ReactMarkdown>
                 </div>
-            </div>
+            </div>)}
         </div>
     </div>
   )

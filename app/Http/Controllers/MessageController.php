@@ -16,8 +16,11 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\MessageResource;
 use App\Http\Requests\StoreMessageRequest;
 use App\Http\Requests\UpdateMessageRequest;
+use App\Jobs\MarkConversationMessagesAsRead;
+use App\Jobs\MarkMessagesAsRead;
 use App\Models\MessageAttachment;
 use App\Models\MessageRead;
+use App\Services\CloudinaryUploadService;
 use Illuminate\Support\Facades\Storage;
 
 class MessageController extends Controller
@@ -27,24 +30,16 @@ class MessageController extends Controller
             return redirect()->route('dashboard');
         }
 
-        Message::where('conversation_id', $conversation->id)
-            ->where('receiver_id', Auth::id())
-            ->whereNull('read_at')
-            ->update(['read_at' => now()]);
-
-        $total = Message::where('conversation_id', $conversation->id)->count();
-        $perPage = 10;
+        MarkConversationMessagesAsRead::dispatch($conversation->id, Auth::id());
 
         $messages = Message::with('attachments', 'replyTo')
             ->where('conversation_id', $conversation->id)
-            ->skip(max(0, $total - $perPage))
-            ->take($perPage)
-            ->get();
+            ->latest()
+            ->take(10)
+            ->get()
+            ->reverse();
         
         $pins = Message::where('conversation_id', $conversation->id)->where('is_pinned', true)->latest('updated_at')->get();
-
-
-        
 
         return inertia('Home', [
             'selectedConversation' => $conversation->toConversationArray(),
@@ -63,13 +58,11 @@ class MessageController extends Controller
         }
 
         if ($user->role === 'member') {
-            
             $group->load(['members' => function ($q) use ($user) {
                 $q->where('users.id', $user->id)
                 ->select('users.id', 'users.name');
             }]);
         } else {
-            
             $group->load(['members' => function ($q) {
                 $q->select('users.id', 'users.name');
             }]);
@@ -79,27 +72,15 @@ class MessageController extends Controller
 
         $isMuted = $member ? $member->pivot->is_muted : false;
 
-        $unreadMessages = Message::where('group_id', $group->id)
-            ->whereDoesntHave('reads', function ($query) use ($user) {
-                $query->where('user_id', $user->id);
-            })
-            ->pluck('id');
-
-        foreach ($unreadMessages as $messageId) {
-            MessageRead::create([
-                'message_id' => $messageId,
-                'user_id' => $user->id,
-            ]);
-        }
-
-        $total = Message::where('group_id', $group->id)->count();
-        $perPage = 10;
-
+        MarkMessagesAsRead::dispatch($group->id, $user->id);
+        
         $messages = Message::with('attachments', 'replyTo')
             ->where('group_id', $group->id)
-            ->skip(max(0, $total - $perPage))
-            ->take($perPage)
-            ->get();
+            ->latest('created_at')
+            ->take(10)
+            ->get()
+            ->reverse()
+            ->values();
         
         $pins = Message::where('group_id', $group->id)->where('is_pinned', true)->latest('updated_at')->get();
 
@@ -111,39 +92,29 @@ class MessageController extends Controller
         ]);
     }
 
-    public function loadOlder(Message $message){
-        
+    public function loadOlder(Message $message)
+    {
         $perPage = 10;
 
-        if ($message->group_id) {
-            $total = Message::where('group_id', $message->group_id)
-                ->where('created_at', '<', $message->created_at)
-                ->count();
+        $column = $message->group_id ? 'group_id' : 'conversation_id';
+        $value = $message->group_id ?? $message->conversation_id;
 
-            $messages = Message::with('attachments')
-                ->where('group_id', $message->group_id)
-                ->where('created_at', '<', $message->created_at)
-                ->skip(max(0, $total - $perPage))
-                ->take($perPage)
-                ->get();
-        } else {
-            $total = Message::where('conversation_id', $message->conversation_id)
-                ->where('created_at', '<', $message->created_at)
-                ->count();
+        $total = Message::where($column, $value)
+            ->where('created_at', '<', $message->created_at)
+            ->count();
 
-            $messages = Message::with('attachments')
-                ->where('conversation_id', $message->conversation_id)
-                ->where('created_at', '<', $message->created_at)
-                ->skip(max(0, $total - $perPage))
-                ->take($perPage)
-                ->get();
-        }
+        $messages = Message::with('attachments')
+            ->where($column, $value)
+            ->where('created_at', '<', $message->created_at)
+            ->latest('created_at')
+            ->skip(max(0, $total - $perPage))
+            ->take($perPage)
+            ->get();
 
         return MessageResource::collection($messages);
-
     }
 
-    public function store(StoreMessageRequest $request){
+    public function store(StoreMessageRequest $request, CloudinaryUploadService $cloudinary){
         $data = $request->validated();
         $data['sender_id'] = Auth::id();
         $receiver_id = $data['receiver_id'] ?? null;
@@ -155,23 +126,12 @@ class MessageController extends Controller
         $message = Message::create($data);
         $attachments = [];
 
-        if($files){
-            foreach($files as $file){
-                $directory = 'attachments/'. Str::random(32);
-                Storage::makeDirectory($directory);
-
-                $model = [
-                    'message_id' => $message->id,
-                    'name' => $file->getClientOriginalName(),
-                    'mime' => $file->getClientMimeType(),
-                    'size' => $file->getSize(),
-                    'path' => $file->store($directory, 'public')
-                ];
-                
+        if ($files) {
+            $uploaded = $cloudinary->uploadFiles($files, $message->id);
+            foreach ($uploaded as $model) {
                 $attachment = MessageAttachment::create($model);
                 $attachments[] = $attachment;
             }
-
             $message->attachments = $attachments;
         }
 
@@ -203,7 +163,7 @@ class MessageController extends Controller
 
         if($message->group_id){
             $group = Group::find($message->group_id); 
-            if (!in_array($user->role, ['admin']) && $group->admin_id !== $user->id) {
+            if (!in_array($user->role, ['admin']) && $group->admin_id !== $user->id && $message->sender_id !== $user->id) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
         }else{

@@ -43,7 +43,7 @@ const ShowScheduleModal = ({ isOpen, setIsOpen, message = null }) => {
                     className="w-full h-32 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden"
                     >
                     <img
-                        src={`/storage/${file.path}`}
+                        src={`${file.path}`}
                         alt={`Attachment ${index + 1}`}
                         className="w-full h-full object-cover"
                     />

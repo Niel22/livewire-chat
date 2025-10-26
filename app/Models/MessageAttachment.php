@@ -11,6 +11,7 @@ class MessageAttachment extends Model
         'name',
         'path',
         'mime',
-        'size'
+        'size',
+        'public_id'
     ];
 }
