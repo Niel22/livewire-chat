@@ -3,14 +3,10 @@ name: Laravel CI/CD Pipeline
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
 
 jobs:
   deploy:
-    name: Deploy Laravel App to Server
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
 
     steps:
       - name: Checkout Code
@@ -21,10 +17,14 @@ jobs:
         with:
           php-version: 8.2
           extensions: mbstring, bcmath, pdo, mysql, tokenizer, xml
-          ini-values: post_max_size=256M, upload_max_filesize=256M
-          coverage: none
-      
-      - name: Deploy via SSH and Run Laravel Commands
+
+      - name: Install Node & Build Frontend
+        run: |
+          npm ci
+          npm run build
+
+      # Copy the whole project except node_modules to VPS
+      - name: Deploy to VPS
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.CPANEL_HOST }}
@@ -35,11 +35,18 @@ jobs:
             cd /var/www/taskwin-workstation.com
             git pull origin main
             composer install --no-dev --optimize-autoloader
-            npm install --production=false
-            npm run build
             php artisan migrate --force
             php artisan cache:clear
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
-            
+
+      - name: Upload built assets to VPS
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.CPANEL_HOST }}
+          username: ${{ secrets.CPANEL_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 2966
+          source: "public/build"
+          target: "/var/www/taskwin-workstation.com/public/build"
