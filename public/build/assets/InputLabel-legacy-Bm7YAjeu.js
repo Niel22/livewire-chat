@@ -1,0 +1,1 @@
+System.register(["./app-legacy-Z1_F-9fD.js"],function(e,t){"use strict";var r;return{setters:[e=>{r=e.j}],execute:function(){e("I",function({value:e,className:t="",children:s,...a}){return r.jsx("label",{...a,className:"block text-sm font-medium text-gray-700 dark:text-gray-200 "+t,children:e||s})})}}});

@@ -1,0 +1,1 @@
+import{J as r}from"./joi-CA_VZ8aY.js";const s=r.object({email:r.string().email().required(),password:r.string().required()}),i=r.object({name:r.string().required(),email:r.string().email().required(),password:r.string().min(8).required(),password_confirmation:r.string().valid(r.ref("password")).required().messages({"any.only":"Passwords do not match"})});export{s as l,i as r};
