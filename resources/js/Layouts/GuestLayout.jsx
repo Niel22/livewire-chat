@@ -18,6 +18,7 @@ export default function GuestLayout({ children }) {
                 </div>
             </div>
 
+
             <div className="mt-6 w-[90%] overflow-hidden bg-green dark:bg-gray-800 px-6 py-4 shadow-md dark:shadow-gray-700 sm:max-w-md sm:rounded-lg">
                 {children}
             </div>
