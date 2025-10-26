@@ -99,17 +99,14 @@ class MessageController extends Controller
         $column = $message->group_id ? 'group_id' : 'conversation_id';
         $value = $message->group_id ?? $message->conversation_id;
 
-        $total = Message::where($column, $value)
-            ->where('created_at', '<', $message->created_at)
-            ->count();
-
         $messages = Message::with('attachments')
             ->where($column, $value)
             ->where('created_at', '<', $message->created_at)
-            ->latest('created_at')
-            ->skip(max(0, $total - $perPage))
+            ->orderBy('created_at', 'desc')
             ->take($perPage)
-            ->get();
+            ->get()
+            ->reverse()
+            ->values();
 
         return MessageResource::collection($messages);
     }
