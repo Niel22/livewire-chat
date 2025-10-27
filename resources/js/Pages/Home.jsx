@@ -41,6 +41,7 @@ function Home({ selectedConversation = null, messages = null, pins, muted }) {
     const {on, emit} = useEventBus();
     const { auth } = usePage().props;
     const firstMessageRef = useRef(localMessages?.length > 0 ? localMessages[0] : null);
+    const [isLoadingOlder, setIsLoadingOlder] = useState(false);
 
     // console.log(isMuted);
 
@@ -92,12 +93,13 @@ function Home({ selectedConversation = null, messages = null, pins, muted }) {
     }, []);
 
     const loadMoreMessages = useCallback(() => {
-        if(noMoreMessages){
-            return;
-        }
+        if (noMoreMessages || isLoadingOlder) return;
 
         const firstMessage = firstMessageRef.current;
         if (!firstMessage) return;
+
+        setIsLoadingOlder(true);
+
         axios.get(route('message.loadOlder', firstMessage.id))
             .then(({data}) => {
                 if(data.data.length === 0){
@@ -112,11 +114,16 @@ function Home({ selectedConversation = null, messages = null, pins, muted }) {
                 setScrollFromBottom(scrollHeight - scrollTop - clientHeight);
 
                 setLocalMessages((prev) => {
-                    return [...data.data, ...prev];
-                })
+                    const merged = [...data.data, ...prev];
+                    const unique = Array.from(new Map(merged.map(m => [m.id, m])).values());
+                    return unique;
+                });
             })
             .catch((error) => {
 
+            })
+            .finally(() => {
+                setIsLoadingOlder(false);
             });
     }, [localMessages, noMoreMessages])
 
