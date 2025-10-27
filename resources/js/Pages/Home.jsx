@@ -27,7 +27,6 @@ function Home({ selectedConversation = null, messages = null, pins, muted }) {
     
     const [pinnedMessages, setPinnedMessages] = useState([]);
     const [localMessages, setLocalMessages] = useState([]);
-    const [noMoreMessages, setNoMoreMessages] = useState(false);
     const [scrollFromBottom, setScrollFromBottom] = useState(null);
     const [replyingTo, setReplyingTo] = useState(null);
     const [isLocked, setIsLocked] = useState(parseInt(selectedConversation?.is_locked) || false);
@@ -36,10 +35,12 @@ function Home({ selectedConversation = null, messages = null, pins, muted }) {
     const [showAttachmentPreview, setShowAttachmentPreview] = useState(false);
     const [previewAttachment, setPreviewAttachment] = useState({});
     const [searchOpen, setSearchOpen] = useState(false);
+    const [noMoreMessages, setNoMoreMessages] = useState(false);
     const loadMoreIntersect = useRef(null);
     const highlightTimerRef = useRef(null);
     const {on, emit} = useEventBus();
     const { auth } = usePage().props;
+    const firstMessageRef = useRef(localMessages[0]);
 
     // console.log(isMuted);
 
@@ -73,6 +74,10 @@ function Home({ selectedConversation = null, messages = null, pins, muted }) {
     }
 
     useEffect(() => {
+        firstMessageRef.current = localMessages[0];
+    }, [localMessages]);
+
+    useEffect(() => {
         setIsLocked(parseInt(selectedConversation?.is_locked) || false);
     }, [selectedConversation]);
 
@@ -89,7 +94,7 @@ function Home({ selectedConversation = null, messages = null, pins, muted }) {
             return;
         }
 
-        const firstMessage = localMessages[0];
+        const firstMessage = firstMessageRef.current;
         axios.get(route('message.loadOlder', firstMessage.id))
             .then(({data}) => {
                 if(data.data.length === 0){
@@ -263,7 +268,7 @@ function Home({ selectedConversation = null, messages = null, pins, muted }) {
 
                         {localMessages?.length > 0 && (
                             <div className="flex-1 flex flex-col space-y-2">
-                                <div className="
+                                {!noMoreMessages && (<div className="
                                     w-max mx-auto 
                                     px-4 py-1.5 
                                     text-xs md:text-sm font-medium 
@@ -276,7 +281,7 @@ function Home({ selectedConversation = null, messages = null, pins, muted }) {
                                     transition
                                 ">
                                     {t('loadOldestMessages')}
-                                </div>
+                                </div>)}
 
                                 <div ref={loadMoreIntersect}></div>
                                 {localMessages.map((message, index) => (
