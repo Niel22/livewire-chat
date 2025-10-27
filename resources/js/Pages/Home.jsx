@@ -40,7 +40,7 @@ function Home({ selectedConversation = null, messages = null, pins, muted }) {
     const highlightTimerRef = useRef(null);
     const {on, emit} = useEventBus();
     const { auth } = usePage().props;
-    const firstMessageRef = useRef(localMessages[0] || null);
+    const firstMessageRef = useRef(localMessages?.length > 0 ? localMessages[0] : null);
 
     // console.log(isMuted);
 
@@ -74,7 +74,7 @@ function Home({ selectedConversation = null, messages = null, pins, muted }) {
     }
 
     useEffect(() => {
-        if (localMessages.length > 0) {
+        if (localMessages?.length > 0) {
             firstMessageRef.current = localMessages[0];
         }
     }, [localMessages]);
