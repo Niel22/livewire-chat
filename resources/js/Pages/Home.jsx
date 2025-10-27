@@ -40,7 +40,7 @@ function Home({ selectedConversation = null, messages = null, pins, muted }) {
     const highlightTimerRef = useRef(null);
     const {on, emit} = useEventBus();
     const { auth } = usePage().props;
-    const firstMessageRef = useRef(localMessages[0]);
+    const firstMessageRef = useRef(localMessages[0] || null);
 
     // console.log(isMuted);
 
@@ -74,7 +74,9 @@ function Home({ selectedConversation = null, messages = null, pins, muted }) {
     }
 
     useEffect(() => {
-        firstMessageRef.current = localMessages[0];
+        if (localMessages.length > 0) {
+            firstMessageRef.current = localMessages[0];
+        }
     }, [localMessages]);
 
     useEffect(() => {
@@ -95,6 +97,7 @@ function Home({ selectedConversation = null, messages = null, pins, muted }) {
         }
 
         const firstMessage = firstMessageRef.current;
+        if (!firstMessage) return;
         axios.get(route('message.loadOlder', firstMessage.id))
             .then(({data}) => {
                 if(data.data.length === 0){
