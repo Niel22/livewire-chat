@@ -126,6 +126,13 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+        'endpoint' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/endpoint.log'),
+            'level' => 'info',
+            'days' => 7,
+            'formatter' => Monolog\Formatter\JsonFormatter::class, 
+        ],
 
     ],
 
