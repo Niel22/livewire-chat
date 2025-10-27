@@ -1,1 +1,0 @@
-import{j as n}from"./app-DgysWUKN.js";const o=r=>!r||typeof r!="string"?r:r.replace(/"/g,"");function s({message:r,className:t="",...e}){return r?n.jsx("p",{...e,className:"text-sm text-red-600 "+t,children:o(r)}):null}export{s as I};

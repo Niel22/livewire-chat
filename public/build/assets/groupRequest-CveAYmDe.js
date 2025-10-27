@@ -1,0 +1,1 @@
+import{J as e}from"./joi-UAb-Mkg8.js";const i=e.object({name:e.string().required().label("Group Name"),description:e.string().required().label("Description"),member:e.string().required().label("Member"),admin_id:e.number().integer().required().label("Admin"),avatar:e.any().required().label("Avatar")});export{i as g};

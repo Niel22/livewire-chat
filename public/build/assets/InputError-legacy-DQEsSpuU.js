@@ -1,0 +1,1 @@
+System.register(["./app-legacy-DgSxef3f.js"],function(e,t){"use strict";var s;return{setters:[e=>{s=e.j}],execute:function(){e("I",function({message:e,className:r="",...n}){return e?s.jsx("p",{...n,className:"text-sm text-red-600 "+r,children:t(e)}):null});const t=e=>e&&"string"==typeof e?e.replace(/"/g,""):e}}});

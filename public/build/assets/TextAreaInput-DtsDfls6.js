@@ -1,1 +1,0 @@
-import{r as a,j as n}from"./app-DgysWUKN.js";const d=a.forwardRef(function({className:o="",isFocused:t=!1,...s},r){return a.useEffect(()=>{var e;t&&((e=r.current)==null||e.focus())},[t,r]),n.jsx("textarea",{...s,className:"rounded-md border-gray-300 text-gray-800 dark:text-gray-200 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 "+o,ref:r})});export{d as T};
