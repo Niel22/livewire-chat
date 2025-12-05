@@ -3,7 +3,8 @@ import { router } from "@inertiajs/react";
 
 const api = axios.create({
   // baseURL: "http://localhost:8000/api",
-  baseURL: "https://taskwin-workstation.com/api",
+  // baseURL: "https://taskwin-workstation.com/api",
+  baseURL: "https://staging.taskwin-workstation.com/api",
   timeout: 60000,
   headers: {
     "Content-Type": "application/json",
