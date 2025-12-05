@@ -2,15 +2,15 @@ name: Laravel CI/CD Pipeline
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
   pull_request:
-    branches: [main]
+    branches: [main, develop]
 
 jobs:
   deploy:
     name: Deploy Laravel App to Server
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
 
     steps:
       - name: Checkout Code
@@ -32,8 +32,17 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 2966
           script: |
-            cd /var/www/taskwin-workstation.com
-            git pull origin main
+
+            if [ "${GITHUB_REF##*/}" = "main" ]; then
+              APP_PATH="/var/www/taskwin-workstation.com"
+              BRANCH="main"
+            else
+              APP_PATH="/var/www/taskwin-workstation-staging.com"
+              BRANCH="develop"
+            fi
+
+            cd $APP_PATH
+            git pull origin $BRANCH
             composer install --no-dev --optimize-autoloader
             npm install --production=false
             npm run build
